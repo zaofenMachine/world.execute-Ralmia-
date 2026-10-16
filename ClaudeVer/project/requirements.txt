@@ -1,0 +1,13 @@
+# render
+numpy>=1.24
+opencv-python>=4.8
+pycairo>=1.25
+uharfbuzz>=0.40
+fonttools>=4.40
+skia-pathops>=0.8      # only needed to re-instance the variable font (overlap removal)
+# analysis (optional: beats / lyrics)
+librosa>=0.10
+soundfile
+faster-whisper>=1.0
+torch                   # CPU build is fine
+beat_this @ git+https://github.com/CPJKU/beat_this.git

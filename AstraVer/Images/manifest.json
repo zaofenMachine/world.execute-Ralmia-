@@ -1,0 +1,112 @@
+[
+  {
+    "file": "frames_extracted/closed_color_48.250s.png",
+    "status": "frame extract, not original artwork",
+    "source": "V9 Library video libfile_8a8bc7f8216081919681f41a02308001",
+    "timestamp_seconds": 48.25,
+    "dimensions": [
+      1280,
+      720
+    ],
+    "sha256": "3a46ce7592a95504afd89c950728304fb60804cef2efda662164a6ee640fbcff"
+  },
+  {
+    "file": "frames_extracted/closed_outline_49.000s.png",
+    "status": "frame extract, not original artwork",
+    "source": "V9 Library video libfile_8a8bc7f8216081919681f41a02308001",
+    "timestamp_seconds": 49.0,
+    "dimensions": [
+      1280,
+      720
+    ],
+    "sha256": "a0bf792b2c148608961ed841db29955bc7efb09ca0adba263e21175c991794dc"
+  },
+  {
+    "file": "frames_extracted/open_color_47.750s.png",
+    "status": "frame extract, not original artwork",
+    "source": "V9 Library video libfile_8a8bc7f8216081919681f41a02308001",
+    "timestamp_seconds": 47.75,
+    "dimensions": [
+      1280,
+      720
+    ],
+    "sha256": "71d6c0451f0de71692e47ab32106669e7a317bcde96a073ac4564e46b9bdfbe6"
+  },
+  {
+    "file": "originals_candidates/hand_gap_C2.png",
+    "status": "original candidate: V4 compositing source; exact V9 usage cannot be established",
+    "source": "Recovered V4 backup/art/hand_gap_C2.png",
+    "timestamp_seconds": null,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "sha256": "6a7ac67ac0085aca16c7065f0241c28284cd4a38b4d596aeafa20ba88960e2fe"
+  },
+  {
+    "file": "originals_candidates/hand_near_C3.png",
+    "status": "original candidate: V4 compositing source; exact V9 usage cannot be established",
+    "source": "Recovered V4 backup/art/hand_near_C3.png",
+    "timestamp_seconds": null,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "sha256": "b97309ad5fae194e072a713506b535640d2c2cf661efb4adde057f05b5dd4893"
+  },
+  {
+    "file": "originals_candidates/world_unfinished_F0.png",
+    "status": "original candidate: V4 compositing source; exact V9 usage cannot be established",
+    "source": "Recovered V4 backup/art/world_unfinished_F0.png",
+    "timestamp_seconds": null,
+    "dimensions": [
+      1671,
+      941
+    ],
+    "sha256": "ede5dc207e6fc9f50ea191ed832a908e8cf23bc1bad6ad44f6d3650902d1ba1b"
+  },
+  {
+    "file": "originals_verified/eye_closed_A.png",
+    "status": "original verified by visual comparison (V4 original reused in V9; no V9 source manifest)",
+    "source": "Recovered V4 backup/art/eye_closed_A.png",
+    "timestamp_seconds": null,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "sha256": "a20df5fd5dd650e50512fd0e065aeed3168d45d323c7a082e70c666603a0170a"
+  },
+  {
+    "file": "originals_verified/eye_open_B.png",
+    "status": "original verified by visual comparison (V4 original reused in V9; no V9 source manifest)",
+    "source": "Recovered V4 backup/art/eye_open_B.png",
+    "timestamp_seconds": null,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "sha256": "a4393c04512b2750d937ed8ab9280d4e018c5452fd4ce95aa00550b7f932f02e"
+  },
+  {
+    "file": "originals_verified/hand_creation_D2.png",
+    "status": "original verified by visual comparison (V4 original reused in V9; no V9 source manifest)",
+    "source": "Recovered V4 backup/art/hand_creation_D2.png",
+    "timestamp_seconds": null,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "sha256": "f7343ed4f26fc4734ee2e76ad15de51921a8e72550d140fb12c5a35c999c03f0"
+  },
+  {
+    "file": "originals_verified/world_open_F.png",
+    "status": "original verified by visual comparison (V4 original reused in V9; no V9 source manifest)",
+    "source": "Recovered V4 backup/art/world_open_F.png",
+    "timestamp_seconds": null,
+    "dimensions": [
+      1672,
+      941
+    ],
+    "sha256": "b4ccc948e61cef78e4500a46819a26b3dcb90c996db7f6fc0674e7511f7c0828"
+  }
+]

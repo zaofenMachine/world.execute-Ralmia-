@@ -1,0 +1,38 @@
+# Rendered videos and intermediate chunks (kept locally)
+*.mp4
+*.mov
+*.mkv
+*.avi
+ClaudeVer/project/chunks/
+ClaudeVer/project/list*.txt
+ClaudeVer/project/qa/
+
+# Superseded character experiments
+ClaudeVer/gen/_superseded_short_hair/
+
+# Python environments and caches
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local preview commands documented in the READMEs
+ClaudeVer/project/preview.jpg
+ClaudeVer/project/test.jpg
+
+# Local credentials and editor/OS state
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.log
+*.tmp

@@ -1,0 +1,47 @@
+{
+  "task": "feedback_round2.md",
+  "file": "back_reach.png",
+  "generator": "built-in image_gen.imagegen",
+  "mode": "new pose generated from canonical character reference",
+  "prompt": "STYLE: hand-drawn Japanese anime illustration with expressive steel-nib ink linework, varied pressure, opaque flat cel colours with at most one shadow tone, tactile restrained paper grain INSIDE character shapes. Warm paper-white armour #EFE6D2, ink black #080B10, steel greys, long blonde hair #E8C063. Cyan #62D8EA only on mechanical lights/eyes/cores, red #E5484D only on official neckerchief/collar. No text, logos, watermark, UI, glossy 3D render, airbrush or blur.\nUse case: stylized-concept. Asset #20 back_reach.png REDO following feedback_round2.\nInput 1: ref_sheet.png is the exact canonical CHARACTER/COSTUME reference ONLY. Make a NEW POSE, do not copy its upright neutral stance. Ralmia, long waist-length blonde hair, official white bell-shaped armour dress with black thick hem, twin circular hip racer pods/fins, black full undersuit, white boots, black segmented mechanical fingers. Keep identity and costume.\n\nFULL-BODY BACK VIEW. She stands VERY CLOSE to an invisible wall DIRECTLY IN FRONT of her, entire upper body leaning slightly FORWARD INTO RESISTANCE. Head DEEPLY BOWED FORWARD, chin tucked DOWN toward collar; top/back of skull seen from camera, neck bent, forehead almost touching the wall. Shoulders visibly HUNCHED and raised toward her neck, tense rounded upper back. Long blonde hair hangs STRAIGHT DOWN by gravity, no wind, no cheerful lifted chin.\n\nRIGHT PALM pressed FLAT and FIRMLY against invisible wall at SHOULDER HEIGHT, SLIGHTLY IN FRONT OF HER BOWED FACE, close IN toward the body centerline rather than held out to side. Elbow BENT DOWN near ribs. Forearm FORESHORTENED AWAY from camera TOWARD THE WALL, not upright parallel to image plane. Wrist flexed so flat palm touches wall. We see BACK / DORSAL SIDE of black mechanical right hand: small dorsal knuckle plates, NO circular cyan palm-core visible because palm faces AWAY from camera. Four fingers held STRAIGHT AND TIGHTLY TOGETHER, thumb tucked alongside index finger, ALL fingertips PRESSING the same invisible plane. NO spread fingers, NO waving, NO greeting. Hand is no higher than shoulder/neck base, certainly not beside top of head. It should look like someone bracing against a locked barrier with frustrated pressure, not raising a hand to say hello.\nLEFT ARM hangs straight down by her side; LEFT HAND clenched tightly into a FIST, visible beside hip.\nEmotional acting: SUPPRESSED ANGER, RESISTANCE, isolation, quiet desperation; not friendly or triumphant. No face seen, emotion carried by bowed head, hunched shoulders, braced forearm and fist.\n\nWide 16:9 2560x1440 requested (native landscape accepted). Whole figure safely inside central area, full boots and all hair visible, at least 8% alpha breathing room top and bottom. TRUE ALPHA transparent background. Do NOT draw any actual wall, glass, panel, code wall, door, floor, cast shadow, contact effects, symbols or scenery. There is ONLY the tense back-view character.",
+  "inputs": [
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\ref_sheet.png"
+  ],
+  "source": "C:\\Users\\zaofenMachine\\.codex\\generated_images\\01a1408d-5dd4-7781-ab21-3edd8fac2f3c\\exec-7efbb7cb-6ddc-4b72-b123-b76e244c21ed.png",
+  "review": [
+    "Head bowed forward, neck concealed, shoulders hunched",
+    "Right fingers together, back of hand visible, palm core hidden",
+    "Right hand close to body at shoulder height, elbow bent toward wall",
+    "Left fist lowered beside hip",
+    "Long blonde hair and canonical armour retained",
+    "No drawn wall or floor; real alpha"
+  ],
+  "unchanged_by_request": [
+    "listen_profile.png",
+    "reach_camera.png",
+    "all other final images"
+  ],
+  "status": "complete",
+  "backup": "_production\\round2\\raw\\back_reach_before_feedback_round2.png",
+  "output": {
+    "file": "back_reach.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGBA",
+    "bytes": 490170,
+    "alpha_range": [
+      0,
+      255
+    ],
+    "transparent_percent": 87.845,
+    "alpha_bbox": [
+      35,
+      20,
+      1636,
+      917
+    ]
+  },
+  "other_final_pngs_verified_unchanged": 36
+}

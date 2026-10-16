@@ -1,0 +1,425 @@
+{
+  "expected_count": 21,
+  "delivered_count": 21,
+  "assets": [
+    {
+      "file": "creator_sheet.png",
+      "size": [
+        1672,
+        940
+      ],
+      "mode": "RGB",
+      "bytes": 2022979
+    },
+    {
+      "file": "lab_desk.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 2480281
+    },
+    {
+      "file": "lab_desk_empty.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 2186028
+    },
+    {
+      "file": "pinky_alone.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 1342330
+    },
+    {
+      "file": "offer_pose.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 642383,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "transparent_percent": 84.421,
+      "alpha_bbox": [
+        330,
+        29,
+        1505,
+        907
+      ]
+    },
+    {
+      "file": "spec_eggplant.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 554496,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "transparent_percent": 87.154,
+      "alpha_bbox": [
+        600,
+        78,
+        1417,
+        878
+      ]
+    },
+    {
+      "file": "spec_tomato.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 1463916,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "transparent_percent": 62.348,
+      "alpha_bbox": [
+        0,
+        69,
+        1547,
+        909
+      ]
+    },
+    {
+      "file": "spec_tabbycat.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 1613858,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "transparent_percent": 61.893,
+      "alpha_bbox": [
+        0,
+        17,
+        1652,
+        918
+      ]
+    },
+    {
+      "file": "creation_inverse.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 2138934
+    },
+    {
+      "file": "world_L1_night.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 2276388
+    },
+    {
+      "file": "world_L2_city_night.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 1542235,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "transparent_percent": 45.731,
+      "alpha_bbox": [
+        0,
+        17,
+        1672,
+        941
+      ]
+    },
+    {
+      "file": "eye_tear.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 1928717
+    },
+    {
+      "file": "sitting_alone.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 476705,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "transparent_percent": 89.499,
+      "alpha_bbox": [
+        55,
+        23,
+        1572,
+        909
+      ]
+    },
+    {
+      "file": "back_reach.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 490170,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "transparent_percent": 87.845,
+      "alpha_bbox": [
+        35,
+        20,
+        1636,
+        917
+      ]
+    },
+    {
+      "file": "reach_camera.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 2390519,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "transparent_percent": 34.361,
+      "alpha_bbox": [
+        23,
+        0,
+        1672,
+        941
+      ]
+    },
+    {
+      "file": "creator_walk.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 417739,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "transparent_percent": 88.475,
+      "alpha_bbox": [
+        91,
+        20,
+        1537,
+        919
+      ]
+    },
+    {
+      "file": "listen_profile.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 2340546
+    },
+    {
+      "file": "run_front.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 824843,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "transparent_percent": 79.632,
+      "alpha_bbox": [
+        39,
+        13,
+        1652,
+        927
+      ]
+    },
+    {
+      "file": "blackboard.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 612050,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "transparent_percent": 85.271,
+      "alpha_bbox": [
+        81,
+        11,
+        1530,
+        941
+      ]
+    },
+    {
+      "file": "escape_leap.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 1163953,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "transparent_percent": 70.082,
+      "alpha_bbox": [
+        0,
+        1,
+        1634,
+        928
+      ]
+    },
+    {
+      "file": "portrait_front_v2.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 2321674
+    }
+  ],
+  "local_pairs": [
+    {
+      "base": "lab_desk.png",
+      "edit": "lab_desk_empty.png",
+      "generation": "image_gen local edit",
+      "postprocess": "user-authorized original pixel restoration outside edit mask",
+      "size": [
+        1672,
+        941
+      ],
+      "outside_mask_pixels": 1139618,
+      "outside_mask_changed_pixels": 0,
+      "outside_mask_exact_match_percent": 100.0,
+      "changed_pixels": 430763,
+      "changed_bbox": [
+        530,
+        20,
+        1111,
+        930
+      ]
+    },
+    {
+      "base": "pinky_promise.png",
+      "edit": "pinky_alone.png",
+      "generation": "image_gen local edit",
+      "postprocess": "user-authorized original pixel restoration outside edit mask",
+      "size": [
+        1672,
+        941
+      ],
+      "outside_mask_pixels": 1041939,
+      "outside_mask_changed_pixels": 0,
+      "outside_mask_exact_match_percent": 100.0,
+      "changed_pixels": 530118,
+      "changed_bbox": [
+        745,
+        232,
+        1672,
+        812
+      ]
+    },
+    {
+      "base": "eye_open.png",
+      "edit": "eye_tear.png",
+      "generation": "image_gen local edit",
+      "postprocess": "user-authorized original pixel restoration outside edit mask",
+      "size": [
+        1672,
+        941
+      ],
+      "outside_mask_pixels": 1555747,
+      "outside_mask_changed_pixels": 0,
+      "outside_mask_exact_match_percent": 100.0,
+      "changed_pixels": 17062,
+      "changed_bbox": [
+        1207,
+        536,
+        1328,
+        791
+      ]
+    }
+  ],
+  "night_city_geometry": {
+    "base": "world_L2_city.png",
+    "edit": "world_L2_city_night.png",
+    "method": "image_gen lighting edit; restored original architectural alpha outside removed sun",
+    "removed_sun_pixels": 15790,
+    "above_water_outside_sun_alpha_changed_pixels": 0,
+    "opaque_water_below_y": 594,
+    "water_alpha_min": 255,
+    "canvas": [
+      1672,
+      941
+    ]
+  },
+  "night_sky_pair": {
+    "base": "world_L1_sky.png",
+    "edit": "world_L1_night.png",
+    "method": "image_gen full-canvas lighting edit, original as edit target",
+    "same_canvas": true,
+    "note": "All colours change for night; cloud geometry checked visually, not claimed pixel-identical."
+  },
+  "native_resolution_note": "Approximately 1672x941; exact native dimensions listed per asset, with occasional 1px differences. Not 2560x1440; no artificial upscaling.",
+  "scope": "Images only; no MV code or timing/audio edits.",
+  "feedback_round2": {
+    "replaced": [
+      "back_reach.png"
+    ],
+    "other_final_pngs_verified_unchanged": 36,
+    "visual_review": [
+      "Head bowed forward, neck concealed, shoulders hunched",
+      "Right fingers together, back of hand visible, palm core hidden",
+      "Right hand close to body at shoulder height, elbow bent toward wall",
+      "Left fist lowered beside hip",
+      "Long blonde hair and canonical armour retained",
+      "No drawn wall or floor; real alpha"
+    ]
+  }
+}

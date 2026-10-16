@@ -1,0 +1,287 @@
+{
+  "asset_count": 16,
+  "assets": [
+    {
+      "file": "ref_sheet.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 2239523
+    },
+    {
+      "file": "hand_palm.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 783992,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "transparent_percent": 73.119,
+      "opaque_percent": 0.058,
+      "alpha_bbox": [
+        0,
+        24,
+        1672,
+        941
+      ]
+    },
+    {
+      "file": "parts_exploded.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 310117,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "transparent_percent": 93.928,
+      "opaque_percent": 0.036,
+      "alpha_bbox": [
+        95,
+        39,
+        1578,
+        941
+      ]
+    },
+    {
+      "file": "eye_open.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 2061729
+    },
+    {
+      "file": "eye_closed.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 1816491
+    },
+    {
+      "file": "world_L1_sky.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 1780231
+    },
+    {
+      "file": "world_L2_city.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 1539591,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "transparent_percent": 44.727,
+      "opaque_percent": 0.018,
+      "alpha_bbox": [
+        0,
+        17,
+        1672,
+        941
+      ]
+    },
+    {
+      "file": "world_L3_mid.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 587337,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "transparent_percent": 84.526,
+      "opaque_percent": 0.01,
+      "alpha_bbox": [
+        0,
+        0,
+        1634,
+        941
+      ]
+    },
+    {
+      "file": "world_L4_fore.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 401236,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "transparent_percent": 89.794,
+      "opaque_percent": 0.009,
+      "alpha_bbox": [
+        0,
+        265,
+        1200,
+        941
+      ]
+    },
+    {
+      "file": "dash_launch.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 697475,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "transparent_percent": 81.476,
+      "opaque_percent": 0.077,
+      "alpha_bbox": [
+        17,
+        28,
+        1604,
+        826
+      ]
+    },
+    {
+      "file": "dash_full.png",
+      "size": [
+        1671,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 985278,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "transparent_percent": 69.774,
+      "opaque_percent": 0.094,
+      "alpha_bbox": [
+        95,
+        19,
+        1657,
+        923
+      ]
+    },
+    {
+      "file": "hand_gap.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 2288605
+    },
+    {
+      "file": "hand_tied.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 2162598
+    },
+    {
+      "file": "portrait_front.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 1904627
+    },
+    {
+      "file": "floating.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 427930,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "transparent_percent": 90.573,
+      "opaque_percent": 0.02,
+      "alpha_bbox": [
+        83,
+        86,
+        1513,
+        915
+      ]
+    },
+    {
+      "file": "pinky_promise.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 1716614
+    }
+  ],
+  "paired_edits": [
+    {
+      "a": "eye_open.png",
+      "b": "eye_closed.png",
+      "method": "image_gen local edit followed by authorized original-pixel restoration",
+      "canvas": [
+        1672,
+        941
+      ],
+      "outside_mask_pixels": 1253104,
+      "outside_mask_changed_pixels": 0,
+      "outside_mask_exact_match_percent": 100.0,
+      "changed_pixels": 319974,
+      "changed_bbox": [
+        195,
+        265,
+        1523,
+        631
+      ]
+    },
+    {
+      "a": "hand_gap.png",
+      "b": "hand_tied.png",
+      "method": "image_gen local edit followed by authorized original-pixel restoration",
+      "canvas": [
+        1672,
+        941
+      ],
+      "outside_mask_pixels": 1559086,
+      "outside_mask_changed_pixels": 0,
+      "outside_mask_exact_match_percent": 100.0,
+      "changed_pixels": 14190,
+      "changed_bbox": [
+        1042,
+        0,
+        1672,
+        260
+      ]
+    }
+  ],
+  "world_layer_sizes_match": true,
+  "native_resolution_note": "Built-in generator returned approximately 1672x941, not requested 2560x1440. Native files retained without artificial upscaling."
+}

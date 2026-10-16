@@ -1,0 +1,117 @@
+{
+  "parts_count": 14,
+  "parts_min_gap_at_alpha_gt_128_px": 82.61,
+  "parts_bounds": [
+    [
+      207,
+      121,
+      298,
+      241
+    ],
+    [
+      608,
+      110,
+      691,
+      240
+    ],
+    [
+      1002,
+      119,
+      1090,
+      241
+    ],
+    [
+      1409,
+      140,
+      1480,
+      235
+    ],
+    [
+      197,
+      368,
+      316,
+      456
+    ],
+    [
+      591,
+      345,
+      725,
+      471
+    ],
+    [
+      1014,
+      367,
+      1093,
+      447
+    ],
+    [
+      1392,
+      358,
+      1494,
+      460
+    ],
+    [
+      190,
+      589,
+      322,
+      686
+    ],
+    [
+      591,
+      572,
+      719,
+      699
+    ],
+    [
+      1003,
+      574,
+      1105,
+      700
+    ],
+    [
+      228,
+      778,
+      284,
+      831
+    ],
+    [
+      625,
+      780,
+      680,
+      833
+    ],
+    [
+      1386,
+      602,
+      1500,
+      673
+    ]
+  ],
+  "hand_palm_core_center_px": [
+    1070.0,
+    488.5
+  ],
+  "hand_palm_core_center_normalized": [
+    0.64,
+    0.5191
+  ],
+  "hand_gap_fingertip_approx_px": [
+    1144,
+    165
+  ],
+  "hand_gap_thread_endpoint_approx_px": [
+    1190,
+    146
+  ],
+  "world_waterline_approx_y_px": 594,
+  "world_waterline_approx_normalized_y": 0.6312,
+  "world_foreground_figure_approx_bounds_px": [
+    518,
+    540,
+    610,
+    728
+  ],
+  "floating_max_opaque_radius_from_canvas_center_px": 338.21,
+  "floating_rotation_safe_radius_px": 470.5,
+  "notes": "Anchors are measured or visually estimated on native outputs for compositing. Some positions differ from the plan approximate guides."
+}
