@@ -364,7 +364,7 @@ SPEC = [  # (path, details, beat of the object word, fill on paper?, label, lati
          gem=(0.06, 0.20, 0.05), fill=INK2),
     dict(body=path_tomato, det=path_tomato_calyx, k=170.0, t_obj=78.78, paper=False, name='TOMATO', latin='Solanum lycopersicum',
          gem=(0.13, 0.14, 0.045), fill=INK2),
-    dict(body=path_cat, det=path_cat_details, k=178.0, t_obj=82.50, paper=True, name='TABBY CAT', latin='Felis catus',
+    dict(body=path_cat, det=path_cat_details, k=178.0, t_obj=82.50, paper=True, name='TABBY CAT', latin='Felis catus  var. Ralmia',
          gem=None, fill=BONE),
 ]
 
@@ -385,8 +385,8 @@ def her_points(n=1400):
         _HP['x'] = (xs[idx] - 960) / 960.0; _HP['y'] = (ys[idx] - 570) / 960.0
     return _HP['x'], _HP['y']
 
-SPEC_IMG = ['n_spec_egg', 'n_spec_tomato', 'n_spec_cat']
-SPEC_CORE = [(1006, 784), (524, 695), (948, 616)]          # where the colour starts: the gems, and the cat's bow
+SPEC_IMG = ['n_spec_egg', 'n_spec_tomato', 'n_cat']           # the cat is her, curled up asleep (cat_ralmia)
+SPEC_CORE = [(1006, 784), (524, 695), (1205, 375)]         # where the colour starts: the gems (on the cat, her own temple gem)
 _SM = {}
 def spec_morph(i, cx=560, cy=610, H_=620):
     if i not in _SM:
@@ -516,7 +516,11 @@ def s_verse2(c, g, t):
             draw_points(c, X, Y, ink, 0.9 * pa * ua, 2.6)
         ul_ = prog(t, tm + 0.3, tm + 0.45)
         if ul_ > 0:                                   # line art, then colour from her core outwards
-            c.save(); c.translate(cx, cy); c.scale(sc_, sc_); c.translate(-bx, -by)
+            c.save(); c.translate(cx, cy)
+            if i == 2:                                # asleep: she breathes with the purr, one breath every two beats
+                br = abs(math.sin(math.pi * kk / 2)) * prog(t, tm + 0.3, tm + 0.8)
+                c.translate(0, 300); c.scale(1 + 0.006 * br, 1 + 0.014 * br); c.translate(0, -300)
+            c.scale(sc_, sc_); c.translate(-bx, -by)
             rgba(c, SEPIA, ul_); c.mask_surface(surf(SPEC_IMG[i] + '_line'), 0, 0)
             rr_ = 1500 * eo_cubic(prog(t, tm + 0.42, tm + 0.8))
             if rr_ > 0:
@@ -525,7 +529,7 @@ def s_verse2(c, g, t):
             c.restore()
             gp_ = (cx + (core[0] - bx) * sc_, cy + (core[1] - by) * sc_)
             p_ = pulse(t, tm + 0.42, 0.6)
-            if p_ > 0.02 and i < 2:
+            if p_ > 0.02:
                 rg = cairo.RadialGradient(*gp_, 0, *gp_, 90); rg.add_color_stop_rgba(0, *CYAN, 0.9 * p_); rg.add_color_stop_rgba(1, *CYAN, 0)
                 g.set_source(rg); g.arc(*gp_, 90, 0, 6.283); g.fill()
         # museum label
@@ -721,30 +725,59 @@ def s_switch(c, g, t):
         fx['vig'] = 0.4 + 0.6 * night; fx['grain'] = 0.03
         hud(c, t, night > 0.5, a=0.6)
     elif t < B(216):
-        # S <-> M: who is the program and who writes it -- the two of them trade places
+        # S <-> M: her own two personalities on the F/M toggle (role_s / role_m, a pixel-aligned pair).
+        # a character joke only -- faces and hands, framed above the chest, no props
         fill_bg(c, INK); dotgrid(c, BONE, 0.05)
-        XL, XR, FY = 640, 1280, 1000
-        sw = 0.0
-        for kb, to in ((213.5, 1.0), (214.5, 0.0), (215.25, 1.0)):
-            if t >= B(kb): sw = lerp(1 - to, to, eio_cubic(prog(t, B(kb), B(kb) + 0.3)))
-        hx = lerp(XL, XR, sw); cx_ = lerp(XR, XL, sw)
-        arc_ = math.sin(math.pi * sw) * 60
-        for x in (XL, XR):                                     # two spotlights
-            rg = cairo.LinearGradient(0, 0, 0, FY)
-            rg.add_color_stop_rgba(0, *BONE, 0.0); rg.add_color_stop_rgba(1, *BONE, 0.10)
-            c.set_source(rg); c.move_to(x - 60, 0); c.line_to(x + 60, 0); c.line_to(x + 260, FY); c.line_to(x - 260, FY); c.close_path(); c.fill()
-            rgba(c, BONE, 0.08); c.save(); c.translate(x, FY); c.scale(1, 0.18); c.arc(0, 0, 260, 0, 6.283); c.restore(); c.fill()
-        figure(c, 'n_offer_hd', hx, FY - arc_, 0.56, 1, (960, 1035))
-        figure(c, 'n_creator_back_hd', cx_, FY + arc_, 0.62)
-        for lab, x, kb in (('S', XL, 211.5), ('M', XR, 213.5)):
-            if t >= B(kb):
-                u = eo_expo(prog(t, B(kb), B(kb) + 0.14))
-                text(c, 'heavy', lab, x, 330, 220 * (1.2 - 0.2 * u), BONE, u, align='center')
-                p_ = pulse(t, B(kb), 0.5)
-                if p_ > 0.02: text(g, 'heavy', lab, x, 330, 220, CYAN, 0.6 * p_, align='center')
+        K_S, K_M, K_FL = 211.5, 213.5, 214.5
+        if t < B(K_S): p = 0.07 * math.sin(t * 11)                                  # undecided: the knob trembles
+        elif t < B(K_M): p = lerp(0, -1, eo_back(prog(t, B(K_S), B(K_S) + 0.16), 2))
+        elif t < B(K_FL): p = lerp(-1, 1, eo_back(prog(t, B(K_M), B(K_M) + 0.16), 2))
+        else: p = -1 if int((t - B(K_FL)) / (P / 4)) % 2 == 0 else 1                 # then it flips on every 16th
+        cuts = [K_S, K_M] + [K_FL + 0.25 * j for j in range(6)]
+        kc = max([k for k in cuts if kk >= k], default=None)
+        # the portrait, in a frame: line art (both faces dissolving into each other) until she is set, then colour
+        FX0, FY0, FW, FH = 520, 140, 880, 660
+        pop = 1.0 + (0.06 * (1 - eo_expo(prog(t, B(kc), B(kc) + 0.16))) if kc is not None else 0)
+        c.save(); c.rectangle(FX0, FY0, FW, FH); c.clip()
+        c.translate(960, FY0 + FH / 2); c.scale(pop, pop); c.translate(-960, -380)
+        if kc is None:
+            ua = eo_cubic(prog(t, B(208), B(208) + 0.4))
+            mx = 0.5 + 0.5 * math.sin(math.pi * (kk - 208))
+            for nm, aa in (('n_role_s_line', 1 - mx), ('n_role_m_line', mx)):
+                rgba(c, BONE, 0.85 * ua * aa); c.mask_surface(surf(nm), 0, 0)
+        else:
+            cur = 'n_role_s_hd' if p < 0 else 'n_role_m_hd'
+            c.set_source_surface(surf(cur), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint()
+            if kk >= K_FL:                                                            # torn: slices of the other one
+                oth = 'n_role_m_hd' if p < 0 else 'n_role_s_hd'
+                rr = random.Random(int(t * 60))
+                for _ in range(4):
+                    y0 = 120 + rr.random() * 560; hh = 10 + rr.random() * 50; dx = (rr.random() - 0.5) * 120
+                    c.save(); c.rectangle(0, y0, W, hh); c.clip(); c.translate(dx, 0)
+                    c.set_source_surface(surf(oth), 0, 0); c.paint(); c.restore()
+        c.restore()
+        rgba(c, BONE, 0.5); c.set_line_width(1.5); c.rectangle(FX0, FY0, FW, FH); c.stroke()
+        text(c, 'mono', 'me.portrait', FX0, FY0 - 14, 18, BONE, 0.6, track=0.3)
+        # the toggle, smaller this time, under her; S and M as its two marks
+        cx, cy, ts = 960, 890, 0.5
+        c.save(); c.translate(cx, cy); c.scale(ts, ts)
+        rgba(c, INK2, 1); c.new_path(); c.arc(-200, 0, 110, math.pi / 2, 3 * math.pi / 2); c.arc(200, 0, 110, -math.pi / 2, math.pi / 2); c.close_path()
+        c.fill_preserve(); rgba(c, BONE, 0.8); c.set_line_width(3); c.stroke()
+        for cc, aa in ((c, 1), (g, 0.5)):
+            rgba(cc, BONE if cc is c else CYAN, aa); cc.arc(p * 200, 0, 88, 0, 6.283); cc.fill()
+        rgba(c, INK, 0.5); c.arc(p * 200, 0, 30, 0, 6.283); c.fill()
+        c.restore()
+        state = 'S' if p < -0.5 else 'M' if p > 0.5 else 'undefined'
+        for lab, sx, on in (('S', -1, p < -0.5), ('M', 1, p > 0.5)):
+            u = eo_expo(prog(t, B(kc), B(kc) + 0.14)) if (on and kc is not None) else 1.0
+            text(c, 'heavy', lab, 960 + sx * 680, 560, 250 * (1.15 - 0.15 * u), BONE if on else GREY, 1.0 if on else 0.3, align='center')
+            if on and kc is not None:
+                p_ = pulse(t, B(kc), 0.4)
+                if p_ > 0.02: text(g, 'heavy', lab, 960 + sx * 680, 560, 250, CYAN, 0.6 * p_, align='center')
+        text(c, 'mono', f'me.role = {state}', cx, cy + 80, 22, CYAN if state != 'undefined' else BONE, 0.85, align='center', track=0.15)
         lyric(c, [('Oh,', 96.08), ('my', 96.20), ('switch', 96.48), ('role', 97.10), ('to', 97.70), ('S,', B(211.5)), ('to', 98.60),
                   ('M', B(213.5))], t, y=1050)
-        fx['ab'] = 5 * pulse(t, B(211.5), 0.2) + 5 * pulse(t, B(213.5), 0.2) + 3 * pulse(t, B(214.5), 0.15) + 3 * pulse(t, B(215.25), 0.15)
+        fx['ab'] = sum(5 * pulse(t, B(k), 0.2) for k in cuts[:2]) + (4 + 3 * random.Random(int(t * 60)).random() if kk >= K_FL else 0)
         hud(c, t, True, a=0.6)
     else:
         # the trance: slow rings, the two of them adrift, colour turning over

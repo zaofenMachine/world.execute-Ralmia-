@@ -41,7 +41,8 @@ TIMELINE = [
     (B(224), B(256), S5.s_chorus2),
     (B(256), B(288), S5.s_bridge),
     (B(288), B(320), S6.s_executions),
-    (B(320), 999.0, S6.s_count),
+    (B(320), B(342), S6.s_doors),
+    (B(342), 999.0, S6.s_pending),     # the count / 13th / launch: waiting for the user's ears (HANDOFF 2.3)
 ]
 END = B(352)
 

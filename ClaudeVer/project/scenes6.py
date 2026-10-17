@@ -1,10 +1,12 @@
 """world.execute(me); x Ralmia — Act IV "execution" (133.26–162.80 s).
-EXECUTION x12 on every second beat k288..310 (needs an ears-on check: the chant is too dense for Whisper);
-the count EIN DOS TROIS NE FEM LIU on a dotted-8th grid k325.5 .. 329.25, EXECUTION k330; then the thread pulls (k340)
-and she crouches to launch (k344-352) into the third chorus."""
+k288-320 is the instrumental interlude: she is not on screen, we are her -- her cyan aperture reticle, an avenue of every
+world of the film rushing at us, one gear up every 8 beats; no EXECUTION words (nobody sings yet).
+k320-342: EXECUTION x12, one every second beat (user: first ~148 s, twelfth ~158 s): each call slams a gate shut ahead of
+us and we smash through it on the next beat; the twelfth slams in our face and we stop dead.
+k342-352 (the count, the 13th, the pull, the launch) is waiting for the user's ears -- see HANDOFF.md 2.3."""
 from scenes5 import *
 
-EXE = [288 + 2 * i for i in range(12)]
+EXE = [320 + 2 * i for i in range(12)]
 COUNT = [325.5 + 0.75 * i for i in range(6)]
 K_EX13, K_PULL, K_LAUNCH = 330.0, 340.0, 344.0
 
@@ -62,159 +64,199 @@ def runner(c, g, t, x, top):
     rgba(g, CYAN, 0.10 if ph < 0.55 else 0.05); g.save(); g.translate(x, top - 6 + bob); g.scale(sc, sc); g.translate(-ax, -ay); g.mask_surface(surf(name), 0, 0); g.restore()
     return top - 6 + bob
 
-# ---- the corridor: she runs straight at us down an avenue of worlds; each EXECUTION kills the one she is passing
+# ---- the corridor, first person. depth is driven by distance travelled, so a gear change kicks the speed, never the picture
 VPX, VPY, KZ = 960, 430, 1150
-VZ = 3.0 / (2 * P)                       # depth units per second: one main window every two beats
-def zpos(tc, t): return 3.2 + (tc - t) * VZ
-DEAD = [(288 - 8 + j * 0.5, (-1 if j % 2 else 1), -0.75 + 1.0 * random.Random(j * 13).random(), j) for j in range(66)]
+U = 1.5                                   # depth units per beat in first gear: one side window passes every beat
+GEARS = [(288, 296, 1), (296, 304, 2), (304, 312, 2), (312, 342, 4)]
+def dist(kk):
+    d = 0.0
+    for a, b, gr in GEARS: d += U * gr * clamp(kk - a, 0, b - a)
+    return d
+def gear(kk): return next((gr for a, b, gr in GEARS if a <= kk < b), 0)
+D_EXE = [dist(k) for k in EXE]
+GATE_W, Z_STOP = 2.0, 1.6                 # gates are bigger than the side windows; the twelfth stops us 1.6 ahead
+Z_SLAM = 6.3                              # gates 1-11 slam this far ahead; at 4th gear we reach them one beat later (z 0.3)
+CORR = POOL + [('n_lab_hd', None), ('n_creation_hd', None), ('n_eye_tear_hd', None), ('n_listen_hd', None), ('n_wL2n_hd', INK2),
+               ('n_offer_hd', PAPER), ('n_cat_hd', PAPER), ('n_role_s_hd', INK2), ('n_sitting_hd', PAPER), ('n_back_reach_hd', PAPER),
+               ('n_spec_egg_hd', PAPER), ('n_spec_tomato_hd', INK2), ('n_pinky_alone_hd', None), ('n_portrait2_hd', None)]
+SP = U / 2                                # side windows: one each side per beat in first gear
+N_SIDE = int(dist(342) / SP) + 24
+SIDE = [((-1 if j % 2 else 1) * (1.3 + 0.6 * random.Random(j * 7).random()), -0.85 + 1.15 * random.Random(j * 13).random(),
+         CORR[(j * 7 + 3) % len(CORR)]) for j in range(N_SIDE)]
+D_DEAD = dist(320) + 1.0                  # side windows we pass after the first call are already dead when we first see them
 
-def cwin(c, g, t, tc, side, Y, name, bg, lab, size=1.0, dim=1.0, executed_at=None, key=0):
-    z = zpos(tc, t)
+def stamp(c, cx, cy, w, a):
+    if a <= 0: return
+    c.save(); c.translate(cx, cy); c.rotate(-0.12)
+    c.new_path(); fonts()['heavy'].text_path(c, 'EXECUTED', 0, w * 0.06, w * 0.16, 'center')
+    rgba(c, INK, 0.9 * a); c.set_line_width(w * 0.016); c.stroke_preserve(); rgba(c, BONE, a); c.fill()
+    c.restore()
+
+def cwin(c, g, z, side, Y, name, bg, lab, size=1.0, dead=False, flash=0.0):
     if z < 0.3 or z > 15: return
     s = KZ / z; w = size * s; h = w * 9 / 16
-    cx = VPX + side * 1.45 * s; cy = VPY + Y * s
+    cx = VPX + side * s; cy = VPY + Y * s
     x, y = cx - w / 2, cy - h / 2
-    fog = clamp((15 - z) / 6) * dim
-    ex = executed_at
-    if ex == -1:                                         # long dead: a dark pane with its stamp
-        win(c, x, y, w, h, name, bg, lab, fog)
-        rgba(c, INK, 0.55 * fog); c.rectangle(x, y, w, h); c.fill()
+    fog = clamp((15 - z) / 6)
+    win(c, x, y, w, h, name, bg, 'EXECUTED' if dead else lab, fog)
+    if dead:
+        rgba(c, INK, 0.6 * fog); c.rectangle(x, y, w, h); c.fill()
         c.save(); c.translate(cx, cy); c.rotate(-0.12)
-        text(c, 'heavy', 'EXECUTED', 0, w * 0.05, w * 0.14, BONE, 0.6 * fog, align='center'); c.restore()
-        return
-    if ex is None or t < ex:
-        win(c, x, y, w, h, name, bg, lab, fog)
-        return
-    dt = t - ex
-    if dt < 0.12:
-        win(c, x, y, w, h, name, bg, lab, fog)
-        rgba(c, BONE, fog * (1 - dt / 0.12)); c.rectangle(x, y, w, h); c.fill()
-        rgba(g, BONE, 0.6 * (1 - dt / 0.12)); g.rectangle(x, y, w, h); g.fill()
-        return
-    rr = random.Random(key * 17)
-    for k in range(6):                                  # six slats fall away
-        u = max(0.0, dt - 0.12 - rr.random() * 0.12)
-        dy = 0.5 * 2600 * u * u * (s / 480); rot = (rr.random() - 0.5) * 2.4 * u
-        if y + dy > H + 50: continue
-        sx = x + k * w / 6
-        c.save(); c.translate(sx + w / 12, y + h / 2 + dy); c.rotate(rot); c.translate(-(sx + w / 12), -(y + h / 2))
-        c.rectangle(sx, y, w / 6 + 0.5, h); c.clip()
-        win(c, x, y, w, h, name, bg, 'EXECUTED', fog)
-        rgba(c, INK, min(0.7, u * 3) * fog); c.rectangle(x, y, w, h); c.fill()
-        c.restore()
-    if dt < 0.6:
-        a_ = (1 - prog(t, ex + 0.35, ex + 0.6)) * fog
-        c.save(); c.translate(cx, cy); c.rotate(-0.12)
-        c.new_path(); fonts()['heavy'].text_path(c, 'EXECUTED', 0, w * 0.06, w * 0.16, 'center')
-        rgba(c, INK, 0.9 * a_); c.set_line_width(w * 0.016); c.stroke_preserve(); rgba(c, BONE, a_); c.fill()
-        c.restore()
+        text(c, 'heavy', 'EXECUTED', 0, w * 0.05, w * 0.14, BONE, 0.5 * fog, align='center'); c.restore()
+    elif flash > 0.01:
+        rgba(c, BONE, 0.7 * flash * fog); c.rectangle(x, y, w, h); c.fill()
+        rgba(g, BONE, 0.5 * flash * fog); g.rectangle(x, y, w, h); g.fill()
 
-def her_run(c, g, t, a=1.0):
-    ph = ((t - T0) / P) % 1.0
-    bob = -22 * abs(math.sin(math.pi * ph)); sway = 16 * math.sin(math.pi * (t - T0) / P); rot = 0.025 * math.sin(math.pi * (t - T0) / P)
-    for k, (ss, aa) in enumerate(((0.80, 0.07), (0.88, 0.14))):     # after-images, trailing back toward the vanishing point
-        img(c, 'n_run_front_hd', lerp(960 + sway, VPX, 1 - ss) , lerp(1110 + bob, VPY + 300, 1 - ss), 0.62 * ss, aa * a, 957, 1061, rot)
-    img(c, 'n_run_front_hd', 960 + sway, 1110 + bob, 0.62, a, 957, 1061, rot)
-    g.save(); g.translate(960 + sway, 1110 + bob); g.rotate(rot); g.scale(0.62, 0.62); g.translate(-957, -1061)
-    rgba(g, CYAN, 0.07 * a); g.mask_surface(surf('n_run_front_hd'), 0, 0); g.restore()
+def gate(c, g, t, z, i):
+    """gate i: a world framed dead ahead. it slams on its EXECUTION (two shutters meet); on the next beat we go through it"""
+    if z < 0.3 or z > 15: return
+    tc = B(EXE[i])
+    s = KZ / z; w = GATE_W * s; h = w * 9 / 16
+    cx, cy = VPX, VPY + 0.05 * s
+    x, y = cx - w / 2, cy - h / 2
+    fog = clamp((15 - z) / 6)
+    name, bg = CORR[(i * 5 + 1) % len(CORR)] if i < 11 else ('n_pinky_hd', None)        # the last one: the two of them
+    win(c, x, y, w, h, name, bg, 'sim #0001  ·  you & me' if i == 11 else f'sim #{3 + 41 * i:04d}', fog)
+    rgba(g, CYAN, 0.25 * fog); g.set_line_width(4); g.rectangle(x, y, w, h); g.stroke()
+    if t < tc: return
+    u = eo_expo(prog(t, tc, tc + 0.07))                                                   # the shutters: bang
+    rgba(c, INK, fog); c.rectangle(x, y, w / 2 * u, h); c.rectangle(x + w - w / 2 * u, y, w / 2 * u, h); c.fill()
+    line(c, cx, y, cx, y + h, BONE, 0.5 * u * fog, max(1, w * 0.004))
+    fl = 1 - prog(t, tc + 0.05, tc + 0.2)
+    if fl > 0:
+        rgba(g, BONE, 0.8 * fl); g.set_line_width(max(2, w * 0.01)); g.rectangle(x, y, w, h); g.stroke()
+    rgba(c, BONE, 0.7 * fog); c.set_line_width(max(1.2, w * 0.004)); c.rectangle(x, y, w, h); c.stroke()
+    ts = tc + (0.6 if i == 11 else 0.04)                                                 # the last: the word first, then the stamp
+    stamp(c, cx, cy, w, eo_expo(prog(t, ts, ts + 0.08)) * fog)
+
+def reticle(c, g, t, R, a=1.0, kick=0.0):
+    """her aperture (the iris rings of 10 s and the blades of 48 s), now the centre of our view"""
+    if a <= 0: return
+    x, y = VPX, VPY
+    R *= 1 + 0.12 * kick
+    for cc, aa, lw in ((c, 0.8 * a, 1.8), (g, 0.5 * a, 3)):
+        rgba(cc, CYAN, aa); cc.set_line_width(lw); cc.new_path(); cc.arc(x, y, R, 0, 6.283); cc.stroke()
+        for k in range(8):
+            an = k * math.pi / 4 + 0.15 * t
+            cc.move_to(x + math.cos(an) * R, y + math.sin(an) * R); cc.line_to(x + math.cos(an) * (R + 16), y + math.sin(an) * (R + 16))
+        cc.stroke()
+        rgba(cc, CYAN, 0.6 * aa); cc.set_line_width(lw * 0.8)
+        for k in range(8):                                                                # blades, open
+            a0 = 2 * math.pi * k / 8 - 0.1 * t
+            px, py = x + math.cos(a0) * R * 0.55, y + math.sin(a0) * R * 0.55
+            tx_, ty_ = -math.sin(a0), math.cos(a0)
+            cc.move_to(px, py); cc.line_to(px + tx_ * R * 0.42, py + ty_ * R * 0.42)
+        cc.stroke()
+    line(c, x - 6, y, x + 6, y, CYAN, 0.9 * a, 1.5); line(c, x, y - 6, x, y + 6, CYAN, 0.9 * a, 1.5)
+
+def corridor(c, g, t, D, gr):
+    off = D % 1.0
+    for n_ in range(1, 15):                                  # floor lines rushing at us, rails to the vanishing point
+        z = n_ - off
+        if z < 0.4: continue
+        y = VPY + 0.62 * KZ / z
+        line(c, 0, y, W, y, BONE, 0.16 * (1 - z / 15), 1 + 1.5 / z)
+    for sx in (-1, 1):
+        line(c, VPX, VPY, VPX + sx * 2200, VPY + 0.62 * KZ / 0.5, BONE, 0.18, 1.2)
+    rnd = np.random.default_rng(12); n_st = 40 + 30 * gr; ang = rnd.random(160) * 6.283; ph = rnd.random(160)
+    for a_, p_ in zip(ang[:n_st], ph[:n_st]):                # radial streaks, denser and longer with each gear
+        f = (D * 0.22 + p_) % 1.0
+        r0, r1 = 120 + 1500 * f ** 2, 120 + 1500 * min(1, f + 0.06 + 0.03 * gr) ** 2
+        rgba(c, BONE, 0.10 + 0.25 * f); c.set_line_width(1 + 2 * f)
+        c.move_to(VPX + math.cos(a_) * r0, VPY + math.sin(a_) * r0 * 0.7); c.line_to(VPX + math.cos(a_) * r1, VPY + math.sin(a_) * r1 * 0.7); c.stroke()
+
+def side_items(D, sparse=False):
+    items = []
+    j0 = max(0, int((D - 1) / SP) - 1)
+    for j in range(j0, min(N_SIDE, j0 + 40)):
+        if sparse and j * SP >= D_DEAD and j % 4 > 1: continue
+        z = 1 + j * SP - D
+        if 0.3 <= z <= 15:
+            side, Y, (name, bg) = SIDE[j]
+            items.append((z, ('s', side, Y, name, bg, j, j * SP >= D_DEAD)))
+    return items
+
+def draw_items(c, g, t, items, lab=True, flash=0.0):
+    items.sort(key=lambda it: -it[0])
+    for z, it in items:
+        if it[0] == 's':
+            _, side, Y, name, bg, j, dead = it
+            cwin(c, g, z, side, Y, name, bg, f'sim #{(2 + j * 37) % 9000:04d}' if lab else '', 1.0, dead, flash)
+        else:
+            gate(c, g, t, z, it[1])
 
 def s_executions(c, g, t):
+    """k288-320: the interlude, first person. nobody sings: only speed"""
     fill_bg(c, INK)
     fx = {}
-    kk = (t - T0) / P
-    if t < B(312):
-        # floor lines rushing at us, rails to the vanishing point, radial speed streaks
-        off = (t * VZ) % 1.0
-        for n_ in range(1, 15):
-            z = n_ - off
-            if z < 0.4: continue
-            y = VPY + 0.62 * KZ / z
-            line(c, 0, y, W, y, BONE, 0.16 * (1 - z / 15), 1 + 1.5 / z)
-        for sx in (-1, 1):
-            line(c, VPX, VPY, VPX + sx * 2200, VPY + 0.62 * KZ / 0.5, BONE, 0.18, 1.2)
-        rnd = np.random.default_rng(12); ang = rnd.random(110) * 6.283; ph = rnd.random(110)
-        for a_, p_ in zip(ang, ph):
-            f = (t * 0.9 + p_) % 1.0
-            r0, r1 = 120 + 1500 * f ** 2, 120 + 1500 * min(1, f + 0.12) ** 2
-            rgba(c, BONE, 0.10 + 0.25 * f); c.set_line_width(1 + 2 * f)
-            c.move_to(VPX + math.cos(a_) * r0, VPY + math.sin(a_) * r0 * 0.7); c.line_to(VPX + math.cos(a_) * r1, VPY + math.sin(a_) * r1 * 0.7); c.stroke()
-        for k in EXE[3::4]:                        # every 4th call: a huge backdrop word at the far end
-            if B(k) <= t < B(k + 2):
-                u = eo_expo(prog(t, B(k), B(k) + 0.2)); a_ = 1 - prog(t, B(k + 1), B(k + 2))
-                text(c, 'heavy', 'EXECUTION', VPX, VPY + 120, 360 * (1.1 - 0.1 * u), BONE, 0.14 * a_, align='center')
-                text(g, 'heavy', 'EXECUTION', VPX, VPY + 120, 360, CYAN, 0.3 * pulse(t, B(k), 0.5), align='center')
-        items = []
-        for (kb, side, Y, j) in DEAD:                       # worlds already dead, lining the avenue
-            tc = B(kb); z = zpos(tc, t)
-            name, bg = POOL[(j * 3 + 1) % len(POOL)]
-            items.append((z, ('d', tc, side, Y, name, bg, j)))
-        for i in range(13):                                  # the twelve, and then the first one: you & me
-            tc = B(EXE[i]) if i < 12 else B(312)
-            name, bg, lab = win_src(i)
-            side = 0 if i == 12 else (-1 if i % 2 == 0 else 1)
-            items.append((zpos(tc, t), ('m', tc, side, -0.12 if i < 12 else -0.2, name, bg, i, lab)))
-        items.sort(key=lambda it: -it[0])
-        def draw(it):
-            kind = it[1]
-            if kind[0] == 'd':
-                _, tc, side, Y, name, bg, j = kind
-                cwin(c, g, t, tc, side * (1.2 + 0.5 * random.Random(j).random()), Y, name, bg, 'EXECUTED', 0.75, 0.5, executed_at=-1, key=100 + j)
-            else:
-                _, tc, side, Y, name, bg, i, lab = kind
-                cwin(c, g, t, tc, side, Y, name, bg, lab, 1.15 if i == 12 else 1.0, 1.0, executed_at=tc, key=i)
-        for it in items:
-            if it[0] >= 1.0: draw(it)
-        her_run(c, g, t)
-        for it in items:
-            if it[0] < 1.0: draw(it)
-        n = sum(1 for k in EXE if kk >= k)
-        for k in EXE:
-            if kk >= k and kk < k + 2:
-                slam_word(c, g, 'EXECUTION', t, B(k), 1300, 190, 100, until=B(k + 2), glow=0.3)
-        text(c, 'monom', f'world.runExecution();   x {n:2d} / 12', W - 130, 1000, 24, CYAN, 0.9, align='right', track=0.05)
-        text(c, 'mono', f'MACH {1.2 + 0.15 * n:4.2f}', 130, 1000, 26, BONE, 0.7, track=0.15)
-        fx['ab'] = sum(5 * pulse(t, B(k), 0.25) for k in EXE) + 2 * pulse(t, B(math.floor(kk)), 0.15)
-        fx['flash'] = sum((0.3 if EXE.index(k) % 4 == 3 else 0.1) * pulse(t, B(k), 0.08) for k in EXE)
-        hud(c, t, True, a=0.6, log_a=0.85)
-        return fx
-    n = 12
-    if True:
-        # the last world -- the first one, the two of them -- goes under her, and she falls
-        dt = t - B(312)
-        # behind her: the twelve executed worlds, a wall of dead windows receding
-        uw = eo_cubic(prog(t, B(312.5), B(314)))
-        zs = lerp(1.25, 0.8, eio_cubic(prog(t, B(312.5), B(320))))
-        aw = uw * (1 - prog(t, B(319), B(320)))
-        if aw > 0:
-            ww, wh, gp = 380 * zs, 214 * zs, 22 * zs
-            for i in range(12):
-                r_, c_ = divmod(i, 4)
-                x = 960 + (c_ - 1.5) * (ww + gp) - ww / 2; y = 520 + (r_ - 1) * (wh + gp) - wh / 2
-                name, bg, lab = win_src(i)
-                win(c, x, y, ww, wh, name, bg, lab, 0.35 * aw)
-                rgba(c, INK, 0.55 * aw); c.rectangle(x, y, ww, wh); c.fill()
-                c.save(); c.translate(x + ww / 2, y + wh / 2); c.rotate(-0.12)
-                text(c, 'heavy', 'EXECUTED', 0, 18 * zs, 54 * zs, BONE, 0.55 * aw, align='center'); c.restore()
-            text(c, 'thin', '12 / 12', 960, 990, 90, BONE, 0.8 * aw, align='center', track=0.3)
-        if dt < 0.45:                                          # the last window, you & me, coming apart in front of her
-            name, bg, lab = win_src(12)
-            cwin(c, g, t, B(312), 0, -0.2, name, bg, lab, 1.15, 1.0, executed_at=B(312), key=12)
-        drop = eo_cubic(prog(t, B(312), B(313.5)))             # she stops dead, lifts off, and hangs there turning in front of the dead wall
-        y = lerp(860, 640, drop) + 40 * max(0, dt - 0.7)
-        x = 960
-        a_ = 1 - prog(t, B(318.5), B(320))
-        img(c, 'n_floating_hd', x, y, lerp(0.42, 0.55, prog(t, B(312), B(320))), a_, 961, 552, rot=0.9 * dt + 0.6)
-    # readouts
-    for k in EXE:
-        if kk >= k and kk < k + 2:
-            slam_word(c, g, 'EXECUTION', t, B(k), 1300, 190, 100, until=B(k + 2), glow=0.3)
-    text(c, 'monom', f'world.runExecution();   x {n:2d} / 12', W - 130, 1000, 24, CYAN, 0.9, align='right', track=0.05)
-    m = 1.2 + 0.15 * n
-    text(c, 'mono', f'MACH {m:4.2f}', 130, 1000, 26, BONE, 0.7, track=0.15)
-    fx['ab'] = sum(5 * pulse(t, B(k), 0.25) for k in EXE) + 6 * pulse(t, B(312), 0.3)
-    fx['flash'] = sum((0.35 if EXE.index(k) % 4 == 3 else 0.12) * pulse(t, B(k), 0.08) for k in EXE)
+    kk = (t - T0) / P; D = dist(kk); gr = gear(kk)
+    blk = int((kk - 288) // 8)
+    kick = pulse(t, B(288 + 8 * blk), 0.35) if blk > 0 else 0.0                        # gear change on the downbeat
+    sh = 6 * kick * math.sin(t * 90)
+    c.save(); c.translate(sh, 0); g.save(); g.translate(sh / 2, 0)
+    corridor(c, g, t, D, gr)
+    if kk >= 314:                                                                         # the vanishing point lights up: a door
+        u = eo_cubic(prog(t, B(314), B(320)))
+        dw, dh = 30 + 70 * u, (30 + 70 * u) * 9 / 16
+        rg = cairo.RadialGradient(VPX, VPY, 0, VPX, VPY, 40 + 120 * u)
+        rg.add_color_stop_rgba(0, *BONE, 0.35 * u); rg.add_color_stop_rgba(1, *BONE, 0)
+        g.set_source(rg); g.arc(VPX, VPY, 40 + 120 * u, 0, 6.283); g.fill()
+        rgba(c, BONE, 0.9 * u); c.rectangle(VPX - dw / 2, VPY - dh / 2, dw, dh); c.fill()
+        rgba(g, BONE, 0.5 * u); g.rectangle(VPX - dw / 2, VPY - dh / 2, dw, dh); g.fill()
+    fl = pulse(t, B(304), 0.45)                                                           # k304: every window flashes at once
+    items = side_items(D)
+    for i in range(12):
+        z = Z_SLAM + D_EXE[i] - D
+        if z <= 15: items.append((z, ('g', i)))
+    draw_items(c, g, t, items, True, fl)
+    c.restore(); g.restore()
+    RS = [170, 140, 112, 88]
+    R = RS[min(blk, 3)]
+    if blk > 0: R = lerp(RS[min(blk, 3) - 1], R, eo_back(prog(t, B(288 + 8 * blk), B(288 + 8 * blk) + 0.2), 2))
+    reticle(c, g, t, R, eo_cubic(prog(t, B(288), B(288) + 0.3)), pulse(t, B(math.floor(kk)), 0.18))
+    text(c, 'mono', f'MACH {1.2 + 0.035 * D:5.2f}', 130, 1000, 26, BONE, 0.75, track=0.15)
+    text(c, 'monom', f'me.velocity  x{gr}', W - 130, 1000, 24, CYAN, 0.85, align='right', track=0.05)
+    fx['ab'] = 5 * kick + 2 * pulse(t, B(math.floor(kk)), 0.12) + 3 * fl + 0.6 * gr
+    fx['flash'] = 0.12 * fl + 0.15 * pulse(t, B(288), 0.15)
+    fx['glow'] = 0.9
     hud(c, t, True, a=0.6, log_a=0.85)
     return fx
+
+EX_AT = [(0.27, 0.30, 150), (0.74, 0.78, 190), (0.30, 0.82, 130), (0.72, 0.24, 170), (0.50, 0.16, 120), (0.22, 0.58, 200),
+         (0.80, 0.52, 140), (0.50, 0.88, 160), (0.24, 0.20, 180), (0.76, 0.66, 210), (0.36, 0.48, 230), (0.50, 0.50, 300)]
+def s_doors(c, g, t):
+    """k320-342: twelve calls, twelve gates. slam on the call, through it on the next beat; the twelfth stops us dead"""
+    fill_bg(c, INK)
+    fx = {}
+    kk = (t - T0) / P; D = dist(min(kk, 342)); gr = gear(kk)
+    n = sum(1 for k in EXE if kk >= k)
+    kick = sum(pulse(t, B(k + 1), 0.3) for k in EXE[:11])                               # through the gate
+    crash = pulse(t, B(342), 0.5)
+    sh = 7 * kick * math.sin(t * 90) + 22 * crash * math.sin(t * 70)
+    c.save(); c.translate(sh, 0.4 * sh); g.save(); g.translate(sh / 2, 0.2 * sh)
+    corridor(c, g, t, D, gr)
+    items = side_items(D, sparse=True)
+    for i in range(12):
+        z = (Z_STOP if i == 11 else Z_SLAM) + D_EXE[i] - D
+        if 0.3 <= z <= 15: items.append((z, ('g', i)))
+    draw_items(c, g, t, items, False)
+    c.restore(); g.restore()
+    reticle(c, g, t, 76 * (1 - 0.6 * eo_cubic(prog(t, B(342), B(342) + 0.3))), 1 - prog(t, B(342.5), B(343.5)),
+            sum(pulse(t, B(k), 0.25) for k in EXE))
+    for i, k in enumerate(EXE):                              # EXECUTION strobes once per call, somewhere new each time
+        xr, yr, sz = EX_AT[i]
+        slam_word(c, g, 'EXECUTION', t, B(k), xr * W, yr * H + sz * 0.35, sz, until=B(k) + (0.6 if i == 11 else 0.32), glow=0.5)
+    text(c, 'monom', f'world.runExecution();   x {n:2d} / 12', W - 130, 1000, 24, CYAN, 0.9, align='right', track=0.05)
+    text(c, 'mono', f'MACH {1.2 + 0.035 * D:5.2f}' if kk < 342 else 'MACH  0.00', 130, 1000, 26, BONE, 0.75, track=0.15)
+    fx['ab'] = sum(5 * pulse(t, B(k), 0.25) for k in EXE) + 4 * kick + 10 * crash
+    fx['flash'] = sum(0.18 * pulse(t, B(k), 0.08) for k in EXE) + 0.12 * kick + 0.5 * pulse(t, B(342), 0.12)
+    fx['glow'] = 0.9
+    hud(c, t, True, a=0.6, log_a=0.85)
+    return fx
+
+def s_pending(c, g, t):
+    """k342-352: PLACEHOLDER until the count / 13th / launch are confirmed by ear -- holds the twelfth gate, shut in our face"""
+    return s_doors(c, g, t)
 
 # ================================================================ S27 THE COUNT + THE PULL + THE LAUNCH  [B320, B352)
 HEX_C = (960, 560); HEX_R = 360

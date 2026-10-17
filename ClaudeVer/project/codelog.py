@@ -79,10 +79,12 @@ CODE_LOG = [
     (B(276), 'me.setOpinion(me.getOpinionIndex("you are here"), false);'),
     (B(283), '} catch (IllegalArgumentException e) {'),
     (B(285), 'world.announce("God is always true.");'),
-] + [(B(288 + 2 * i), 'world.runExecution();') for i in range(12)] + [
-    (B(325.5 + 0.75 * i), f'world.announce("{i + 1}", "{l}");') for i, l in enumerate(('de', 'es', 'fr', 'kr', 'se', 'cn'))] + [
-    (B(330), 'world.runExecution();'),
-    (B(332), 'if (world.isExecutableBy(me)) {'),
-    (B(340), 'you.setExecution(me.toExecution());'),
+    # ---- interlude (no voice): first person, one gear up every 8 beats
+    (B(288), '// me.accelerate()'),
+    (B(296), '// v *= 2'),
+    (B(312), '// v *= 2'),
+] + [(B(320 + 2 * i), 'world.runExecution();') for i in range(12)] + [
+    # PENDING (HANDOFF 2.3): the count, the 13th EXECUTION and the pull must be re-timed into k342-352 by ear.
+    # was: announce("1".."6") on k325.5 + 0.75 i, runExecution k330, isExecutableBy k332, setExecution k340
     (B(348), 'if (world.getThingIndex(you) != -1) {'),
 ]
