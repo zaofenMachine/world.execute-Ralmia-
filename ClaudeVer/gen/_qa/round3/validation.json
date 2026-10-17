@@ -1,0 +1,86 @@
+{
+  "scope": "3 P0 images, request_round3; run_front_b withdrawn",
+  "assets": [
+    {
+      "file": "cat_ralmia.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 968463,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_gt_32_bbox": [
+        353,
+        162,
+        1346,
+        831
+      ],
+      "visible_width_fraction": 0.5939
+    },
+    {
+      "file": "role_s.png",
+      "size": [
+        1671,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 1106258,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_gt_32_bbox": [
+        284,
+        51,
+        1401,
+        941
+      ],
+      "visible_width_fraction": 0.6685
+    },
+    {
+      "file": "role_m.png",
+      "size": [
+        1671,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 1057502,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_gt_32_bbox": [
+        284,
+        51,
+        1401,
+        941
+      ],
+      "visible_width_fraction": 0.6685
+    }
+  ],
+  "pair": {
+    "base": "role_s.png",
+    "edit": "role_m.png",
+    "generation": "image_gen local edit with A and ref_sheet as inputs",
+    "postprocess": "authorized original-pixel restoration outside face/hand/arm masks",
+    "canvas": [
+      1671,
+      941
+    ],
+    "outside_edit_pixels": 1234365,
+    "outside_edit_changed_pixels": 0,
+    "outside_edit_exact_match_percent": 100.0,
+    "fixed_gem_forehead_ahoge_and_waist_verified": true,
+    "allowed_changes": [
+      "facial expression, blush, eye-corner gleam",
+      "hands and arms, including inward shoulder gesture",
+      "areas revealed/occluded by changed limbs"
+    ]
+  },
+  "other_final_pngs_verified_unchanged": 37,
+  "native_resolution_note": "Native files approximately 1672x941; no upscaling to claim 2560x1440."
+}
