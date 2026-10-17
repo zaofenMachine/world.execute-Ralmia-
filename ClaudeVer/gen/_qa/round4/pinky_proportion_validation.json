@@ -1,0 +1,25 @@
+{
+  "status": "complete",
+  "asset": "pinky_promise_v2.png",
+  "outside_changed_pixels": 0,
+  "fingers_palm_core_and_thread_exact": true,
+  "fixed_central_columns": [
+    435,
+    1141
+  ],
+  "palm_core_roi": {
+    "center": [
+      486,
+      514
+    ],
+    "radius": 92
+  },
+  "alone_pair": {
+    "asset": "pinky_alone_v2.png",
+    "outside_changed_pixels": 0,
+    "mechanical_forearm_exact": true
+  },
+  "existing_files_changed": [
+    "pinky_promise_v2.png"
+  ]
+}

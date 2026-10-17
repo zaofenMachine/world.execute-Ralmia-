@@ -1,0 +1,29 @@
+{
+  "asset": "lishenna_ref_sheet_v3.png",
+  "size": [
+    1672,
+    941
+  ],
+  "edit_regions": [
+    [
+      118,
+      337,
+      293,
+      482
+    ],
+    [
+      441,
+      338,
+      519,
+      477
+    ],
+    [
+      1227,
+      816,
+      1324,
+      918
+    ]
+  ],
+  "outside_changed_pixels": 0,
+  "status": "approved"
+}

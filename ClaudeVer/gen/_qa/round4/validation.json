@@ -1,0 +1,206 @@
+{
+  "pinky_promise_v2.png": {
+    "status": "complete",
+    "asset": "pinky_promise_v2.png",
+    "outside_changed_pixels": 0,
+    "fingers_palm_core_and_thread_exact": true,
+    "fixed_central_columns": [
+      435,
+      1141
+    ],
+    "palm_core_roi": {
+      "center": [
+        486,
+        514
+      ],
+      "radius": 92
+    },
+    "alone_pair": {
+      "asset": "pinky_alone_v2.png",
+      "outside_changed_pixels": 0,
+      "mechanical_forearm_exact": true
+    },
+    "existing_files_changed": [
+      "pinky_promise_v2.png"
+    ]
+  },
+  "creation_inverse_v2.png": {
+    "outside_edit_pixels": 1112785,
+    "outside_changed_pixels": 0,
+    "fingertip_anchor_roi": [
+      795,
+      378,
+      838,
+      420
+    ],
+    "fingertip_anchor_exact": true
+  },
+  "stage_empty.png": {
+    "outside_edit_pixels": 130450,
+    "outside_changed_pixels": 0,
+    "screen_frames_and_structure_linework_exact": true,
+    "note": "Stage shading changes in lighting edit areas; fixed screen frames and protected structural linework retain A pixels."
+  },
+  "screens": {
+    "items": [
+      {
+        "index": 1,
+        "bbox": [
+          55,
+          130,
+          444,
+          378
+        ],
+        "pixels": 96472
+      },
+      {
+        "index": 2,
+        "bbox": [
+          523,
+          90,
+          1148,
+          382
+        ],
+        "pixels": 182500
+      },
+      {
+        "index": 3,
+        "bbox": [
+          1227,
+          130,
+          1616,
+          378
+        ],
+        "pixels": 96472
+      }
+    ],
+    "A_RGB": [
+      255,
+      255,
+      255
+    ],
+    "B_RGB": [
+      0,
+      0,
+      0
+    ],
+    "pure_fill_exact": true
+  },
+  "files": [
+    {
+      "name": "creation_inverse_v2.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 1921938,
+      "sha256": "6eca18f259652312e9cc53751d2338efaf8f324f112388db52a54a6275c5225e"
+    },
+    {
+      "name": "stage.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 1514724,
+      "sha256": "415d1b267dda5690043ff631f1c00e2dfb8c7e583ea64d487828bdb004be39c1"
+    },
+    {
+      "name": "stage_empty.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 1390017,
+      "sha256": "e27e897c0056f7e1fcfec0024306ed389debf98f40d349357b10dd5328e0a8b6"
+    },
+    {
+      "name": "lishenna_walk.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 608874,
+      "sha256": "61ac82d5cdf6df5249ad82b389b4a867d7e28e2136f43e8a27b38f1f1add98f7",
+      "visible_bbox": [
+        594,
+        9,
+        1137,
+        923
+      ],
+      "height_fraction": 0.9713,
+      "transparent_pixel_fraction": 0.8492
+    },
+    {
+      "name": "lishenna_stand.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 544067,
+      "sha256": "b2a2e748379c3f9da983dcdf916a6c8a7b2a9dfd2d30268fcf6cd3a58818c2a9",
+      "visible_bbox": [
+        603,
+        18,
+        1076,
+        911
+      ],
+      "height_fraction": 0.949,
+      "transparent_pixel_fraction": 0.8627
+    },
+    {
+      "name": "lishenna_float.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 579884,
+      "sha256": "2184d2713f80c6a924c291f63a5b90f5fdb7d89fc09e3c672250eafd98b8463c",
+      "visible_bbox": [
+        546,
+        100,
+        1137,
+        860
+      ],
+      "height_fraction": 0.8077,
+      "transparent_pixel_fraction": 0.8592
+    },
+    {
+      "name": "pinky_promise_v2.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 1401677,
+      "sha256": "289c050281b07f0382e3b0b54530cf9d91c08d338a8273375c3109e537b8eb86"
+    },
+    {
+      "name": "pinky_alone_v2.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 1317752,
+      "sha256": "f1ce4a4d8b7097ebfad3b7cb232ce9faf381f43d175d4c952a81f7cf15db08fe"
+    }
+  ],
+  "baseline_changes": [
+    "lishenna_ref_sheet.png"
+  ],
+  "canonical_ref_equals_approved_v3": true,
+  "status": "complete",
+  "pinky_alone_v2.png": {
+    "asset": "pinky_alone_v2.png",
+    "outside_changed_pixels": 0,
+    "mechanical_forearm_exact": true
+  },
+  "proportion_feedback": "Left-arm invariance versus old v1 no longer applies: user requested a slimmer forearm. Use the new matching pinky_alone_v2."
+}
