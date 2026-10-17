@@ -1,16 +1,17 @@
 """world.execute(me); x Ralmia — the count (k342-352), Act V "taking back" (k352-416), Act VI "escape" (k416-end).
-User-confirmed by ear: the count EINS..LIU on k344-349 (one per beat), the 13th EXECUTION on k350.
+User-confirmed by ear: the count EINS..LIU on k344-349 (one per beat), the 13th EXECUTION on k350, "back" on k371.5.
 From Whisper (words_160.json) + vocal energy, not yet confirmed by ear: chorus-3 EXECUTION on beat 6 of every 8
-(k358 / 366 / 374), "back" k371, the two "trapped" k378 / 380, LOVE k390 / 397.5 / 406 / 414.5, the last EXECUTION
+(k358 / 366 / 374), the two "trapped" k378 / 380, LOVE k390 / 397.5 / 406 / 414.5, the last EXECUTION
 k446.5 (the voice stops at k448 = 207.1 s; silence to the end).
 Brightness: the count and Act V are ink (the blackboard is a dark board, chalk in bone); Act VI peels the system
 away layer by layer until the paper underneath shows; the end goes back to black."""
+import re
 from scenes6 import *
 
 COUNT2 = [344.0 + i for i in range(6)]
 K_EX13B, K_SNAP = 350.0, 351.0
 EX3 = [358.0, 366.0, 374.0]
-K_BACK = 371.0
+K_BACK = 371.5                   # user: half a beat later than Whisper
 TRAPPED = [378.0, 380.0]
 LOVE = [390.0, 397.5, 406.0, 414.5]
 K_ESC, FINAL_EX, K_SILENCE = 416.0, 446.5, 448.0
@@ -269,15 +270,15 @@ def s_ch3b(c, g, t):
 
 # ================================================================ S31 CHORUS 3c: HAVE YOU BACK  [B368, B376)
 def s_ch3c(c, g, t):
-    """the twelfth gate -- you & me -- un-executes: the shutters run backwards to 59 s; on "back" (k371) the pinky
-    frame fills the screen and holds. k372 she reaches straight at us. EXECUTION k374: her palm core flares."""
+    """the twelfth gate -- you & me -- un-executes: the shutters run backwards to 59 s; on "back" (k371.5) the pinky
+    frame fills the screen and holds for a beat; then she reaches straight at us. EXECUTION k374: her palm core flares."""
     fx = {}
     kk = (t - T0) / P
-    if t < B(372):
+    if t < B(K_BACK + 1):
         fill_bg(c, INK); dotgrid(c, BONE, 0.04)
-        rw = clamp((kk - 368) / 2.6)                              # rewind progress, stepping back on 16ths
+        rw = clamp((kk - 368) / (K_BACK - 368 - 0.4))             # rewind progress, stepping back on 16ths
         rws = math.floor(rw * 10.4) / 10.4
-        z = eio_cubic(prog(t, B(369.5), B(K_BACK)))
+        z = eio_cubic(prog(t, B(K_BACK - 1.5), B(K_BACK)))
         w = lerp(860, W + 4, z); h = w * 9 / 16
         x, y = (W - w) / 2, (H - h) / 2
         win(c, x, y, w, h, 'n_pinky_hd', None, 'sim #0001  ·  you & me', 1.0)
@@ -309,7 +310,7 @@ def s_ch3c(c, g, t):
         r0, r1 = 80 + 1400 * f ** 2, 80 + 1400 * min(1, f + 0.1) ** 2
         rgba(c, BONE, 0.06 + 0.18 * f); c.set_line_width(1 + 2 * f)
         c.move_to(cx_ + math.cos(a_) * r0, cy_ + math.sin(a_) * r0); c.line_to(cx_ + math.cos(a_) * r1, cy_ + math.sin(a_) * r1); c.stroke()
-    push = lerp(1.0, 1.07, eio_cubic(prog(t, B(372), B(375.5)))) * (1 + 0.04 * pulse(t, B(374), 0.3))
+    push = lerp(1.0, 1.07, eio_cubic(prog(t, B(K_BACK + 1), B(375.5)))) * (1 + 0.04 * pulse(t, B(374), 0.3))
     zin = ei_cubic(prog(t, B(375.4), B(376)))                     # into the palm core
     sc = push * (1 + 5 * zin)
     img(c, 'n_reach_hd', REACH_CORE[0], REACH_CORE[1], sc, 1, *REACH_CORE)
@@ -318,76 +319,66 @@ def s_ch3c(c, g, t):
     rg.add_color_stop_rgba(0, *CYAN, min(1, 0.8 * core)); rg.add_color_stop_rgba(1, *CYAN, 0)
     g.set_source(rg); g.arc(*REACH_CORE, 260 * sc, 0, 6.283); g.fill()
     slam_word(c, g, 'EXECUTION', t, B(EX3[2]), 960, 1000, 210, until=B(375.4), glow=0.6)
-    fx['ab'] = 4 * pulse(t, B(372), 0.2) + 9 * pulse(t, B(374), 0.3) + 8 * zin
-    fx['flash'] = 0.4 * pulse(t, B(372), 0.1) + 0.5 * pulse(t, B(374), 0.14) + 0.9 * zin
+    fx['ab'] = 4 * pulse(t, B(K_BACK + 1), 0.2) + 9 * pulse(t, B(374), 0.3) + 8 * zin
+    fx['flash'] = 0.4 * pulse(t, B(K_BACK + 1), 0.1) + 0.5 * pulse(t, B(374), 0.14) + 0.9 * zin
     fx['glow'] = 1.0
     hud(c, t, True, a=0.5, log_a=0.85)
     return fx
 
 # ================================================================ S32 CHORUS 3d: TRAPPED  [B376, B384)
-def s_ch3d(c, g, t):
-    """d comes back: the 24 s Zeno halving, but the red thread is two loose ends now -- hers and his.
-    the gap halves on every beat and the camera doubles in to keep it in frame; it never closes."""
+CR_TP, CR_AX = (948, 463), (0.82, 0.57)          # creation_inverse: where the fingertips nearly meet, and the hands' axis
+DR_R, DR_D = 0.2, 230                             # each window is 1/5 of the one around it; the hands held 2 x 230 px apart
+def creation_split(c, d):
+    """creation_inverse cut along the gap and pulled apart by d each side (the god card of 85 s -- but it never closes)"""
+    nx, ny = CR_AX; px_, py_ = -ny, nx; L = 3000
     fill_bg(c, INK)
+    for side in (-1, 1):
+        c.save()
+        c.move_to(CR_TP[0] + px_ * L, CR_TP[1] + py_ * L); c.line_to(CR_TP[0] - px_ * L, CR_TP[1] - py_ * L)
+        c.line_to(CR_TP[0] - px_ * L + side * nx * L, CR_TP[1] - py_ * L + side * ny * L)
+        c.line_to(CR_TP[0] + px_ * L + side * nx * L, CR_TP[1] + py_ * L + side * ny * L); c.close_path(); c.clip()
+        c.translate(side * nx * d, side * ny * d)
+        c.set_source_surface(surf('n_creation_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint()
+        c.restore()
+    rgba(c, (0.08, 0.06, 0.05), 1); c.set_line_width(2 * d)
+    c.move_to(CR_TP[0] + px_ * L, CR_TP[1] + py_ * L); c.line_to(CR_TP[0] - px_ * L, CR_TP[1] - py_ * L); c.stroke()
+
+def s_ch3d(c, g, t):
+    """d comes back, and this time it is a trap. her hand and his reach for a window between them; in the window the
+    same two hands reach for a smaller window, and so on. on every beat we fall one window deeper (x5): the gap is
+    always there. (Zeno's halving of 24 s, as a picture in a picture)"""
     fx = {}
     kr = (t - B(376)) / P
     n = math.floor(kr); ph = kr - n
-    approach = eo_cubic(clamp(ph / 0.45)); zoom = eo_expo(clamp((ph - 0.5) / 0.4))
-    gap_world = 0.5 ** n * (1 - 0.5 * approach)
-    Z = 2 ** n * (2 ** zoom)
-    gap_px = 420 * gap_world * Z
-    cx, cy = 960, 540
-    lv = math.log2(Z)
-    for j in range(2):                                           # the fractal grid of 24 s
-        s_ = 2 ** (lv % 1 + j) * 30
-        rgba(c, BONE, 0.08 if j == 0 else 0.04); c.set_line_width(1)
-        x = cx % s_
-        while x < W: c.move_to(x, 0); c.line_to(x, H); x += s_
-        y = cy % s_
-        while y < H: c.move_to(0, y); c.line_to(W, y); y += s_
-        c.stroke()
-    rj = random.Random(int(t * 60))
-    amp = 1.0 + 1.0 * n
-    def end_pts(sgn):
-        ex = cx + sgn * gap_px / 2
-        jx, jy = (rj.random() - 0.5) * amp, (rj.random() - 0.5) * amp
-        k_ = 1 / Z ** 0.3
-        pts = []
-        for s in np.linspace(0, 1, 30):                          # from the end back out to the edge, sagging
-            x = lerp(ex + jx, cx + sgn * (W * 0.62), s)
-            y = cy + jy * (1 - s) + (60 * math.sin(math.pi * s) + 220 * s * s) * k_ * (1 if sgn < 0 else -0.6)
-            pts.append((x, y))
-        return pts
-    # her hand (the pinky with the knot, 59 s) holds the left end; it flies out of frame as we zoom into the gap
-    ex = cx - gap_px / 2; hsc = 0.55 * Z
-    kx = ex - 330 * Z
-    if kx + 900 * hsc > -200:
-        img(c, 'n_pinky_hand_cut', kx, cy, hsc, 1, *PINKY_KNOT)
-        red_line(c, g, [(kx, cy)] + [(lerp(kx, ex, s), cy + 18 * Z ** 0.3 * math.sin(math.pi * s)) for s in np.linspace(0.05, 1, 20)], 6.0, 0.7)
-    else:
-        red_line(c, g, end_pts(-1), 6.0, 0.7)
-    red_line(c, g, end_pts(1), 6.0, 0.7)
-    for sgn in (-1, 1):                                          # the frayed tips
-        ex = cx + sgn * gap_px / 2
-        for k in range(3):
-            line(c, ex, cy, ex + sgn * (8 + 5 * k), cy + (k - 1) * 7, RED, 0.8, 1.5)
-    xa, xb = cx - gap_px / 2, cx + gap_px / 2
-    line(c, xa, cy - 160, xa, cy - 70, BONE, 0.6, 1.2); line(c, xb, cy - 160, xb, cy - 70, BONE, 0.6, 1.2)
-    line(c, xa, cy - 115, xb, cy - 115, CYAN, 0.9, 1.6)
-    dval = 0.5 ** n * (1 - 0.5 * approach)
-    text(c, 'monom', f'd = {dval:.6f}', cx, cy - 145, 30, CYAN, 1, align='center')
+    zoom = eo_expo(clamp((ph - 0.45) / 0.45))                  # hold on the beat, fall through in the second half
+    Zc = (1 / DR_R) ** zoom
+    ox, oy = CR_TP
+    frames = []
+    for k in range(4):
+        s_ = Zc * DR_R ** k
+        x0, y0, fw, fh = ox - ox * s_, oy - oy * s_, W * s_, H * s_
+        if fw < 4: break
+        c.save()
+        if k > 0: c.rectangle(x0, y0, fw, fh); c.clip()
+        c.translate(ox, oy); c.scale(s_, s_); c.translate(-ox, -oy)
+        creation_split(c, DR_D)
+        c.restore()
+        if k > 0: frames.append((k, x0, y0, fw, fh))
+    for k, x0, y0, fw, fh in frames:                           # the window frames, with their title bars
+        q = fw / W
+        bar = clamp(30 * q * 5, 3, 30)
+        rgba(c, INK, 0.9); c.rectangle(x0, y0 - bar, fw, bar); c.fill()
+        if bar > 9: text(c, 'mono', f'sim #0001  ·  you & me  ·  depth {n + k}', x0 + bar * 0.3, y0 - bar * 0.28, bar * 0.6, BONE, 0.85)
+        for cc, aa, lw in ((c, 0.85, max(1.0, 3 * q * 5)), (g, 0.45, max(2.0, 5 * q * 5))):
+            rgba(cc, CYAN if cc is g else BONE, aa); cc.set_line_width(lw); cc.rectangle(x0, y0 - bar, fw, fh + bar); cc.stroke()
+    dval = 0.5 ** (n + zoom)
+    text(c, 'monom', f'd = {dval:.6f}', 130, 1000, 30, CYAN, 1)
+    text(c, 'mono', f'depth  {n + zoom:4.2f}', W - 130, 1000, 26, BONE, 0.7, align='right', track=0.1)
     for kb in TRAPPED:
-        if B(kb) <= t < B(kb + 1.5):
-            u = eo_expo(prog(t, B(kb), B(kb) + 0.14)); a_ = 1 - prog(t, B(kb + 1), B(kb + 1.5))
-            c.save(); c.translate(cx, cy + 300); s_ = 1.2 - 0.2 * u; c.scale(s_, s_)
-            text(c, 'math', 'd ≠ 0', 0, 0, 150, BONE, a_ * u, align='center'); c.restore()
-            p_ = pulse(t, B(kb), 0.5)
-            if p_ > 0.02: text(g, 'math', 'd ≠ 0', cx, cy + 300, 150, CYAN, 0.5 * p_, align='center')
-    text(c, 'mono', f'zoom  x{Z:,.0f}'.replace(',', ' '), W - 120, 1000, 28, BONE, 0.7, align='right', track=0.1)
-    text(c, 'math', 'lim d → 0     d ≠ 0', 120, 1000, 30, BONE, 0.7)
-    fx['ab'] = 3 * pulse(t, B(376 + n + 0.5), 0.15) + 6 * sum(pulse(t, B(k), 0.25) for k in TRAPPED)
+        slam_word(c, g, 'd ≠ 0', t, B(kb), 960, 930, 150, key='math', until=B(kb + 1.5), glow=0.6)
+    fx['ab'] = 3 * pulse(t, B(376 + n + 0.5), 0.15) + 6 * sum(pulse(t, B(k), 0.25) for k in TRAPPED) + 4 * zoom * (1 - zoom)
     fx['flash'] = 0.3 * pulse(t, B(376), 0.15) + sum(0.2 * pulse(t, B(k), 0.1) for k in TRAPPED)
-    hud(c, t, True, a=0.7)
+    hud(c, t, True, a=0.6, log_a=0.85)
     return fx
 
 # ================================================================ S33 LOVE  [B384, B416)
@@ -395,6 +386,63 @@ BOARD = (0.105, 0.135, 0.125)
 FORMULAE = ['C = 2πr', 'y = sin x', 'lim d → 0', 'M = v / c', 'v → 340.29 m/s', 'γ = 1 / √(1 − v²/c²)',
             'd /= 2', 'Σ ½ⁿ = 1', 'x² + y² = r²', 'dt < 0', '617 A.D.  →  3691 B.C.', 'C40H56', 'f / 1.4', '25 Hz',
             'v / c = ∞', 'd ≠ 0']
+EXAM = [('e^{iπ} + 1', '='), ('∫_{−∞}^{∞} e^{−x²} dx', '='), ('lim_{d→0} d', '='), ('Δx · Δp', '≥'), ('iħ ∂ψ/∂t', '='),
+        ('∇ · E', '='), ('R_{μν} − ½R g_{μν}', '='), ('S = k_{B} ln', ''), ('Σ_{n=1}^{∞} ½^{n}', '='), ('E', '=')]
+EXAM_K = [392, 393, 394, 395, 395.5, 396, 396.5, 396.75, 397, 397.25]     # one a beat, then 8ths, then 16ths
+
+def mparse(s):
+    """'a^{b}c_{d}' -> [(text, scale, dy, stack)]; a _{lo}^{hi} pair (integral limits) is stacked: stack = True on the 2nd"""
+    out, i, buf = [], 0, ''
+    while i < len(s):
+        if s[i] in '^_' and i + 1 < len(s) and s[i + 1] == '{':
+            if buf: out.append((buf, 1.0, 0.0, False)); buf = ''
+            j = s.index('}', i)
+            stack = s[i] == '^' and bool(out) and out[-1][2] > 0 and out[-1][1] < 1
+            out.append((s[i + 2:j], 0.6, -0.42 if s[i] == '^' else 0.22, stack)); i = j + 1
+        else: buf += s[i]; i += 1
+    if buf: out.append((buf, 1.0, 0.0, False))
+    return out
+
+SPECIAL = re.compile('([ħĤ·])')
+def mrun_w(tx, size):
+    return sum(size * 0.38 if r == '·' else text_w('math', {'ħ': 'h', 'Ĥ': 'H'}.get(r, r), size) for r in SPECIAL.split(tx) if r)
+
+def mtext_w(s, size):
+    w, last = 0.0, 0.0
+    for tx, sc, dy, stack in mparse(s):
+        rw = mrun_w(tx, size * sc)
+        if stack: w += max(0.0, rw - last)
+        else: w += rw
+        last = rw
+    return w
+
+def mtext(c, s, x, y, size, col, a=1.0, align='left'):
+    """a formula with ^{} / _{} in the maths font. ħ and Ĥ (not in the font) are drawn as h + bar and H + hat;
+    the font's · is full-width, so it is drawn as a dot"""
+    w = mtext_w(s, size)
+    x -= w if align == 'right' else w / 2 if align == 'center' else 0
+    last_x, last_w = x, 0.0
+    for tx, sc, dy, stack in mparse(s):
+        sz = size * sc; yy = y + dy * size
+        x0 = last_x if stack else x
+        xx = x0
+        for run in SPECIAL.split(tx):
+            if not run: continue
+            if run == '·':
+                rgba(c, col, a); c.arc(xx + sz * 0.19, yy - sz * 0.32, max(1.5, sz * 0.045), 0, 6.283); c.fill(); xx += sz * 0.38
+            elif run in ('ħ', 'Ĥ'):
+                base = 'h' if run == 'ħ' else 'H'; bw = text_w('math', base, sz)
+                text(c, 'math', base, xx, yy, sz, col, a)
+                if run == 'ħ': line(c, xx + bw * 0.02, yy - sz * 0.55, xx + bw * 0.62, yy - sz * 0.66, col, a, max(1.0, sz * 0.05))
+                else: text(c, 'math', '^', xx + bw * 0.5 - text_w('math', '^', sz * 0.7) / 2, yy - sz * 0.6, sz * 0.7, col, a)
+                xx += bw
+            else:
+                text(c, 'math', run, xx, yy, sz, col, a); xx += text_w('math', run, sz)
+        rw = xx - x0
+        x = max(x, x0 + rw) if stack else xx
+        last_x, last_w = x0, rw
+    return w
+
 def board_bg(c, t):
     fill_bg(c, BOARD)
     rnd = np.random.default_rng(5)                                # old chalk, wiped
@@ -448,27 +496,49 @@ def s_love(c, g, t):
         hud(c, t, True, a=0.45, log_a=0.8)
         return fx
     if t < B(400):
-        # "question me ... LOVE": the exam. questions come faster and faster; every answer is LOVE
+        # "question me ... I can answer all LOVE": the exam. the great equations of maths and physics, slammed in one
+        # after another, faster and faster -- and every right-hand side is LOVE
         fill_bg(c, INK); dotgrid(c, BONE, 0.04)
-        QS = ['what is d ?', 'what is v ?', 'what is c ?', 'how far is 617 A.D. ?', 'what is a tabby cat ?', 'what is a tomato for ?',
-              'who wrote you ?', 'why can you not touch ?', 'what is left ?', 'what is true ?', 'what is the thread ?', 'what is me ?',
-              'what is you ?', 'what is world ?', 'what is EXECUTION ?', 'what is ?']
-        times = [392, 393, 394, 394.5, 395, 395.5, 396, 396.25, 396.5, 396.75, 397, 397.125, 397.25, 397.3125, 397.375, 397.4375]
-        text(c, 'monom', '> me.takeExamTopic("love");', 160, 170, 30, CYAN, eo_cubic(prog(t, B(392), B(392) + 0.2)))
-        shown = [(i, q, k) for i, (q, k) in enumerate(zip(QS, times)) if kk >= k]
-        last = shown[-9:]
-        for j, (i, q, k) in enumerate(last):
-            y = 260 + j * 76
-            age = len(last) - 1 - j
-            a_ = 1.0 if age == 0 else 0.55
-            text(c, 'mono', f'Q{i + 1:02d}  {q}', 160, y, 30, BONE, a_)
-            ua = prog(t, B(k) + 0.05, B(k) + 0.12)
-            if ua > 0: text(c, 'monom', 'A:  LOVE', 1200, y, 30, CYAN if age == 0 else BONE, a_ * ua)
-        text(c, 'mono', f'score  {len(shown):02d} / {len(shown):02d}', W - 130, 1000, 24, BONE, 0.7, align='right', track=0.1)
-        if kk >= LOVE[1]:
-            slam_word(c, g, 'LOVE', t, B(LOVE[1]), 960, 700, 420, glow=0.8)
-        fx['ab'] = sum(2 * pulse(t, B(k), 0.1) for k in times) + 8 * pulse(t, B(LOVE[1]), 0.3)
-        fx['flash'] = 0.35 * pulse(t, B(LOVE[1]), 0.12)
+        text(c, 'monom', '> me.takeExamTopic("love");', 160, 240, 28, CYAN, eo_cubic(prog(t, B(392) - 0.25, B(392))))
+        qi = max((i for i, k in enumerate(EXAM_K) if kk >= k), default=-1)
+        final = kk >= LOVE[1]
+        ans = [k + 0.5 * min(1.0, (EXAM_K + [LOVE[1]])[i + 1] - k) for i, k in enumerate(EXAM_K)]
+        upto = qi + 1 if final else qi
+        h0 = max(0, upto - 7)
+        for j in range(h0, upto):                                  # the answered ones, down the left
+            lhs, rel = EXAM[j]
+            y = 330 + (j - h0) * 66
+            a_ = 0.25 if final else 0.6
+            w_ = mtext(c, lhs + (' ' + rel + ' ' if rel else '  '), 160, y, 34, BONE, a_)
+            text(c, 'monom', 'LOVE', 160 + w_, y, 30, CYAN if final else BONE, min(1, a_ + 0.6 * pulse(t, B(LOVE[1]), 0.6)))
+        if qi >= 0 and not final:                                  # the one on the board now
+            lhs, rel = EXAM[qi]; k = EXAM_K[qi]
+            u = eo_expo(prog(t, B(k), B(k) + 0.12))
+            size = 118
+            left = lhs + (' ' + rel + ' ' if rel else '  ')
+            answered = kk >= ans[qi]
+            wl = mtext_w(left, size)
+            wa = text_w('heavy', 'LOVE', size * 1.05) if answered else text_w('math', '?', size)
+            x0 = 960 - (wl + wa) / 2
+            sh = 10 * pulse(t, B(k), 0.15) * math.sin(t * 90)
+            c.save(); c.translate(960 + sh, 600); s_ = 1.3 - 0.3 * u; c.scale(s_, s_); c.translate(-960, -600)
+            text(c, 'mono', f'Q{qi + 1:02d}', 960, 440, 26, CYAN, 0.9 * u, align='center', track=0.3)
+            mtext(c, left, x0, 640, size, BONE, u)
+            if not answered:
+                text(c, 'math', '?', x0 + wl, 640, size, BONE, u * (0.55 + 0.45 * (int(t * 12) % 2)))
+            else:
+                ua = eo_expo(prog(t, B(ans[qi]), B(ans[qi]) + 0.1))
+                c.save(); c.translate(x0 + wl + wa / 2, 600); s2 = 1.4 - 0.4 * ua; c.scale(s2, s2)
+                text(c, 'heavy', 'LOVE', -wa / 2, 40, size * 1.05, CYAN, ua)
+                c.restore()
+                p_ = pulse(t, B(ans[qi]), 0.5)
+                if p_ > 0.02: text(g, 'heavy', 'LOVE', x0 + wl, 640, size * 1.05, CYAN, 0.7 * p_)
+            c.restore()
+        text(c, 'mono', f'score  {max(0, upto):02d} / {len(EXAM):02d}', W - 130, 1000, 24, BONE, 0.7, align='right', track=0.1)
+        if final:
+            slam_word(c, g, 'LOVE', t, B(LOVE[1]), 1240, 760, 420, glow=0.8)
+        fx['ab'] = sum(5 * pulse(t, B(k), 0.15) for k in EXAM_K) + sum(3 * pulse(t, B(k), 0.1) for k in ans) + 8 * pulse(t, B(LOVE[1]), 0.3)
+        fx['flash'] = sum(0.14 * pulse(t, B(k), 0.08) for k in EXAM_K) + 0.35 * pulse(t, B(LOVE[1]), 0.12)
         hud(c, t, True, a=0.55, log_a=0.8)
         return fx
     if t < B(408):
@@ -549,7 +619,7 @@ def s_love(c, g, t):
 
 # ================================================================ S34 me.escape(world)  [B416, END)
 PEEL = [420, 424, 428, 432, 436]          # cube, windows, fragments, HUD marks, the frame -- one per bar
-K_LEAP, K_GONE = 440.0, 444.0           # she leaps out across the right edge; the frame is empty paper for the last EXECUTION
+K_LEAP, K_GONE = 443.0, 444.0           # one beat: she leaps at us and is gone; the frame is empty paper for the last EXECUTION
 def s_escape(c, g, t):
     """inside out, one layer per bar: the cube scatters, the window wall flies past, the fragments fall away,
     the HUD's corner marks are torn off, the frame cracks -- and behind the ink there is paper. she leaps out at us.
@@ -654,15 +724,23 @@ def s_escape(c, g, t):
         cond = eo_cubic(prog(t, B(PEEL[0]) - 0.3, B(PEEL[0])))
         px = cx + (X - 1000) * hs + nn[:, 0] * 18 * (1 - cond); py = cy + (Y - 540) * hs + nn[:, 1] * 18 * (1 - cond)
         draw_points(c, px, py, CYAN, 0.8 * pts_a, 2.2)
-    if kk >= PEEL[0]:
+    if PEEL[0] <= kk < K_GONE:
         la = eo_cubic(prog(t, B(PEEL[0]), B(PEEL[0]) + 0.3))
         colour = clamp((kk - PEEL[0]) / (PEEL[4] - PEEL[0]))      # the colour comes in as the layers go
-        s_ = hs * (1 + 2.6 * leap)                                # out at us and across the right edge, never a close-up
-        xx, yy = cx + 2200 * leap, cy - 260 * math.sin(math.pi * min(1, leap * 1.2))
-        if leap > 0:                                              # after-images along the leap
-            for k in range(1, 4):
-                lk = max(0.0, leap - 0.06 * k)
-                img(c, 'n_escape_hd', cx + 2200 * lk, cy - 260 * math.sin(math.pi * min(1, lk * 1.2)), hs * (1 + 2.6 * lk), 0.18, 1000, 540)
+        s_ = hs * (1 + 13 * leap)                                 # straight at the lens, dropping as she comes
+        gather = prog(t, B(440), B(K_LEAP))                       # three beats of gathering: she trembles
+        xx = cx + 5 * gather * math.sin(t * 70) * (leap == 0)
+        yy = cy + 1700 * leap
+        if leap > 0:
+            rnd = np.random.default_rng(23); ang = rnd.random(120) * 6.283; ph = rnd.random(120)
+            for a_, p_ in zip(ang, ph):                           # the rush
+                f = (p_ + leap * 2) % 1.0
+                r0, r1 = 200 + 1500 * f, 200 + 1500 * min(1.2, f + 0.25 * leap)
+                rgba(c, SEPIA, 0.35 * leap); c.set_line_width(1.5 + 3 * f)
+                c.move_to(cx + math.cos(a_) * r0, cy + math.sin(a_) * r0); c.line_to(cx + math.cos(a_) * r1, cy + math.sin(a_) * r1); c.stroke()
+            for k in range(1, 4):                                 # after-images
+                lk = max(0.0, leap - 0.07 * k)
+                img(c, 'n_escape_hd', cx, cy + 1700 * lk, hs * (1 + 13 * lk), 0.22, 1000, 540)
         c.save(); c.translate(xx, yy); c.scale(s_, s_); c.translate(-1000, -540)
         rgba(c, SEPIA if paper else BONE, la * (1 - colour * 0.6)); c.mask_surface(surf('n_escape_line'), 0, 0)
         c.set_source_surface(surf('n_escape_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint_with_alpha(la * colour)
@@ -697,7 +775,7 @@ def s_escape(c, g, t):
         c.new_path(); fonts()['heavy'].text_path(c, 'EXECUTION', 0, 0, 330, 'center')
         rgba(c, PAPER if paper else INK, 0.9 * min(1, u * 2)); c.set_line_width(16); c.stroke_preserve()
         rgba(c, INK if paper else BONE, min(1, u * 2)); c.fill(); c.restore()
-    fx['ab'] = sum(6 * pulse(t, B(k), 0.25) for k in PEEL) + 2 * pulse(t, B(math.floor(kk)), 0.12) + 4 * leap + 10 * pulse(t, B(FINAL_EX), 0.3)
-    fx['flash'] = sum(0.25 * pulse(t, B(k), 0.1) for k in PEEL) + 0.5 * pulse(t, B(FINAL_EX), 0.12)
+    fx['ab'] = sum(6 * pulse(t, B(k), 0.25) for k in PEEL) + 2 * pulse(t, B(math.floor(kk)), 0.12) + 14 * leap * (kk < K_GONE) + 10 * pulse(t, B(FINAL_EX), 0.3)
+    fx['flash'] = sum(0.25 * pulse(t, B(k), 0.1) for k in PEEL) + 0.5 * pulse(t, B(FINAL_EX), 0.12) + 0.6 * pulse(t, B(K_GONE), 0.15)
     if paper: fx['vig'] = 0.4; fx['grain'] = 0.03
     return fx
