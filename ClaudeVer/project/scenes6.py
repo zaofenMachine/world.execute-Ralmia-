@@ -92,12 +92,20 @@ def stamp(c, cx, cy, w, a):
     rgba(c, INK, 0.9 * a); c.set_line_width(w * 0.016); c.stroke_preserve(); rgba(c, BONE, a); c.fill()
     c.restore()
 
+def reflect(c, s, x, y, w, h, name, bg, a):
+    """the window again, upside down in the glossy floor under it"""
+    yf = VPY + 0.62 * s
+    if y + h > yf or a <= 0.01: return
+    c.save(); c.rectangle(0, yf, W, H); c.clip(); c.translate(0, 2 * yf); c.scale(1, -1)
+    win(c, x, y, w, h, name, bg, '', a); c.restore()
+
 def cwin(c, g, z, side, Y, name, bg, lab, size=1.0, dead=False, flash=0.0):
     if z < 0.3 or z > 15: return
     s = KZ / z; w = size * s; h = w * 9 / 16
     cx = VPX + side * s; cy = VPY + Y * s
     x, y = cx - w / 2, cy - h / 2
     fog = clamp((15 - z) / 6)
+    reflect(c, s, x, y, w, h, name, bg, fog * (0.06 if dead else 0.16))
     win(c, x, y, w, h, name, bg, 'EXECUTED' if dead else lab, fog)
     if dead:
         rgba(c, INK, 0.6 * fog); c.rectangle(x, y, w, h); c.fill()
@@ -116,6 +124,7 @@ def gate(c, g, t, z, i):
     x, y = cx - w / 2, cy - h / 2
     fog = clamp((15 - z) / 6)
     name, bg = CORR[(i * 5 + 1) % len(CORR)] if i < 11 else ('n_pinky_hd', None)        # the last one: the two of them
+    reflect(c, s, x, y, w, h, name, bg, fog * (0.16 if t < tc else 0.05))
     win(c, x, y, w, h, name, bg, 'sim #0001  ·  you & me' if i == 11 else f'sim #{3 + 41 * i:04d}', fog)
     rgba(g, CYAN, 0.25 * fog); g.set_line_width(4); g.rectangle(x, y, w, h); g.stroke()
     if t < tc: return
@@ -253,10 +262,6 @@ def s_doors(c, g, t):
     fx['glow'] = 0.9
     hud(c, t, True, a=0.6, log_a=0.85)
     return fx
-
-def s_pending(c, g, t):
-    """k342-352: PLACEHOLDER until the count / 13th / launch are confirmed by ear -- holds the twelfth gate, shut in our face"""
-    return s_doors(c, g, t)
 
 # ================================================================ S27 THE COUNT + THE PULL + THE LAUNCH  [B320, B352)
 HEX_C = (960, 560); HEX_R = 360

@@ -126,6 +126,7 @@ def fonts():
         F['serif'] = Font(d + 'InstrumentSerif-Italic.ttf')
         F['serifr'] = Font(d + 'InstrumentSerif-Regular.ttf')
         F['cjk'] = Font(d + 'NotoSerifCJK-Bold-subset.ttf')      # only 넷 六 一二三四五 (subset, OFL)
+        F['math'] = Font(d + 'NotoSansSC-Light-math-subset.ttf') # Latin + Greek + maths, for the blackboard (make_math_font.py, OFL)
     return F
 
 # ---------------------------------------------------------------- drawing helpers

@@ -40,7 +40,7 @@ for q in sorted(glob.glob(os.path.join(HERE, 'qa', 'q*.jpg'))):
     for i in range(32):
         r, c = divmod(i, 4); tl = im[r * 225:(r + 1) * 225, c * 400:(c + 1) * 400]
         if tl.size and tl.mean() > 2: tiles[round((s * 32 + i) * 0.25, 2)] = tl
-KEEP = [(22.5, 28.2), (55.0, 60.6), (63.1, 66.7), (70.6, 74.1), (85.4, 89.0), (96.4, 99.9)]   # him, or the red thread
+KEEP = [(22.5, 28.2), (55.0, 60.6), (63.1, 66.7), (70.6, 74.1), (85.4, 89.0)]   # him, or the red thread (S/M is hers alone since round 4)
 times = [t for t in np.arange(4.0, 100.0, 1.0)]                                                  # 96 tiles = 12 x 8
 out = []
 for i, t in enumerate(times):

@@ -6,6 +6,7 @@ import scenes3 as S3
 import scenes4 as S4
 import scenes5 as S5
 import scenes6 as S6
+import scenes7 as S7
 
 TIMELINE = [
     (0.0,   B(4),  S.s_power),
@@ -42,9 +43,15 @@ TIMELINE = [
     (B(256), B(288), S5.s_bridge),
     (B(288), B(320), S6.s_executions),
     (B(320), B(342), S6.s_doors),
-    (B(342), 999.0, S6.s_pending),     # the count / 13th / launch: waiting for the user's ears (HANDOFF 2.3)
+    (B(342), B(352), S7.s_count2),
+    (B(352), B(360), S7.s_ch3a),
+    (B(360), B(368), S7.s_ch3b),
+    (B(368), B(376), S7.s_ch3c),
+    (B(376), B(384), S7.s_ch3d),
+    (B(384), B(416), S7.s_love),
+    (B(416), 999.0, S7.s_escape),
 ]
-END = B(352)
+END = 211.9                                # the song is 211.97 s
 
 def render_frame(t, fr):
     s = cairo.ImageSurface(cairo.FORMAT_ARGB32, W, H); c = cairo.Context(s)

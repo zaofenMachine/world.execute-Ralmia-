@@ -20,3 +20,16 @@ for src, nm in NAMES.items():
     lg = (ln * 255).astype(np.uint8)
     cv2.imwrite(f'{A}/n_{nm}_line.png', np.dstack([lg, lg, lg, ((1 - ln) * al).astype(np.uint8)]))
 print('round3 images ok')
+
+# ---- her hand from pinky_alone (thread tails already painted out: n_pinky_alone_clean), paper keyed out -> n_pinky_hand_cut
+im = cv2.imread(f'{A}/n_pinky_alone_clean.png')
+bg = np.median(im[:200].reshape(-1, 3), 0)
+d = np.abs(im.astype(int) - bg).sum(2)
+m = (d > 40).astype(np.uint8)
+m = cv2.morphologyEx(m, cv2.MORPH_CLOSE, np.ones((7, 7), np.uint8))
+n_, lab_, st_, _ = cv2.connectedComponentsWithStats(m, 8)
+m = (lab_ == 1 + int(np.argmax(st_[1:, cv2.CC_STAT_AREA]))).astype(np.uint8)
+ff = m.copy(); mk = np.zeros((m.shape[0] + 2, m.shape[1] + 2), np.uint8); cv2.floodFill(ff, mk, (0, 0), 1); m[ff == 0] = 1
+al = cv2.GaussianBlur(m.astype(np.float32), (0, 0), 1.0)
+cv2.imwrite(f'{A}/n_pinky_hand_cut.png', np.dstack([im, (al * 255).astype(np.uint8)]))
+print('pinky hand cut ok')
