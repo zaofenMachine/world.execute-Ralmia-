@@ -441,6 +441,42 @@ def s_circum(c, g, t):
 # v2 round 2: "then you can sit on all my ..." -- Lishenna sits on what Ralmia gives her. n_lish_sit: the underside of
 # her seat is a horizontal line through SIT_SEAT (canvas px); the A/B pair swings her feet, one swap per beat
 SIT_SEAT = (960, 552)
+TRACE_F = 0.6                           # n_trace_* are the 1920 canvas at this scale (prep7.py)
+_TRC = {}
+def phosphor(c, g, name, x, y, sc, anchor, t, col=BONE, a=1.0, rot=0.0, wob=1.0, reveal=1.0, ga=0.5):
+    """v2 round 3: a figure drawn by the beam, like the AC/DC faces: its line art (n_trace_<name>) as light, with a
+    little scope wobble; reveal < 1 draws it in from the top, the beam line at the front"""
+    if a <= 0.01: return
+    if name not in _TRC:
+        m = cv2.imread(f'{WORK}/assets/n_trace_{name}.png', cv2.IMREAD_GRAYSCALE).astype(np.float32)
+        hh, ww = m.shape; yy, xx = np.mgrid[0:hh, 0:ww].astype(np.float32)
+        _TRC[name] = (m, xx, yy, cairo.ImageSurface.format_stride_for_width(cairo.FORMAT_A8, ww))
+    m, xx, yy, stride = _TRC[name]
+    if wob > 0:
+        ph = t * 9
+        m = cv2.remap(m, xx + wob * (0.8 * np.sin(yy / 9 + ph) + 0.5 * np.sin(yy / 31 - ph * 1.7)), yy, cv2.INTER_LINEAR)
+    hh, ww = m.shape
+    ry = None
+    if reveal < 1:
+        m = m.copy(); ry = int(hh * reveal); m[ry:] = 0
+    buf = np.zeros((hh, stride), np.uint8); buf[:, :ww] = np.clip(m * a, 0, 255).astype(np.uint8)
+    sf = cairo.ImageSurface.create_for_data(buf, cairo.FORMAT_A8, ww, hh, stride)
+    k = sc / TRACE_F
+    for cc, aa in ((c, 1.0), (g, ga)):
+        cc.save(); cc.translate(x, y); cc.rotate(rot); cc.scale(k, k); cc.translate(-anchor[0] * TRACE_F, -anchor[1] * TRACE_F)
+        rgba(cc, col, aa); cc.mask_surface(sf, 0, 0)
+        if ry is not None and 0 < ry < hh:                       # the beam, across the figure only
+            band = _TRC[name][0][max(0, ry - 12):ry + 12].max(0)
+            xs_ = np.nonzero(band > 40)[0]
+            if len(xs_):
+                rgba(cc, col, 0.8 * aa); cc.set_line_width(2 / k); cc.move_to(xs_[0] - 20, ry); cc.line_to(xs_[-1] + 20, ry); cc.stroke()
+        cc.restore()
+
+def lish_trace(c, g, x, y, sc, t, a=1.0, rot=0.0, reveal=1.0):
+    """Lishenna sitting, as phosphor line art; the feet swing on the beat (the A/B pair)"""
+    b = int(math.floor((t - T0) / P)) % 2 == 1
+    phosphor(c, g, 'sit_b' if b else 'sit', x, y, sc, SIT_SEAT, t, BONE, a, rot, 1.0, reveal, 0.35)
+
 def lish_sit(c, x, y, sc, a=1.0, rot=0.0, t=0.0, swing=True):
     if a <= 0.003: return
     b = swing and int(math.floor((t - T0) / P)) % 2 == 1
@@ -526,7 +562,7 @@ def s_sine(c, g, t):
             hop = 8 * abs(math.sin(math.pi * (t - T0) / P))           # a little bounce each beat
             an = clamp(math.atan2(dy, dx), -0.55, 0.55)                  # she rocks, but doesn't fall off
             ox_, oy_ = xt + dx * 40 + math.sin(an) * hop, yy + dy * 40 - math.cos(an) * hop
-            lish_sit(c, ox_, oy_, 0.26, ua, an, t)
+            lish_trace(c, g, ox_, oy_, 0.27, t, ua, an, eo_cubic(prog(t, B(84.5), B(84.5) + P)))
             text(c, 'mono', f"y' = {-m:+.3f}", W - 130, 1000, 26, CYAN, 0.85 * ua, align='right', track=0.1)
         lyric(c, [('then', 38.86), ('you', 39.02), ('can', 39.24), ('sit', 39.46), ('on', 39.70), ('all', 39.92), ('my', 40.20)], t)
         if t >= B(K_TAN):
@@ -565,7 +601,7 @@ def s_infinity(c, g, t):
             line(cc, 0, YA, W, YA, BONE, aa, 3)
     # v2: she is sitting on the asymptote, near its far end, feet hanging down towards the curve
     LX = 1470
-    lish_sit(c, LX, YA, 0.30, eo_cubic(prog(t, B(88), B(88) + 0.4)), 0.0, t)
+    lish_trace(c, g, LX, YA, 0.30, t, 1.0, 0.0, eo_cubic(prog(t, B(88), B(88) + P)))
     # the curve, always approaching
     xh = lerp(60, W + 40, eo_cubic(prog(t, B(88), B(89.5))))
     for cc, aa, lw, col in ((c, 1, 3, BONE), (g, 0.35, 4, CYAN)):
@@ -578,9 +614,8 @@ def s_infinity(c, g, t):
     reach = prog(t, B(88.5), B(94.5))                              # her hand rides the curve to just under the shoe
     fx_ = lerp(-60, LX - 45, eo_cubic(reach)); fy_ = YA + asym_gap(fx_, t) + 58
     sl = math.atan((asym_gap(fx_ + 20, t) - asym_gap(fx_, t)) / 20)
-    c.save(); c.translate(fx_, fy_); c.rotate(-0.12 + 0.6 * sl); c.scale(0.30, 0.30); c.translate(-DASH_HAND[0], -DASH_HAND[1])
-    c.set_source_surface(surf('n_dash_full_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD)
-    c.paint_with_alpha(eo_cubic(prog(t, B(88.5), B(89)))); c.restore()
+    phosphor(c, g, 'dash', fx_, fy_, 0.30, DASH_HAND, t, CYAN, eo_cubic(prog(t, B(88.5), B(89))), -0.12 + 0.6 * sl, 1.0,
+             eo_cubic(prog(t, B(88.5), B(88.5) + P)), 0.6)
     for cc in (c, g):
         rgba(cc, CYAN, 1); cc.arc(hx, hy, 8, 0, 6.283); cc.fill()
     line(c, hx + 24, YA + 4, hx + 24, hy - 4, CYAN, 0.8, 1.2)

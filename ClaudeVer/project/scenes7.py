@@ -217,58 +217,86 @@ def year3(t):
     if t < B(365.5): return lerp(617, 1, ei_cubic(prog(t, B(364.3), B(365.5))))
     return lerp(0, -3690, eo_expo(prog(t, B(365.5), B(366.4))))
 
+# v2 round 3: no more spacetime diagram (that was 52-56 s). first person again, pure code: the sky in front of her under
+# relativistic aberration. as v -> c every star crowds into the point ahead of her (cos a' = (cos a + v/c)/(1 + v/c cos a)),
+# k363 v = c: they are one point, gamma = inf. past c the sky turns inside out and runs backwards -- the years run back
+# with it, 2026 -> 617 A.D. -> 3691 B.C. (the song's own numbers) -- EXECUTION on k366, and 3c rewinds to the pinky promise
+_SKY = {}
+def sky():
+    if not _SKY:
+        r = np.random.default_rng(71); n = 1100
+        _SKY['ca'] = 1 - 2 * r.random(n)                          # cos of the angle to the way she is going (uniform sphere)
+        _SKY['az'] = r.random(n) * 6.283; _SKY['m'] = r.random(n); _SKY['k'] = r.random(n) < 0.06
+    return _SKY
+
+def beta3(kk):
+    """v/c: four steps up to light (one per beat), then past it"""
+    if kk < 363:
+        v = 0.3
+        for kb, val in ((360, 0.6), (361, 0.9), (362, 0.99), (362.5, 0.9995)):
+            if kk >= kb: v = lerp(v, val, eo_back(clamp((kk - kb) / 0.3), 1.4))
+        return v
+    return 1.0 + 3.0 * ei_cubic(clamp((kk - 363) / 3))         # 1 -> 4 by k366 ("superluminal")
+
 def s_ch3b(c, g, t):
-    """the 52-55 s spacetime diagram, at chorus speed: her worldline tips past light, past infinity, into the past;
-    the year ruler runs 2026 -> 617 A.D. -> 3691 B.C. (the song's own numbers); EXECUTION k366"""
     fill_bg(c, INK)
     fx = {}
-    ox, oy = O
-    ua = eo_expo(prog(t, B(360), B(360) + 0.3))
-    Lc = 520 * ua
-    rgba(c, BONE, 0.045); c.move_to(ox, oy); c.line_to(ox - Lc, oy - Lc); c.line_to(ox + Lc, oy - Lc); c.close_path(); c.fill()
-    rgba(c, BONE, 0.025); c.move_to(ox, oy); c.line_to(ox - Lc, oy + Lc); c.line_to(ox + Lc, oy + Lc); c.close_path(); c.fill()
-    c.set_dash([8, 7])
-    for sx_ in (-1, 1):
-        for sy_ in (-1, 1): line(c, ox, oy, ox + sx_ * Lc, oy + sy_ * Lc, BONE, 0.55, 1.5)
-    c.set_dash([])
-    line(c, ox, oy - 540 * ua, ox, oy + 520 * ua, BONE, 0.6, 1.5); line(c, ox - 900 * ua, oy, ox + 900 * ua, oy, BONE, 0.6, 1.5)
-    text(c, 'monom', 'ct', ox + 14, oy - 500 * ua, 24, BONE, 0.8 * ua); text(c, 'monom', 'x', ox + 880 * ua, oy - 14, 24, BONE, 0.8 * ua)
-    text(c, 'mono', 'FUTURE', ox, oy - 330, 18, BONE, 0.45 * ua, align='center', track=0.4)
-    text(c, 'mono', 'PAST', ox, oy + 345, 18, BONE, 0.45 * ua, align='center', track=0.4)
-    deg = wl3(t); al = math.radians(deg); dx, dy = math.sin(al), -math.cos(al)
-    Lw = 720
-    line(c, ox - dx * Lw * 0.6, oy - dy * Lw * 0.6, ox, oy, CYAN, 0.3, 2)
-    for cc, aa, lw in ((c, 1, 4), (g, 0.8, 6)): line(cc, ox, oy, ox + dx * Lw, oy + dy * Lw, CYAN, aa, lw)
-    ph = ((t - T0) / P * 2) % 1                                  # a pulse runs out along it every 8th
-    for cc in (c, g):
-        rgba(cc, BONE, 1 - ph); cc.arc(ox + dx * Lw * ph, oy + dy * Lw * ph, 7, 0, 6.283); cc.fill()
-    rgba(c, CYAN, 0.6); c.set_line_width(1.4); c.new_path(); c.arc(ox, oy, 90, -math.pi / 2, -math.pi / 2 + al); c.stroke()
-    s = f'v/c = {math.tan(al):.2f}' if deg < 89.5 else ('v/c = ∞' if deg < 90.5 else 'dt < 0')
-    text(c, 'math', s, ox + 110, oy + 50 if deg < 90 else oy - 40, 30, CYAN, 0.9)
-    for kb in (360, 362):
-        fl = pulse(t, B(kb), 0.5)
-        if fl > 0.02:
-            for cc in (c, g):
-                rgba(cc, CYAN, 0.8 * fl); cc.set_line_width(3); cc.new_path(); cc.arc(ox, oy, 40 + 500 * (1 - fl), 0, 6.283); cc.stroke()
-    ur = eo_expo(prog(t, B(361), B(361) + 0.3))                  # the year ruler
-    rx = 1640; yv = year3(t)
-    line(c, rx, 120, rx, 120 + 840 * ur, BONE, 0.6, 1.5)
-    step, per = 26, 100
-    base = math.floor(yv / per); offs = (yv / per - base) * step
-    for i in range(-18, 19):
-        yy = oy + i * step + offs
-        if yy < 120 or yy > 120 + 840 * ur: continue
-        yr = (base - i) * per; big = (yr % 500 == 0)
-        line(c, rx, yy, rx + (30 if big else 14), yy, BONE, 0.6 if big else 0.3, 1.2)
-        if big:
-            n_, e_ = era(yr); text(c, 'mono', f'{n_} {e_}', rx + 40, yy + 6, 15, BONE, 0.45)
-    line(c, rx - 30, oy, rx + 60, oy, CYAN, 0.9, 2)
-    n_, e_ = era(yv)
-    text(c, 'heavy', n_, rx - 40, oy - 190, 110, BONE, ur, align='right')
-    text(c, 'monom', e_, rx - 40, oy - 310, 26, CYAN, ur, align='right', track=0.2)
-    slam_word(c, g, 'EXECUTION', t, B(EX3[1]), 520, 980, 200, until=B(368), glow=0.6)
-    fx['ab'] = 5 * pulse(t, B(362), 0.3) + 4 * pulse(t, B(364), 0.2) + 10 * pulse(t, B(366), 0.3)
-    fx['flash'] = 0.35 * pulse(t, B(360), 0.12) + 0.6 * pulse(t, B(366), 0.14)
+    kk = (t - T0) / P
+    v = beta3(kk); S = sky(); cx, cy = VPX, 470
+    R0 = 520                                                     # stereographic radius: r = R0 tan(a'/2)
+    if v < 1:
+        ca2 = (S['ca'] + v) / (1 + v * S['ca'])                 # aberration: everything piles up ahead
+        pr = 1 - prog(t, B(362.6), B(363))                       # ...and in the last half beat into the one point
+        r = R0 * np.sqrt(np.clip((1 - ca2) / (1 + ca2 + 1e-6), 0, 400)) * pr
+        D = 1 / (np.sqrt(1 - v * v) * (1 - v * ca2) + 1e-6)      # Doppler factor: forward stars brighten
+        tail = 1.0 + 0.18 * prog(t, B(360), B(363))
+    else:                                                        # past light: the sky inside out, flowing back in from the rim
+        u = clamp((kk - 363) / 3)
+        ph = (S['m'] + 2.2 * u + 0.6 * (t - B(363))) % 1.0
+        r = (1 - ph) * 1400 + 8
+        D = 0.4 + 1.2 * ph
+        tail = 0.93
+    th = S['az']
+    X = cx + np.cos(th) * r; Y = cy + np.sin(th) * r * 0.82
+    X2 = cx + np.cos(th) * r * tail; Y2 = cy + np.sin(th) * r * tail * 0.82
+    lum = np.clip(0.18 + 0.25 * np.log1p(D), 0.05, 1.0)
+    for i in np.nonzero((r > 1) & (r < 1600))[0][::(1 if v < 1 else 2)]:
+        col = CYAN if S['k'][i] else BONE
+        rgba(c, col, float(lum[i])); c.set_line_width(1 + 1.6 * float(lum[i]))
+        c.move_to(float(X[i]), float(Y[i])); c.line_to(float(X2[i]), float(Y2[i])); c.stroke()
+    # the one point at k363, and the flash
+    pt = pulse(t, B(363), 0.5)
+    if B(362.6) <= t:
+        rg = cairo.RadialGradient(cx, cy, 0, cx, cy, 160 + 600 * pt)
+        rg.add_color_stop_rgba(0, 1, 1, 1, 0.9 * (pt + (0.6 if t < B(363) else 0))); rg.add_color_stop_rgba(1, 1, 1, 1, 0)
+        g.set_source(rg); g.arc(cx, cy, 160 + 600 * pt, 0, 6.283); g.fill()
+    # her aperture, closing as the sky closes; inverted (blades outside) past light
+    if v < 1: reticle(c, g, t, 60 + 110 * (1 - prog(t, B(361), B(363))), 0.9, pulse(t, B(math.floor(kk)), 0.18))
+    else:
+        for cc, aa in ((c, 0.6), (g, 0.4)):
+            rgba(cc, CYAN, aa * (1 - prog(t, B(366), B(367.5)))); cc.set_line_width(2); cc.new_path(); cc.arc(cx, cy, 60 + 30 * math.sin(t * 6), 0, 6.283); cc.stroke()
+    # the readouts: v/c, the Lorentz factor, her clock
+    if v < 1:
+        vs = f'{v:.6f}'[:8]; gam = 1 / math.sqrt(max(1e-12, 1 - v * v)); gs = f'{gam:,.2f}' if gam < 1e5 else '∞'
+        if t >= B(362.85): vs, gs = '1.000000', '∞'
+    else:
+        vs = f'{v:.6f}'[:8]; gs = f'{1 / math.sqrt(v * v - 1):.3f} i'
+    text(c, 'mono', 'v / c', 130, 860, 26, CYAN, 0.85, track=0.2)
+    text(c, 'heavy', vs, 130, 990, 120, BONE, 0.95)
+    gx = 820
+    text(c, 'math', 'γ = 1 / √(1 − v²/c²)', gx, 860, 36, BONE, 0.8)
+    text(c, 'math', f'γ = {gs}', gx, 990, 78, CYAN if gs in ('∞',) or v >= 1 else BONE, 0.95)
+    if v >= 1:
+        u = eo_cubic(prog(t, B(363), B(363.4)))
+        text(c, 'math', 'dt′ < 0', gx + 520, 990, 44, CYAN, 0.9 * u)
+    yv = year3(t); n_, e_ = era(yv)
+    text(c, 'mono', "her clock", W - 130, 160, 18, BONE, 0.5, align='right', track=0.3)
+    text(c, 'heavy', n_, W - 130, 290, 120, BONE, 0.95, align='right')
+    text(c, 'monom', e_, W - 130, 336, 26, CYAN, 0.9, align='right', track=0.2)
+    slam_word(c, g, 'EXECUTION', t, B(EX3[1]), 960, 640, 220, until=B(368), glow=0.6)
+    fx['ab'] = 4 * sum(pulse(t, B(k), 0.2) for k in (360, 361, 362)) + 9 * pulse(t, B(363), 0.3) + 10 * pulse(t, B(366), 0.3)
+    fx['flash'] = 0.3 * pulse(t, B(360), 0.12) + 0.7 * pulse(t, B(363), 0.14) + 0.6 * pulse(t, B(366), 0.14)
+    fx['glow'] = 1.0
     hud(c, t, True, a=0.6)
     return fx
 

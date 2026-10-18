@@ -551,10 +551,7 @@ def s_verse2(c, g, t):
         if ul_ > 0:                                   # line art, then colour from her core outwards
             c.save(); c.translate(cx, cy)
             img_ = SPEC_IMG[i]
-            if i == 2:                                # a bob on every beat; eyes shut, content, while she purrs
-                bb = abs(math.sin(math.pi * (t - T0) / P)) * prog(t, tm + 0.3, tm + 0.8)
-                c.translate(0, -10 * bb); c.rotate(0.025 * math.sin(math.pi * (t - T0) / P) * prog(t, tm + 0.3, tm + 0.8))
-                if kk >= 182.5 or (180.0 <= kk < 180.5) or (181.0 <= kk < 181.25): img_ = 'n_cat2b'
+            if i == 2 and kk >= 182.5: img_ = 'n_cat2b'   # winking, then eyes shut, content, on "purr" -- that's all
             c.scale(sc_, sc_); c.translate(-bx, -by)
             rgba(c, SEPIA, ul_); c.mask_surface(surf(SPEC_IMG[i] + '_line'), 0, 0)
             rr_ = 1500 * eo_cubic(prog(t, tm + 0.42, tm + 0.8))

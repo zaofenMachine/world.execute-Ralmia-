@@ -203,5 +203,22 @@ scope_mask(ra, (500, 0, 1500, 1080), 'ralmia')
 rs_ln = line_of(rs)                                             # the reference sheet's close-up, native 1672 px
 scope_mask(rs_ln, (1040, 50, 1672, 760), 'lish')
 
+# ---- round 3: the figures of 39-44 s as phosphor line art (like the AC/DC faces): line strength as a grey mask on the
+# 1920 canvas scaled by TRACE_F, lines found at that size (so they stay solid), plus the silhouette edge
+TRACE_F = 0.6
+def trace_mask(src_png, nm):
+    if not os.path.exists(f'{A}/{src_png}.png'): return
+    im = cv2.imread(f'{A}/{src_png}.png', cv2.IMREAD_UNCHANGED)
+    w, h = round(1920 * TRACE_F), round(1080 * TRACE_F)
+    a = cv2.resize(im[..., 3], (w, h), interpolation=cv2.INTER_AREA)
+    rgb = cv2.resize(im[..., :3], (w, h), interpolation=cv2.INTER_AREA)
+    ln = line_of(rgb, a)
+    m = (1 - ln) * (a.astype(np.float32) / 255)
+    edge = cv2.Canny((a > 110).astype(np.uint8) * 255, 50, 150).astype(np.float32) / 255
+    m = np.maximum(m, cv2.GaussianBlur(edge, (0, 0), 0.6) * 1.4)
+    cv2.imwrite(f'{A}/n_trace_{nm}.png', np.clip(m * 255, 0, 255).astype(np.uint8))
+for src_png, nm in (('n_lish_sit_hd', 'sit'), ('n_lish_sit_b_hd', 'sit_b'), ('n_dash_full_hd', 'dash')):
+    trace_mask(src_png, nm)
+
 json.dump(anc, open(os.path.join(SRC, '_qa', 'round4', 'anchors_v2.json'), 'w'), indent=1)
 print(json.dumps(anc, indent=1))
