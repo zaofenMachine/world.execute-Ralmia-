@@ -47,7 +47,7 @@
   - L13 神卡三层 → `scenes4.creation_layers`：神卡和 174 秒画中画都改用它，两只手沿轴分别移动，不再切分画面，所以没有切缝。
   - L11 立方体合照 / 只剩她；L12 崖边并肩坐 / 只剩她（`n_ledge2_lish` 是从配对图差出来的里榭娜，用来化成光点）；L15 猫娘 A/B 跟着呼噜切换；L14 结尾合照（底部羽化）。
   - 锚点：`CUBE_LISH`、`LEDGE_SUN`（scenes5），`SIT_SEAT`、`DASH_HAND`（scenes3），都记在 `anchors_v2.json` 或代码注释里。
-- 成片：`ClaudeVer/world_execute_me_Ralmia_v2_round2.mp4`（第一轮的 `world_execute_me_Ralmia_v2.mp4` 保留）。
+- 成片：`ClaudeVer/world_execute_me_Ralmia_v2_round2.mp4`（第一轮的 `world_execute_me_Ralmia_v2.mp4` 保留）。211.9 秒，1080p60，视频 18.4 Mbps + AAC。自查：322 个硬切，偏差中位数 16.4 毫秒，59% 在 35 毫秒内，没有冻结（0–105 秒单看：139 个 / 13.8 毫秒 / 69%）。验收拼图在 `project/qa_v2/`。
 - 分寸：用户同意贴贴（脸贴脸、靠肩、挽手、侧面搂抱），仍不亲吻。
 
 **第一轮自评里留下的弱点**：舞台一镜仍是缓慢推镜，里榭娜只占画面三分之一；她走进光里时被光洗白（和 v1 研究员同样的处理）；trance 的兰紫圆环偏淡；荧光棒是画上去的，只能整片发光，不能摆动。
