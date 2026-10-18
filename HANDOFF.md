@@ -42,7 +42,12 @@
 
 **第二轮（2026-10-18，方案 `ClaudeVer/plan_v2_round2.md`，生图需求 `gen/request_v2c.md` 共 12 张，已转 GPT）：**
 - 已做（不用等图）：示波器 X–Y 模式画两人线稿脸（`scenes3.face_trace`，遮罩 `n_scope_*` 由 `prep7.py` 生成）；115 秒谢幕聚光灯（`scenes5.spotlight`）；188 秒舞台巨屏困住她（`scenes7`，`STAGE_HAND`）；结尾撕纸、暖光收尾（`scenes7.escape_out`，第一版的黑场已删）；会摇的荧光棒（`scenes4.sway_sticks`）；trance 声波调亮；SATISFACTION 推近。
-- 等图：L9 坐姿（35–44 秒）、L11 立方体合照、L12 崖边并肩坐、L13 神卡三层、L14 结尾合照、L15 猫娘。`prep7.py` 已能自动入库（`R6` 列表）；场景代码要等图到了、量过锚点再写。结尾在 L14 之前依次退回 `n_cube_together`、`n_pinky2`。
+- 第六批 12 张已到并接入（`gen/README_round6.md`）：
+  - L9 坐姿 → `scenes3.lish_sit`（座面线在 canvas (960, 552)，A/B 每拍互换）：坐在 2πr 线头、切线上（倾斜限制在 ±0.55 弧度）、渐近线上；洛菈米亚的手沿曲线追到她鞋底下（`DASH_HAND`）。
+  - L13 神卡三层 → `scenes4.creation_layers`：神卡和 174 秒画中画都改用它，两只手沿轴分别移动，不再切分画面，所以没有切缝。
+  - L11 立方体合照 / 只剩她；L12 崖边并肩坐 / 只剩她（`n_ledge2_lish` 是从配对图差出来的里榭娜，用来化成光点）；L15 猫娘 A/B 跟着呼噜切换；L14 结尾合照（底部羽化）。
+  - 锚点：`CUBE_LISH`、`LEDGE_SUN`（scenes5），`SIT_SEAT`、`DASH_HAND`（scenes3），都记在 `anchors_v2.json` 或代码注释里。
+- 成片：`ClaudeVer/world_execute_me_Ralmia_v2_round2.mp4`（第一轮的 `world_execute_me_Ralmia_v2.mp4` 保留）。
 - 分寸：用户同意贴贴（脸贴脸、靠肩、挽手、侧面搂抱），仍不亲吻。
 
 **第一轮自评里留下的弱点**：舞台一镜仍是缓慢推镜，里榭娜只占画面三分之一；她走进光里时被光洗白（和 v1 研究员同样的处理）；trance 的兰紫圆环偏淡；荧光棒是画上去的，只能整片发光，不能摆动。
