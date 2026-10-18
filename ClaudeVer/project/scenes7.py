@@ -235,7 +235,7 @@ def beta3(kk):
         v = 0.3
         for kb, val in ((360, 0.6), (361, 0.9), (362, 0.99), (362.5, 0.9995)):
             if kk >= kb: v = lerp(v, val, eo_back(clamp((kk - kb) / 0.3), 1.4))
-        return v
+        return min(v, 0.99999)                                   # the overshoot must not cross c before k363
     return 1.0 + 3.0 * ei_cubic(clamp((kk - 363) / 3))         # 1 -> 4 by k366 ("superluminal")
 
 def s_ch3b(c, g, t):
