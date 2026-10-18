@@ -14,6 +14,36 @@
 
 ---
 
+## V2. 第二版：洛菈米亚 × 里榭娜（2026-10-18，分支 `v2`）
+
+**方案：** `ClaudeVer/plan_v2b.md`（用户已同意，包括"戳盖不到里榭娜"）。原方案 `plan_v2.md` 保留作记录。主线是"光与声 + 破坏的试炼"：她比声音快，可歌就是声音；12 声 EXECUTION 是里榭娜降下的破坏的试炼。
+
+**版本隔离：** 第一版在 `main` / 标签 `v1`，代码和素材都没动。`v2` 分支上：
+- 新素材一律新名字，由 `prep7.py` 生成：`n_pinky2*`、`n_creation2`、`n_stage*`、`n_lish_*`；碎片是 `frag2_*`（`python prep7.py frag`，读 `qa_v2/`）。第一版的 `n_*`、`frag_*` 不覆盖。
+- 输出目录：分段 `chunks_v2/`，拼图 `qa_v2/`，母版 `out_v2.mp4`，交付 `out_v2_delivery.mp4`。第一版的 `chunks/`、`qa/`、`out*.mp4` 不碰。
+- 锚点记录在 `ClaudeVer/gen/_qa/round4/anchors_v2.json`。勾小指的红线结 (959, 536)、掌心核心 (557, 587) 和 v1 只差几像素，`PINKY_CORE` / `PINKY_KNOT` 沿用。
+- 里榭娜的透明图发丝边缘原本有一圈偏红的半透明像素，墨底上像红描边；`prep7.decontaminate()` 已经清掉，不要改回直接用原图。
+
+**新颜色：** `lib.LISH = #cf7fe6`（墨底）、`LISH_P = #9b59c4`（纸底），只给她的歌声。
+
+**新增的 HUD 行**（`codelog.ADDED`，桥段的代码墙会跳过它们）：k42 `song.v -> too slow`、k284 `too late to refuse.`、k296/304/312 `me.update(); // data corrupted`、k350.25 `me.isBreakable() == false`、k351 `me.releaseCoreLimit();`、k366 `optics: sublimated`。
+
+**逐段改动**（详见方案第三节）：`scenes2` 兰紫声波被马赫锥甩开；`scenes3` 勾小指；`scenes4` 舞台、立方体、神卡、trance；`scenes5` 旋律线、崖边、六处离开、代码神像（`god_of_code`）；`scenes6` 间奏孵化（`LISH_POOL`、`lish_share`）、门和戳（`GATE_SRC`，有她的门弹开、戳滑落）、冲击波、底部歌声线；`scenes7` 倒带、画中画、走进舞台光（`stick_motes`）、尾奏兰紫圆环、结尾 `me.hum();`。
+
+**L7 / L8（`gen/request_v2b.md`）已到并接入**（GPT 交付时还没写 `README_round5.md`，原始输出在 `gen/_production/round5/raw/`）：
+- L7 `lishenna_front` → `n_lish_front`：代码神像的轮廓（`scenes5.GOD_FIG`）。锚点：嘴 `GOD_MOUTH (953, 268)`、张开的手 `GOD_PALM (1335, 428)`（canvas px）；洛菈米亚的背影按"手掌对上她的手掌"反算位置（`HER_AT`、`HER_SC = 1.05`），异常弹窗移到右侧（`POP_X`）。
+- L8 `lishenna_sing_profile` → `n_lish_sing`：k227.5 起两张侧脸面对面（`scenes5.vibrations_split`）。锚点：洛菈米亚鼻尖 (1080, 580)，里榭娜鼻尖 (872, 615)、唇 (905, 643)。
+- 这两张图如果再改，重跑 `python prep7.py`，核对上面的锚点，再重渲 c20–c21（VIBRATIONS）和 c25–c26（神像）即可；它们不在碎片的取样范围（4–99 秒）里。
+- 两个文件都不存在时，代码自动退回备案（站姿镜像 / 第一版构图），不会报错。
+
+**成片（2026-10-18）：** `ClaudeVer/world_execute_me_Ralmia_v2.mp4`，211.9 秒，1080p60，视频 18.4 Mbps + AAC。自查：321 个硬切事件，偏差中位数 16.4 毫秒，59% 在 35 毫秒内，没有超过 1.3 秒的冻结（v1 复查是 281 / 15.1 / 63%；多出来的是有意加的拍后动作，例如有她的门在拍后 0.1–0.3 秒弹开）。验收拼图在 `project/qa_v2/`。
+
+**重渲顺序（碎片依赖，和 v1 相同）：** `render_all.py chunks 0 21` → 拼 c0–c20 → `qa.py <视频> qa_v2` → `prep7.py frag` → `render_all.py chunks 21 43` → `render_all.py dchunks` → `mux.py 211.9 deliver`。只改 105 秒以后的东西时，跳过前四步。
+
+**自评里留下的弱点**（下一轮可做）：舞台一镜仍是缓慢推镜，里榭娜只占画面三分之一；她走进光里时被光洗白（和 v1 研究员同样的处理）；trance 的兰紫圆环偏淡；荧光棒是画上去的，只能整片发光，不能摆动。
+
+---
+
 ## 0. 开工前先处理
 
 1. **删掉 `.git/index.lock`**（0 字节）。这是上一个会话在沙盒里运行 `git status` 时留下的，沙盒没有权限删除它。不删的话，git 的写操作都会报错。

@@ -1,7 +1,7 @@
 """Parallel full-film render on one machine (the old sandbox could only do 2 chunks at a time).
 usage:
-  python render_all.py chunks I0 I1 [JOBS]   render chunks/c{I0..I1-1}.mp4, 5 s each (c{i} = [5i, 5i+5) clipped to END)
-  python render_all.py dchunks [JOBS]        re-encode every chunks/c*.mp4 -> d*.mp4 at 18 Mbps (mux.py dchunk), in parallel
+  python render_all.py chunks I0 I1 [JOBS]   render chunks_v2/c{I0..I1-1}.mp4, 5 s each (c{i} = [5i, 5i+5) clipped to END)
+  python render_all.py dchunks [JOBS]        re-encode every chunks_v2/c*.mp4 -> d*.mp4 at 18 Mbps (mux.py dchunk), in parallel
   python render_all.py n                     print the number of chunks for END
 needs ffmpeg on PATH."""
 import sys, os, math, subprocess, glob
@@ -10,6 +10,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from render import END
 SEG = 5.0
+CH = 'chunks_v2'                 # v2 renders go here; chunks/ keeps the v1 chunks
 N = math.ceil(END / SEG)
 
 def run(args):
@@ -23,12 +24,12 @@ if __name__ == '__main__':
     elif mode == 'chunks':
         i0, i1 = int(sys.argv[2]), min(int(sys.argv[3]), N)
         jobs = int(sys.argv[4]) if len(sys.argv) > 4 else max(1, os.cpu_count() - 4)
-        os.makedirs(os.path.join(HERE, 'chunks'), exist_ok=True)
+        os.makedirs(os.path.join(HERE, CH), exist_ok=True)
         with ThreadPoolExecutor(jobs) as ex:
-            list(ex.map(lambda i: run(['render.py', 'enc', str(i * SEG), str(min(END, (i + 1) * SEG)), os.path.join(HERE, 'chunks', f'c{i}.mp4')]),
+            list(ex.map(lambda i: run(['render.py', 'enc', str(i * SEG), str(min(END, (i + 1) * SEG)), os.path.join(HERE, CH, f'c{i}.mp4')]),
                         range(i0, i1)))
     elif mode == 'dchunks':
         jobs = int(sys.argv[2]) if len(sys.argv) > 2 else max(1, os.cpu_count() // 4)
-        cs = sorted(int(os.path.basename(p)[1:-4]) for p in glob.glob(os.path.join(HERE, 'chunks', 'c*.mp4')))
+        cs = sorted(int(os.path.basename(p)[1:-4]) for p in glob.glob(os.path.join(HERE, CH, 'c*.mp4')))
         with ThreadPoolExecutor(jobs) as ex:
             list(ex.map(lambda i: run(['mux.py', str(END), 'dchunk', str(i)]), cs))

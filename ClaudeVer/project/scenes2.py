@@ -443,6 +443,20 @@ def xs_at(t, dt=1 / 240):
         _XS['t'] = ts; _XS['x'] = np.concatenate([[0], np.cumsum(v[:-1] * dt)])
     return float(np.interp(t, _XS['t'], _XS['x']))
 
+# v2: Lishenna's song -- a fixed source off-screen left (the stage), one wavefront per beat at the speed of sound.
+# below Mach 1 the fronts run through her (she is inside the song); past it they fall behind and never catch up again.
+XW_SONG = -2600.0                       # world px; screen x -1010 in the Doppler shot: never on screen
+def song_fronts(c, g, t, x_screen, sy, scale, a=1.0):
+    for kb in range(18, 48):
+        te = B(kb)
+        if te > t: break
+        r = CS * (t - te) * scale
+        if r > 3800 or x_screen + r < -20: continue
+        down = kb % 4 == 0
+        aa = a * (0.85 if down else 0.55) * max(0.0, 1 - r / 3800) ** 0.5 * min(1.0, r / 60)
+        for cc, k_, lw in ((c, 1.0, 3.0 if down else 2.0), (g, 0.5, 5)):
+            rgba(cc, LISH, aa * k_); cc.set_line_width(lw); cc.new_path(); cc.arc(x_screen, sy, max(r, 0.1), 0, 2 * math.pi); cc.stroke()
+
 def s_doppler(c, g, t):
     fill_bg(c, INK)
     fx = {}
@@ -463,6 +477,7 @@ def s_doppler(c, g, t):
         aa = (0.85 if beat else 0.45) * max(0, 1 - r / 1900)
         rgba(c, CYAN if beat else BONE, aa); c.set_line_width(3.2 if beat else 1.6)
         c.new_path(); c.arc(x, sy, max(r, 0.1), 0, 2 * math.pi); c.stroke()
+    song_fronts(c, g, t, cam(XW_SONG), sy, 0.55)
     x = cam(sx_world)
     for cc in (c, g):
         rgba(cc, CYAN, 1); cc.arc(x, sy, 15, 0, 2 * math.pi); cc.fill()
@@ -505,6 +520,7 @@ def s_mach(c, g, t):
         aa = (0.5 if beat else 0.16) * max(0, 1 - r / 2000) * (1 - light * 0.7)
         rgba(c, BONE, aa); c.set_line_width(2 if beat else 1)
         c.new_path(); c.arc(x, sy, max(r, 0.1), 0, 2 * math.pi); c.stroke()
+    song_fronts(c, g, t, srcx + (XW_SONG - sxw) * scale, sy, scale, 1 - light)     # left behind
     M = max(mach_of(t), 1.0001)
     mu = math.asin(1 / M)
     L = 2600

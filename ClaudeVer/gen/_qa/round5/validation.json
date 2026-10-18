@@ -1,0 +1,152 @@
+{
+  "status": "complete",
+  "files": [
+    {
+      "name": "lishenna_front.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 658567,
+      "sha256": "7d791c2a70756f48584ea47762923013101b1e3ddf0fa9588db88b355aed661b"
+    },
+    {
+      "name": "lishenna_sing_profile.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 2227909,
+      "sha256": "5b2063a35e1820241192f6aa21c877b702622849978373a3ad85c8dc64f0f61b"
+    }
+  ],
+  "front": {
+    "visible_bbox": [
+      431,
+      8,
+      1231,
+      922
+    ],
+    "visible_height_fraction": 0.9713,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "separate_components": [
+      {
+        "label": "body",
+        "pixels": 213520,
+        "bbox": [
+          432,
+          9,
+          1231,
+          921
+        ]
+      },
+      {
+        "label": "left_disc",
+        "pixels": 11154,
+        "bbox": [
+          615,
+          70,
+          723,
+          222
+        ]
+      },
+      {
+        "label": "right_disc",
+        "pixels": 11171,
+        "bbox": [
+          950,
+          70,
+          1058,
+          222
+        ]
+      }
+    ],
+    "arm_gap_scanlines": [
+      {
+        "y": 380,
+        "transparent_gaps": [
+          [
+            672,
+            722
+          ],
+          [
+            952,
+            998
+          ],
+          [
+            1143,
+            1158
+          ]
+        ]
+      },
+      {
+        "y": 400,
+        "transparent_gaps": [
+          [
+            640,
+            706
+          ],
+          [
+            968,
+            1025
+          ],
+          [
+            1116,
+            1183
+          ]
+        ]
+      },
+      {
+        "y": 420,
+        "transparent_gaps": [
+          [
+            978,
+            1057
+          ]
+        ]
+      }
+    ]
+  },
+  "profile": {
+    "outside_edit_changed_pixels": 0,
+    "left_paper_exact": true,
+    "comparison_landmarks": {
+      "Ralmia": {
+        "eye": [
+          866,
+          405
+        ],
+        "mouth": [
+          790,
+          575
+        ],
+        "chin": [
+          855,
+          667
+        ]
+      },
+      "Lishenna": {
+        "eye": [
+          865,
+          405
+        ],
+        "mouth": [
+          795,
+          560
+        ],
+        "chin": [
+          855,
+          653
+        ]
+      }
+    },
+    "note": "Landmarks are approximate manual visual measurements; character-specific nose/lip shapes differ."
+  },
+  "preexisting_png_count": 51,
+  "preexisting_changed": []
+}

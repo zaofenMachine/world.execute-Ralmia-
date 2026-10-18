@@ -6,6 +6,8 @@
 ClaudeVer/project/chunks/
 ClaudeVer/project/list*.txt
 ClaudeVer/project/qa/
+ClaudeVer/project/chunks_v2/
+ClaudeVer/project/qa_v2/
 
 # Superseded character experiments
 ClaudeVer/gen/_superseded_short_hair/

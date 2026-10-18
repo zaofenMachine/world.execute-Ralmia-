@@ -3,7 +3,10 @@ k288-320 is the instrumental interlude: she is not on screen, we are her -- her 
 world of the film rushing at us, one gear up every 8 beats; no EXECUTION words (nobody sings yet).
 k320-342: EXECUTION x12, one every second beat (user: first ~148 s, twelfth ~158 s): each call slams a gate shut ahead of
 us and we smash through it on the next beat; the twelfth slams in our face and we stop dead.
-k342-352 (the count, the 13th, the pull, the launch) is waiting for the user's ears -- see HANDOFF.md 2.3."""
+k342-352 (the count, the 13th, the pull, the launch) is waiting for the user's ears -- see HANDOFF.md 2.3.
+v2 (plan_v2b.md): the interlude is Lishenna's "song stopped" -- the worship grows in the silence: every gear, more of
+the windows rushing at us are her, and Ralmia logs it as corrupted data. the twelve calls are her Trial of Destruction:
+a lavender shock with each call, and the stamp does not take on anything with her in it (can't be destroyed by effects)."""
 from scenes5 import *
 
 EXE = [320 + 2 * i for i in range(12)]
@@ -16,7 +19,7 @@ RUN_X, TOP_Y = 560, 640
 VEL = WIN_SP / (2 * P)
 def win_cx(i, t): return 20 + WIN_SP * i - VEL * (t - B(288))
 def win_src(i):
-    if i == 12: return ('n_pinky_hd', None, 'sim #0001  ·  you & me')
+    if i == 12: return ('n_pinky2_hd', None, 'sim #0001  ·  you & me')
     name, bg = POOL[(i * 5 + 2) % len(POOL)]
     return (name, bg, f'sim #{2 + i * 37:04d}')
 
@@ -76,13 +79,25 @@ def gear(kk): return next((gr for a, b, gr in GEARS if a <= kk < b), 0)
 D_EXE = [dist(k) for k in EXE]
 GATE_W, Z_STOP = 2.0, 1.6                 # gates are bigger than the side windows; the twelfth stops us 1.6 ahead
 Z_SLAM = 6.3                              # gates 1-11 slam this far ahead; at 4th gear we reach them one beat later (z 0.3)
-CORR = POOL + [('n_lab_hd', None), ('n_creation_hd', None), ('n_eye_tear_hd', None), ('n_listen_hd', None), ('n_wL2n_hd', INK2),
+CORR = POOL + [('n_stage_empty_hd', None), ('n_creation2_hd', None), ('n_eye_tear_hd', None), ('n_listen_hd', None), ('n_wL2n_hd', INK2),
                ('n_offer_hd', PAPER), ('n_cat_hd', PAPER), ('n_role_s_hd', INK2), ('n_sitting_hd', PAPER), ('n_back_reach_hd', PAPER),
-               ('n_spec_egg_hd', PAPER), ('n_spec_tomato_hd', INK2), ('n_pinky_alone_hd', None), ('n_portrait2_hd', None)]
+               ('n_spec_egg_hd', PAPER), ('n_spec_tomato_hd', INK2), ('n_pinky2_alone_hd', None), ('n_portrait2_hd', None)]
+# v2: the frames with Lishenna in them
+LISH_POOL = [('n_lish_face_hd', None), ('n_stage_hd', None), ('n_pinky2_hd', None), ('n_lish_walk_hd', PAPER), ('n_lish_float_hd', INK2),
+             ('n_creation2_hd', None), ('n_lish_stand_hd', PAPER), ('n_lish_sheet_hd', None)]
+LISH_SET = {n for n, _ in LISH_POOL}
+NON = [it for it in CORR if it[0] not in LISH_SET]
+def lish_share(d):
+    """how much of what rushes past is her, by distance travelled: one step per gear (= one me.update())"""
+    return 0.12 if d < dist(296) + 2 else 0.33 if d < dist(304) + 2 else 0.6 if d < dist(312) + 2 else 0.88
 SP = U / 2                                # side windows: one each side per beat in first gear
 N_SIDE = int(dist(342) / SP) + 24
 SIDE = [((-1 if j % 2 else 1) * (1.3 + 0.6 * random.Random(j * 7).random()), -0.85 + 1.15 * random.Random(j * 13).random(),
-         CORR[(j * 7 + 3) % len(CORR)]) for j in range(N_SIDE)]
+         LISH_POOL[(j * 5 + 1) % len(LISH_POOL)] if random.Random(j * 31).random() < lish_share(j * SP) else NON[(j * 7 + 3) % len(NON)])
+        for j in range(N_SIDE)]
+GATE_SRC = [NON[(i * 5 + 1) % len(NON)] for i in range(12)]
+for i_, it in ((2, ('n_lish_face_hd', None)), (5, ('n_stage_hd', None)), (8, ('n_lish_float_hd', INK2)), (11, ('n_pinky2_hd', None))):
+    GATE_SRC[i_] = it                     # every third gate is her; the twelfth is the two of them
 D_DEAD = dist(320) + 1.0                  # side windows we pass after the first call are already dead when we first see them
 
 def stamp(c, cx, cy, w, a):
@@ -123,18 +138,25 @@ def gate(c, g, t, z, i):
     cx, cy = VPX, VPY + 0.05 * s
     x, y = cx - w / 2, cy - h / 2
     fog = clamp((15 - z) / 6)
-    name, bg = CORR[(i * 5 + 1) % len(CORR)] if i < 11 else ('n_pinky_hd', None)        # the last one: the two of them
+    name, bg = GATE_SRC[i]                                                                # the last one: the two of them
+    immune = name in LISH_SET
     reflect(c, s, x, y, w, h, name, bg, fog * (0.16 if t < tc else 0.05))
     win(c, x, y, w, h, name, bg, 'sim #0001  ·  you & me' if i == 11 else f'sim #{3 + 41 * i:04d}', fog)
     rgba(g, CYAN, 0.25 * fog); g.set_line_width(4); g.rectangle(x, y, w, h); g.stroke()
     if t < tc: return
     u = eo_expo(prog(t, tc, tc + 0.07))                                                   # the shutters: bang
+    if immune: u *= 1 - eo_cubic(prog(t, tc + 0.10, tc + 0.30))                           # ...and they spring open again
     rgba(c, INK, fog); c.rectangle(x, y, w / 2 * u, h); c.rectangle(x + w - w / 2 * u, y, w / 2 * u, h); c.fill()
     line(c, cx, y, cx, y + h, BONE, 0.5 * u * fog, max(1, w * 0.004))
     fl = 1 - prog(t, tc + 0.05, tc + 0.2)
     if fl > 0:
         rgba(g, BONE, 0.8 * fl); g.set_line_width(max(2, w * 0.01)); g.rectangle(x, y, w, h); g.stroke()
     rgba(c, BONE, 0.7 * fog); c.set_line_width(max(1.2, w * 0.004)); c.rectangle(x, y, w, h); c.stroke()
+    if immune:                                                                            # the stamp does not take: it slides off
+        v = ei_cubic(prog(t, tc + 0.11, tc + 0.38))                                     # gone before we pass through
+        c.save(); c.translate(cx + 120 * v * w / 1000, cy + 900 * v * v * w / 1000); c.rotate(0.9 * v); c.translate(-cx, -cy)
+        stamp(c, cx, cy, w, eo_expo(prog(t, tc + 0.04, tc + 0.12)) * fog * (1 - v)); c.restore()
+        return
     ts = tc + (0.6 if i == 11 else 0.04)                                                 # the last: the word first, then the stamp
     stamp(c, cx, cy, w, eo_expo(prog(t, ts, ts + 0.08)) * fog)
 
@@ -182,7 +204,7 @@ def side_items(D, sparse=False):
         z = 1 + j * SP - D
         if 0.3 <= z <= 15:
             side, Y, (name, bg) = SIDE[j]
-            items.append((z, ('s', side, Y, name, bg, j, j * SP >= D_DEAD)))
+            items.append((z, ('s', side, Y, name, bg, j, j * SP >= D_DEAD and name not in LISH_SET)))
     return items
 
 def draw_items(c, g, t, items, lab=True, flash=0.0):
@@ -225,12 +247,37 @@ def s_executions(c, g, t):
     reticle(c, g, t, R, eo_cubic(prog(t, B(288), B(288) + 0.3)), pulse(t, B(math.floor(kk)), 0.18))
     text(c, 'mono', f'MACH {1.2 + 0.035 * D:5.2f}', 130, 1000, 26, BONE, 0.75, track=0.15)
     text(c, 'monom', f'me.velocity  x{gr}', W - 130, 1000, 24, CYAN, 0.85, align='right', track=0.05)
+    song_line(c, g, t, 0.0)
+    pc = 0.0
+    for kb, v in CORRUPT:
+        if kk >= kb: pc = lerp(pc, v, eo_expo(prog(t, B(kb), B(kb) + 0.25)))
+    text(c, 'mono', f'data.corrupted  {int(round(pc)):3d} %', 960, 1000, 22, BONE, 0.7, align='center', track=0.1)
     fx['ab'] = 5 * kick + 2 * pulse(t, B(math.floor(kk)), 0.12) + 3 * fl + 0.6 * gr
     fx['flash'] = 0.12 * fl + 0.15 * pulse(t, B(288), 0.15)
     fx['glow'] = 0.9
     hud(c, t, True, a=0.6, log_a=0.85)
     return fx
 
+SONG_Y = 952
+def song_line(c, g, t, amp=0.0):
+    """v2: her song along the bottom -- flat while nobody sings, a burst on every call"""
+    text(c, 'mono', 'song', 130, SONG_Y - 14, 16, BONE, 0.45, track=0.2)
+    for cc, aa, lw in ((c, 0.55, 1.6), (g, 0.35, 3)):
+        rgba(cc, LISH, aa); cc.set_line_width(lw); cc.new_path()
+        for n_ in range(0, 241):
+            x = 200 + (W - 400) * n_ / 240
+            v = amp * math.sin(n_ * 0.9 - t * 30) * math.sin(math.pi * n_ / 240) * (0.6 + 0.4 * math.sin(n_ * 0.21 + t * 7))
+            (cc.move_to if n_ == 0 else cc.line_to)(x, SONG_Y - v)
+        cc.stroke()
+
+def shock(c, g, t, kb, x=VPX, y=VPY):
+    u = prog(t, B(kb), B(kb) + 0.7)
+    if not (0 < u < 1): return
+    r = 40 + 1500 * eo_cubic(u)
+    for cc, k_, lw in ((c, 0.7, 4 * (1 - u) + 1), (g, 0.5, 6)):
+        rgba(cc, LISH, k_ * (1 - u)); cc.set_line_width(lw); cc.new_path(); cc.arc(x, y, r, 0, 6.283); cc.stroke()
+
+CORRUPT = [(288, 12), (296, 33), (304, 60), (312, 88)]
 EX_AT = [(0.27, 0.30, 150), (0.74, 0.78, 190), (0.30, 0.82, 130), (0.72, 0.24, 170), (0.50, 0.16, 120), (0.22, 0.58, 200),
          (0.80, 0.52, 140), (0.50, 0.88, 160), (0.24, 0.20, 180), (0.76, 0.66, 210), (0.36, 0.48, 230), (0.50, 0.50, 300)]
 def s_doors(c, g, t):
@@ -255,6 +302,8 @@ def s_doors(c, g, t):
     for i, k in enumerate(EXE):                              # EXECUTION strobes once per call, somewhere new each time
         xr, yr, sz = EX_AT[i]
         slam_word(c, g, 'EXECUTION', t, B(k), xr * W, yr * H + sz * 0.35, sz, until=B(k) + (0.6 if i == 11 else 0.32), glow=0.5)
+    for k in EXE: shock(c, g, t, k)                         # v2: each call is her song coming back -- the trial
+    song_line(c, g, t, sum(46 * pulse(t, B(k), 0.45) for k in EXE))
     text(c, 'monom', f'world.runExecution();   x {n:2d} / 12', W - 130, 1000, 24, CYAN, 0.9, align='right', track=0.05)
     text(c, 'mono', f'MACH {1.2 + 0.035 * D:5.2f}' if kk < 342 else 'MACH  0.00', 130, 1000, 26, BONE, 0.75, track=0.15)
     fx['ab'] = sum(5 * pulse(t, B(k), 0.25) for k in EXE) + 4 * kick + 10 * crash

@@ -20,7 +20,7 @@ LOG.extend([(B(64), 'points = explode()'), (B(68), 'dim++'), (B(72), 'r = 1'), (
             (B(106.5), 'gyro: drift'), (B(111.5), 'v > c'), (B(116), 't < 0'), (B(119), 'touch(you)'),
             (B(121.5), 'touch = true'), (B(123), 'link.depth++')])
 LOG.sort(key=lambda e: e[0])
-from codelog import CODE_LOG
+from codelog import CODE_LOG, ADDED
 LOG[:] = CODE_LOG                 # the HUD now types the song's own source code
 
 def lyric(c, items, t, col=BONE, x=150, y=248, size=70, a=0.95):
@@ -1188,13 +1188,13 @@ def s_deeply(c, g, t):
             text(c, 'monom', 'ŌMETEŌTL', cx + 160 * Z + 40, cy - 120 * Z, 24, BONE, 0.8 * uc, track=0.15)
             text(c, 'mono', 'core  ·  bound', cx + 160 * Z + 40, cy - 120 * Z + 30, 18, RED, 0.8 * uc, track=0.15)
     if t >= to_pinky:
-        # the landing: her core is the one in her palm, and the thread ends on a pinky promise with the one who made her
+        # the landing: her core is the one in her palm, and the thread ends on a pinky promise with her (v2: Lishenna's hand)
         rc_end = 64 * 0.5 * 3.4
         uz = eo_expo(prog(t, to_pinky, to_pinky + P * 0.6))
         sc = lerp(rc_end / PINKY_CORE_R, 1.0, uz) * (1 + 0.025 * prog(t, to_pinky + P * 0.6, END2))
         ax, ay = lerp(960, PINKY_CORE[0], uz), lerp(540, PINKY_CORE[1], uz)
         c.save(); c.translate(ax, ay); c.scale(sc, sc); c.translate(-PINKY_CORE[0], -PINKY_CORE[1])
-        c.set_source_surface(surf('n_pinky_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD)
+        c.set_source_surface(surf('n_pinky2_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD)
         c.paint_with_alpha(prog(t, to_pinky - 0.01, to_pinky + 0.05))
         c.restore()
         kx, ky = ax + (PINKY_KNOT[0] - PINKY_CORE[0]) * sc, ay + (PINKY_KNOT[1] - PINKY_CORE[1]) * sc

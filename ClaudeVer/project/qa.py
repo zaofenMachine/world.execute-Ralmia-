@@ -2,9 +2,10 @@
 usage: python qa.py out.mp4"""
 import sys, os, cv2, numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
+QA = sys.argv[2] if len(sys.argv) > 2 else 'qa_v2'      # v2; qa/ keeps the v1 sheets
 P, T0 = 60 / 130, 0.34
 cap = cv2.VideoCapture(sys.argv[1]); fps = cap.get(5)
-os.makedirs(os.path.join(HERE, 'qa'), exist_ok=True)
+os.makedirs(os.path.join(HERE, QA), exist_ok=True)
 fr, d, prev, i = [], [], None, 0
 while True:
     ok, f = cap.read()
@@ -19,7 +20,7 @@ while True:
 for s in range(0, len(fr), 32):
     ch = fr[s:s + 32]
     while len(ch) % 4: ch.append(np.zeros_like(fr[0]))
-    cv2.imwrite(os.path.join(HERE, 'qa', f'q{s // 32}.jpg'), np.vstack([np.hstack(ch[j:j + 4]) for j in range(0, len(ch), 4)]))
+    cv2.imwrite(os.path.join(HERE, QA, f'q{s // 32}.jpg'), np.vstack([np.hstack(ch[j:j + 4]) for j in range(0, len(ch), 4)]))
 d = np.array(d); grid = T0 + np.arange(0, 2000) * P / 2
 ev = np.array([k for k in range(1, len(d) - 1) if d[k] > 12 and d[k] >= d[k - 1] and d[k] >= d[k + 1]]) / fps
 off = np.array([e - grid[np.argmin(abs(grid - e))] for e in ev]) * 1000

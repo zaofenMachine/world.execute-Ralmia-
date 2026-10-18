@@ -26,6 +26,8 @@ CYAN  = hexc('#62d8ea')
 RED   = hexc('#e5484d')
 GREY  = hexc('#6b7480')
 SEPIA = hexc('#2a2420')
+LISH  = hexc('#cf7fe6')   # v2: Lishenna's song only (wavefronts, melody lines) -- never on a figure, never on text
+LISH_P = hexc('#9b59c4')  # the same hue, one step darker, for paper
 
 # ---------------------------------------------------------------- easing
 def clamp(x, a=0.0, b=1.0): return a if x < a else b if x > b else x

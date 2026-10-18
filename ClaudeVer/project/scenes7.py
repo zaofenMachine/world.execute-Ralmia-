@@ -3,6 +3,8 @@ User-confirmed by ear: the count EINS..LIU on k344-349 (one per beat), the 13th 
 From Whisper (words_160.json) + vocal energy, not yet confirmed by ear: chorus-3 EXECUTION on beat 6 of every 8
 (k358 / 366 / 374), the two "trapped" k378 / 380, LOVE k390 / 397.5 / 406 / 414.5, the last EXECUTION
 k446.5 (the voice stops at k448 = 207.1 s; silence to the end).
+v2 (plan_v2b.md): "you" is Lishenna -- the rewind lands on her pinky promise, the god card is her hand, she walks off into
+a stage light; in the last two layers of the escape the rings round Ralmia are her song; the film ends on me.hum().
 Brightness: the count and Act V are ink (the blackboard is a dark board, chalk in bone); Act VI peels the system
 away layer by layer until the paper underneath shows; the end goes back to black."""
 import re
@@ -15,6 +17,7 @@ K_BACK = 371.5                   # user: half a beat later than Whisper
 TRAPPED = [378.0, 380.0]
 LOVE = [390.0, 397.5, 406.0, 414.5]
 K_ESC, FINAL_EX, K_SILENCE = 416.0, 446.5, 448.0
+END_T = 211.9                    # = render.END (the song is 211.97 s)
 FLOAT_HAND = (1180, 655)               # her right hand in n_floating (canvas px)
 LAUNCH_HAND = (1460, 450)              # her forward hand in n_dash_launch
 REACH_CORE = (1153, 837)               # palm core in n_reach
@@ -281,7 +284,7 @@ def s_ch3c(c, g, t):
         z = eio_cubic(prog(t, B(K_BACK - 1.5), B(K_BACK)))
         w = lerp(860, W + 4, z); h = w * 9 / 16
         x, y = (W - w) / 2, (H - h) / 2
-        win(c, x, y, w, h, 'n_pinky_hd', None, 'sim #0001  ·  you & me', 1.0)
+        win(c, x, y, w, h, 'n_pinky2_hd', None, 'sim #0001  ·  you & me', 1.0)
         shut = 1 - eo_cubic(clamp(rws * 1.6))                     # the shutters slide back open
         if shut > 0:
             rgba(c, INK, 1); c.rectangle(x, y, w / 2 * shut, h); c.rectangle(x + w - w / 2 * shut, y, w / 2 * shut, h); c.fill()
@@ -338,7 +341,7 @@ def creation_split(c, d):
         c.line_to(CR_TP[0] - px_ * L + side * nx * L, CR_TP[1] - py_ * L + side * ny * L)
         c.line_to(CR_TP[0] + px_ * L + side * nx * L, CR_TP[1] + py_ * L + side * ny * L); c.close_path(); c.clip()
         c.translate(side * nx * d, side * ny * d)
-        c.set_source_surface(surf('n_creation_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint()
+        c.set_source_surface(surf('n_creation2_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint()
         c.restore()
     rgba(c, (0.08, 0.06, 0.05), 1); c.set_line_width(2 * d)
     c.move_to(CR_TP[0] + px_ * L, CR_TP[1] + py_ * L); c.line_to(CR_TP[0] - px_ * L, CR_TP[1] - py_ * L); c.stroke()
@@ -567,7 +570,8 @@ def s_love(c, g, t):
         fx['vig'] = 0.7; fx['grain'] = 0.05
         hud(c, t, True, a=0.45, log_a=0.8)
         return fx
-    # "you are free, I am trapped in LOVE": he walks off into the light; she stays, a point cloud in the cube;
+    # "you are free, I am trapped in LOVE": Lishenna walks off into a stage light, the idol everyone looks up to (v2);
+    # Ralmia stays, a point cloud in the cube;
     # the heart, stretched through the cube's wall, still ties the two of them
     fill_bg(c, INK)
     lx, ly = 1560, 470
@@ -575,9 +579,10 @@ def s_love(c, g, t):
     rg.add_color_stop_rgba(0, *BONE, 0.55); rg.add_color_stop_rgba(1, *BONE, 0)
     g.set_source(rg); g.arc(lx, ly, 700, 0, 6.283); g.fill()
     rgba(c, BONE, 0.08); c.arc(lx, ly, 260, 0, 6.283); c.fill()
+    stick_motes(c, t, lx, ly + 40, 420, 0.7, n=120)
     walk = eio_cubic(prog(t, B(408), B(416)))
     hsc = lerp(0.62, 0.36, walk); hx_ = lerp(1300, 1500, walk); hfeet = lerp(1010, 760, walk)
-    img(c, 'n_creator_walk_hd', hx_, hfeet, hsc, 1 - 0.3 * walk, *WALK_FEET)
+    img(c, WALK, hx_, hfeet, hsc, 1 - 0.3 * walk, *WALK_FEET)
     his = xform(WALK_PINKY, WALK_FEET, (hx_, hfeet), hsc)
     # the cube, her inside it as points
     CX, CY, CS_ = 560, 560, 210
@@ -632,6 +637,19 @@ def s_escape(c, g, t):
         if int((t - B(K_SILENCE)) * 1.6) % 2 == 0:
             rgba(c, BONE, 0.85); c.rectangle(130, 990 - 30, 16, 30); c.fill()
         text(c, 'mono', 'touch = true', 170, 990, 26, RED, 0.85 * eo_cubic(u))
+        # v2: the song has stopped and she is still humming it -- the last thing in the film
+        uh = prog(t, B(K_SILENCE) + 2.0, B(K_SILENCE) + 2.6); fade = 1 - prog(t, END_T - 0.6, END_T)
+        if uh > 0:
+            text(c, 'mono', type_on('me.hum();', t, B(K_SILENCE) + 2.0, 0.05), 170, 1030, 20, BONE, 0.55 * fade)
+            reach = prog(t, B(K_SILENCE) + 2.5, B(K_SILENCE) + 4.2)
+            for cc, aa, lw in ((c, 0.7, 1.4), (g, 0.4, 3)):
+                rgba(cc, LISH, aa * fade); cc.set_line_width(lw); cc.new_path()
+                for n_ in range(0, 161):
+                    x = 300 + 360 * n_ / 160
+                    if n_ / 160 > reach: break
+                    e = math.sin(math.pi * n_ / 160) * (0.6 + 0.4 * math.sin(t * 1.3 + n_ * 0.05))
+                    (cc.move_to if n_ == 0 else cc.line_to)(x, 1023 - 5 * e * math.sin(n_ * 0.28 - t * 2.2))
+                cc.stroke()
         fx['grain'] = 0.03; fx['vig'] = 1.0
         return fx
     def peel(i): return prog(t, B(PEEL[i]), B(PEEL[i]) + 0.9)
@@ -681,7 +699,7 @@ def s_escape(c, g, t):
             if v >= 1: continue
             c.save(); c.translate(x + tw / 2, y + th / 2 + 900 * v * v); c.scale(1 - v * 0.6, 1); c.translate(-tw / 2, -th / 2)
             c.rectangle(0, 0, tw, th); c.clip()
-            c.set_source_surface(surf(f'frag_{i:02d}'), 0, 0); c.paint_with_alpha(0.55 * (1 - v))
+            c.set_source_surface(surf(f'{FRAG_PREFIX}_{i:02d}'), 0, 0); c.paint_with_alpha(0.55 * (1 - v))
             c.restore()
     # ---- the window wall -- flies past us at k424
     if pc[1] < 1:
@@ -701,8 +719,8 @@ def s_escape(c, g, t):
         for kb in range(max(416, math.floor(kk) - 2), math.floor(kk) + 1):
             u = prog(t, B(kb), B(kb) + 1.4)
             if 0 < u < 1:
-                for cc, aa in ((c, 0.5), (g, 0.35 if not paper else 0)):
-                    rgba(cc, SEPIA if paper else CYAN, aa * (1 - u)); cc.set_line_width(2.5 * (1 - u) + 0.5)
+                for cc, aa in ((c, 0.5 if not paper else 0.7), (g, 0.35 if not paper else 0)):
+                    rgba(cc, LISH_P if paper else CYAN, aa * (1 - u)); cc.set_line_width(2.5 * (1 - u) + 0.5)   # paper: her song
                     cc.new_path(); cc.arc(cx, cy, 60 + 1100 * eo_cubic(u), 0, 6.283); cc.stroke()
         rnd = np.random.default_rng(17); ang = rnd.random(150) * 6.283; ph = rnd.random(150)
         for a_, p_ in zip(ang[:30 + 24 * npeel], ph[:30 + 24 * npeel]):

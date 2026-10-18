@@ -1,5 +1,5 @@
 """HUD boot log = the song's own source code (Mili, 'GodDrinksJava', published with the song), one line per lyric line.
-Lines written by me for the instrumental passages are marked as // comments.
+Lines written by me for the instrumental passages are marked as // comments; the v2 additions are listed in ADDED.
 (time, text). Imported by scenes3.py, which replaces scenes.LOG with this list."""
 from lib import B
 
@@ -16,6 +16,7 @@ CODE_LOG = [
     (B(32), '// run'),
     (B(36), '// v -> 340.29 m/s'),
     (B(40), '// mach > 1'),
+    (B(42), '// song.v = 340.29 m/s -> too slow'),
     (B(44), '// v -> c'),
     (B(48), '// touch(target)'),
     (B(52), '// d /= 2'),
@@ -78,13 +79,21 @@ CODE_LOG = [
     (B(272), 'try {'),
     (B(276), 'me.setOpinion(me.getOpinionIndex("you are here"), false);'),
     (B(283), '} catch (IllegalArgumentException e) {'),
+    (B(284), '// too late to refuse.'),
     (B(285), 'world.announce("God is always true.");'),
     # ---- interlude (no voice): first person, one gear up every 8 beats
     (B(288), '// me.accelerate()'),
-    (B(296), '// v *= 2'),
-    (B(312), '// v *= 2'),
+    (B(296), 'me.update();  // data corrupted'),
+    (B(304), 'me.update();  // data corrupted'),
+    (B(312), 'me.update();  // data corrupted'),
 ] + [(B(320 + 2 * i), 'world.runExecution();') for i in range(12)] + [
     # PENDING (HANDOFF 2.3): the count, the 13th EXECUTION and the pull must be re-timed into k342-352 by ear.
     # was: announce("1".."6") on k325.5 + 0.75 i, runExecution k330, isExecutableBy k332, setExecution k340
     (B(348), 'if (world.getThingIndex(you) != -1) {'),
+    (B(350.25), '// me.isBreakable() == false'),
+    (B(351), 'me.releaseCoreLimit();'),
+    (B(366), '// optics: sublimated'),
 ]
+# v2 lines (Ralmia x Lishenna, from the cards; plan_v2b.md). Not part of GodDrinksJava: the bridge's wall of source code skips them
+ADDED = {'// song.v = 340.29 m/s -> too slow', '// too late to refuse.', 'me.update();  // data corrupted',
+         '// me.isBreakable() == false', 'me.releaseCoreLimit();', '// optics: sublimated'}

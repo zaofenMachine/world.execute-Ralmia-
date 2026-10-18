@@ -36,11 +36,11 @@ def win(c, x, y, w, h, name, bg=None, label='', a=1.0, pan=0.0):
     if label and bar > 10: text(c, 'mono', label, x + 6, y + bar * 0.74, bar * 0.6, BONE, 0.8 * a)
     rgba(c, BONE, 0.55 * a); c.set_line_width(1.1); c.rectangle(x, y, w, h); c.stroke()
 
-POOL = [('n_pinky_hd', None), ('n_world_hd', None), ('n_eye_open_hd', None), ('n_hand_palm_hd', PAPER),
+POOL = [('n_pinky2_hd', None), ('n_world_hd', None), ('n_eye_open_hd', None), ('n_hand_palm_hd', PAPER),
         ('n_portrait_hd', None), ('n_dash_full_hd', INK2), ('n_hand_tied_hd', None), ('n_world_line', None),
         ('n_floating_hd', INK2), ('n_her_front_hd', PAPER), ('n_wL1_night_hd', None), ('n_eye_closed_hd', None),
         ('n_dash_launch_hd', INK2), ('n_hand_gap_hd', None), ('n_portrait_line', None), ('n_wL1_hd', None)]
-LINE_OF = {'n_pinky_hd': 'n_pinky_line', 'n_world_hd': 'n_world_line', 'n_eye_open_hd': 'n_eye_open_line',
+LINE_OF = {'n_pinky2_hd': 'n_pinky2_line', 'n_world_hd': 'n_world_line', 'n_eye_open_hd': 'n_eye_open_line',
            'n_portrait_hd': 'n_portrait_line', 'n_hand_tied_hd': 'n_hand_tied_line', 'n_eye_closed_hd': 'n_eye_closed_line',
            'n_hand_gap_hd': 'n_hand_gap_line', 'n_wL1_hd': 'n_wL1_line'}
 
@@ -125,6 +125,7 @@ def padlock(c, g, x, y, s, u, col=BONE):
     c.restore()
 
 # ================================================================ S21 CHORUS 1  [B128, B160)
+STAGE_SCREENS = [(63, 149, 510, 434), (601, 103, 1318, 439), (1409, 149, 1856, 434)]   # n_stage (gen/_qa/round4/anchors_v2.json)
 GRID_LV = [(128, 1), (130, 2), (132, 4), (133, 8)]
 def grid_rects(n, u, cx=960, cy=600, tot=1500):
     gap = 6 if n >= 8 else 12
@@ -147,7 +148,7 @@ def wall(c, g, t, dim=1.0, flash=0.0, cy=600, tot=1500, labels=True):
         s = lerp(1.0, 0.62, eio_cubic(prog(t, B(128), B(129))))
         w, h = W * s, H * s
         win(c, 960 - w / 2, cy - h / 2 * (1 if s < 1 else 1) + (540 - cy) * (1 - prog(t, B(128), B(129))), w, h,
-            'n_pinky_hd', None, 'sim #0001  ·  you & me' if labels else '', dim)
+            'n_pinky2_hd', None, 'sim #0001  ·  you & me' if labels else '', dim)
         return
     for (x, y, w, h, k) in grid_rects(n, u, cy=cy, tot=tot):
         name, bg = POOL[(k * 7 + n) % len(POOL)] if k else POOL[0]
@@ -171,25 +172,30 @@ def s_chorus1(c, g, t):
         fx['ab'] = 3 * sum(pulse(t, B(kb), 0.2) for kb, _ in GRID_LV[1:]) + 6 * pulse(t, B(134), 0.25)
         fx['flash'] = 0.3 * pulse(t, B(134), 0.1) + 0.8 * (1 - prog(t, B(128), B(128) + 0.18)) ** 2
     elif t < B(144):
-        # B: him at his desk; her simulations fill his three monitors, re-rendering on every beat; his satisfaction fills
+        # B (v2): Lishenna on her stage; behind her, three giant screens play the simulations Ralmia made, re-rendering on
+        # every beat; the sea of light sticks breathes with the beat and goes up on SATISFACTION
         s_ = 1.0 + 0.06 * eio_cubic(prog(t, B(136), B(144)))
         def cam(cc):
-            cc.translate(960, 300); cc.scale(s_, s_); cc.translate(-960, -300)
+            cc.translate(960, 420); cc.scale(s_, s_); cc.translate(-960, -420)
         c.save(); cam(c)
-        c.set_source_surface(surf('n_lab_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint()
+        c.set_source_surface(surf('n_stage_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint()
         c.push_group()
         beat = math.floor(kk)
-        for r_ in range(3):
-            for k_ in range(12):
-                x = 356 + k_ * 101; y = 112 + r_ * 86
-                idx = (k_ * 7 + r_ * 3 + beat * 5) % len(POOL)
-                name, bg = POOL[idx]
-                win(c, x, y, 99, 84, name, bg, '', 1.0, pan=math.sin(t * 2 + k_))
-                fl = pulse(t, B(beat), 0.25) * (((k_ + r_ + beat) % 3) == 0)
-                if fl > 0.02: rgba(c, CYAN, 0.4 * fl); c.rectangle(x, y, 99, 84); c.fill()
-        pat = c.pop_group(); c.set_source(pat); c.mask_surface(surf('n_lab_screens'), 0, 0)
+        for si, (x0, y0, x1, y1) in enumerate(STAGE_SCREENS):
+            cols = 6 if si == 1 else 4; gp = 3
+            cw = (x1 - x0 - gp * (cols - 1)) / cols; ch = cw * 9 / 16
+            for r_ in range(int((y1 - y0) / (ch + gp)) + 1):
+                for k_ in range(cols):
+                    x = x0 + k_ * (cw + gp); y = y0 + r_ * (ch + gp)
+                    name, bg = POOL[(k_ * 7 + r_ * 3 + si * 11 + beat * 5) % len(POOL)]
+                    win(c, x, y, cw, ch, name, bg, '', 1.0, pan=math.sin(t * 2 + k_))
+                    fl = pulse(t, B(beat), 0.25) * (((k_ + r_ + si + beat) % 3) == 0)
+                    if fl > 0.02: rgba(c, CYAN, 0.4 * fl); c.rectangle(x, y, cw, ch); c.fill()
+        pat = c.pop_group(); c.set_source(pat); c.mask_surface(surf('n_stage_screens'), 0, 0)
         c.restore()
-        g.save(); cam(g); rgba(g, (1, 0.92, 0.8), 0.25 + 0.2 * pulse(t, B(beat), 0.3)); g.mask_surface(surf('n_lab_screens'), 0, 0); g.restore()
+        g.save(); cam(g); rgba(g, (1, 0.92, 0.8), 0.22 + 0.2 * pulse(t, B(beat), 0.3)); g.mask_surface(surf('n_stage_screens'), 0, 0); g.restore()
+        sat = pulse(t, B(141.75), 1.4)
+        g.save(); cam(g); rgba(g, (1, 0.78, 0.9), 0.35 + 0.45 * pulse(t, B(beat), 0.35) + 0.9 * sat); g.mask_surface(surf('n_stage_sticks'), 0, 0); g.restore()
         levels = [(137, 0.15), (138, 0.30), (139, 0.45), (140, 0.60), (141, 0.80), (141.75, 1.0)]
         lv = 0.0
         for kb, v in levels:
@@ -200,7 +206,7 @@ def s_chorus1(c, g, t):
         text(c, 'monom', f'{int(round(lv * 100)):3d} %', gx1, gy - 18, 22, CYAN, 0.95, align='right')
         line(c, gx0, gy + 10, gx1, gy + 10, BONE, 0.25, 6)
         for cc, aa in ((c, 1), (g, 0.7)): line(cc, gx0, gy + 10, lerp(gx0, gx1, lv), gy + 10, CYAN, aa, 6)
-        slam_word(c, g, 'SATISFACTION', t, B(141.75), 960, 640, 200, key='bold')
+        slam_word(c, g, 'SATISFACTION', t, B(141.75), 150, 958, 158, key='bold', align='left')   # over the crowd, clear of her
         words_ol(c, [('Then', 63.12), ('I', 63.33), ('can,', 63.69), ('then', 64.09), ('I', 64.27), ('can', 64.61), ('be', 64.87),
                      ('your', 65.09), ('only', 65.35)], t, 150, 1040, 62)
         fx['ab'] = 5 * pulse(t, B(141.75), 0.25) + 2 * pulse(t, B(136), 0.2)
@@ -270,7 +276,7 @@ def s_chorus1(c, g, t):
         fx['ab'] = 6 * pulse(t, B(150), 0.3) + 2 * pulse(t, B(math.floor(kk)), 0.15) * run
         fx['flash'] = 0.35 * pulse(t, B(150), 0.12)
     else:
-        # D: trapped -- the windows fold into a cage around the two of them; two locks
+        # D: trapped -- the windows fold into a cage around the two of them (v2: her and Lishenna); two locks
         uc = eo_cubic(prog(t, B(152), B(152) + 0.6))
         rx, ry = -0.3, 0.5 + 0.25 * (t - B(152))
         s = 300
@@ -301,7 +307,7 @@ def s_chorus1(c, g, t):
                     cc.move_to(*Pp[a][:2]); cc.line_to(*Pp[b][:2]); cc.stroke()
         edges_draw(False)
         figure(c, 'n_offer_hd', 850, 760, 0.40, uc, (960, 1035))
-        figure(c, 'n_creator_back_hd', 1090, 760, 0.40, uc)
+        figure(c, 'n_lish_stand_hd', 1125, 760, 0.385, uc)          # v2: Lishenna, turned towards her
         edges_draw(True)
         for kb, vi, lab in ((155, 0, 'world.lockThing(me);'), (156, 7, 'world.lockThing(you);')):
             if t >= B(kb) - 0.15:
@@ -585,7 +591,7 @@ def s_verse2(c, g, t):
             text(c, 'monom', 'me.purr();', x0_, y0_ - 20, 26, ink, ua)
             text(c, 'mono', '25 Hz', x0_ + w_, y0_ - 20, 22, ink, 0.7 * ua, align='right')
     else:
-        # god: her hand from above, his from below (creation_inverse, split along the gap); they close and touch on k189
+        # god: her hand from above, Lishenna's from below (creation_inverse_v2, split along the gap); they close and touch on k189
         TP = (948, 463); AX = (0.82, 0.57)
         d = 150 * (1 - eio_cubic(prog(t, B(184), B(189)))) + 4
         push = 1.0 + 0.05 * prog(t, B(184), B(192))
@@ -599,7 +605,7 @@ def s_verse2(c, g, t):
             c.line_to(TP[0] - px_ * L + side * nx * L, TP[1] - py_ * L + side * ny * L)
             c.line_to(TP[0] + px_ * L + side * nx * L, TP[1] + py_ * L + side * ny * L); c.close_path(); c.clip()
             c.translate(side * AX[0] * d, side * AX[1] * d)
-            c.set_source_surface(surf('n_creation_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint()
+            c.set_source_surface(surf('n_creation2_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint()
             c.restore()
         if d > 6:                                     # the dark seam between them
             nx, ny = AX; px_, py_ = -ny, nx
@@ -780,24 +786,27 @@ def s_switch(c, g, t):
         fx['ab'] = sum(5 * pulse(t, B(k), 0.2) for k in cuts[:2]) + (4 + 3 * random.Random(int(t * 60)).random() if kk >= K_FL else 0)
         hud(c, t, True, a=0.6)
     else:
-        # the trance: slow rings, the two of them adrift, colour turning over
+        # the trance: the two of them adrift around one centre; the rings are Lishenna's humming, going out from her (v2)
         fill_bg(c, INK)
         tt = t - B(216)
-        for k in range(14):
-            r = (k * 85 + tt * 46) % 1190
-            rgba(c, BONE, 0.16 * (1 - r / 1190) * min(1, r / 120)); c.set_line_width(1.5 + r / 500)
-            c.new_path(); c.arc(960, 540, r, 0, 6.283); c.stroke()
         a_ = 0.38 * tt + 0.6
+        pos = lambda ta, who: (960 + 300 * math.cos(0.38 * ta + 0.6 + who * math.pi), 540 + 120 * math.sin(0.38 * ta + 0.6 + who * math.pi))
+        for n_ in range(int(tt / (P / 2)) + 1):
+            te = n_ * P / 2; r = (tt - te) * 260
+            if r > 1500: continue
+            ex, ey = pos(te, 1)
+            aa = 0.5 * (1 - r / 1500) * min(1, r / 80) * (1.0 if n_ % 2 == 0 else 0.55)
+            for cc, k_, lw in ((c, 1.0, 1.6 + r / 600), (g, 0.4, 3)):
+                rgba(cc, LISH, aa * k_); cc.set_line_width(lw); cc.new_path(); cc.arc(ex, ey, r, 0, 6.283); cc.stroke()
         for who in (0, 1):
-            an = a_ + who * math.pi
-            x, y = 960 + 300 * math.cos(an), 540 + 120 * math.sin(an)
-            c.save(); c.translate(x, y); c.rotate((0.25 if who == 0 else -0.3) * tt + who * 2.6)
+            x, y = pos(tt, who)
+            c.save(); c.translate(x, y); c.rotate(0.25 * tt if who == 0 else -0.22 * tt + 0.7)
             if who == 0:
                 c.scale(0.5, 0.5); c.translate(-961, -552)
                 c.set_source_surface(surf('n_floating_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint_with_alpha(0.95)
             else:
-                c.scale(0.42, 0.42); c.translate(-985, -540)
-                c.set_source_surface(surf('n_creator_walk_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint_with_alpha(0.95)
+                c.scale(0.44, 0.44); c.translate(-966, -551)
+                c.set_source_surface(surf('n_lish_float_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint_with_alpha(0.95)
             c.restore()
         # bleach: on the first "trance" a breath of light, on the second the whole dream whitens into paper
         # (never a grey mix: the light floods in, the paper is swapped in under full white, then the white recedes)

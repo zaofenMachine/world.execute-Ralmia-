@@ -1,0 +1,47 @@
+{
+  "status": "complete",
+  "generator": "built-in image_gen",
+  "request": "request_v2b.md",
+  "canonical": "lishenna_ref_sheet.png",
+  "style_references": [
+    "listen_profile.png",
+    "lishenna_stand.png"
+  ],
+  "assets": [
+    {
+      "asset": "lishenna_front.png",
+      "prompt": "Use case stylized-concept. Asset L7: one single full-body character sprite, landscape1672x941, REAL ALPHA TRANSPARENT background, used primarily as a silhouette mask.\nImage1 is APPROVED Lishenna master character reference. Image2 listen_profile and Image3 lishenna_stand are STYLE ONLY references (not the pose or camera).\nFRONTAL composition: Lishenna standing facing EXACTLY STRAIGHT AT VIEWER, head, torso, hips and both feet frontal, balanced nearly symmetrical posture, eye-level neutral lens. Do NOT copy the three-quarter pose in Image3. Both arms open slightly downward and OUTWARD about35degrees from torso, hands around hip height, palms facing viewer. Her ANATOMICAL RIGHT hand (on viewer LEFT) holds ONE handheld microphone naturally with fingers curled around handle, palm oriented forward; her left hand (viewer RIGHT) open and relaxed, five natural fingers.\nCRITICAL SILHOUETTE: each sleeve/forearm separated from side of torso by a generous clear ALPHA GAP, at least40px wide at waist level. Long hair stays mostly behind the central body and hips, and MUST NOT fill these arm-to-torso gaps. Both gold-rimmed round speaker discs hover beside head, one on either side, with clear alpha gaps at least25px between discs and hair/head/head ornaments. No accessory intersects face or head. These are actual empty holes in alpha, not dark painted regions.\nCentered x836, entire subject including head ornaments top near y23 and full sneaker soles near y918, about95% frame height, no clipping. Generous transparent space at both sides. Small confident slightly smug smile, blue-violet eyes looking straight ahead.\nEXACT approved outfit: long coral-pink hair with straight bangs, black-white checker hairband and paired upright black rabbit-ear-like ornaments with cyan designs; TWO separate gold-rimmed dark floating speaker discs cyan sigils; white offshoulder jacket with restrained puffy sleeves and cyan shoulder accents, opaque sleeveless white top, black collar, cyan neckbow and cyan tie, PURE BLACK high-waisted SHORTS without pale sideinserts/flaps or stripes, approved vertical narrow silver scroll buckle/gold buttons and black suspender straps, opaque black thighhighs, white chunky sneakers purple laces/yellow accents/cyan sole trim. Bare natural hands, no gloves.\nClean thin anime lineart, flat celshade, little soft secondary shadow, gently warm palette matching references. Fully clothed, neutral upright presentation; no low-angle, no legs towards camera, no floor/shadowplane/scenery, no godlike effects or code, no threads or familiars. No text, logo, signature, watermark, extra people or duplicate pose.",
+      "references": [
+        "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_ref_sheet.png",
+        "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\listen_profile.png",
+        "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_stand.png"
+      ],
+      "source": "C:\\Users\\zaofenMachine\\.codex\\generated_images\\01a1408d-5dd4-7781-ab21-3edd8fac2f3c\\exec-1a01cba0-6cca-4a4a-baa8-571da9cae7ed.png",
+      "revisions": [
+        {
+          "prompt": "Precise local silhouette correction on Image1. Image2 approved Lishenna master reference, Image3 listen_profile and Image4 lishenna_stand are style references.\nThe present pose FAILS the required silhouette: HAIR fills both arm-to-body spaces. Fix that. Open both arms much farther outward, hands around x500 and x1170 at y450 on1672x941. Upperarms slope OUTWARD from shoulders, puffy sleeve cuffs entirely outside the torso silhouette. Palms toward viewer, right hand viewerLEFT holds microphone, left palm viewerRIGHT open, same modest performance gesture. This should look like confidently welcoming the entire audience.\nMOST IMPORTANT: gather the long hair BEHIND THE CENTRAL TORSO in a narrow rear cascade, not across the space between sleeves and hips. Keep the same hair length below waist, but central hair width at waist y400..550 roughly x740..930. Draw a large clear TRANSPARENT WINDOW between each arm and the body: left gap approximately x640..735 y395..525, right gap x935..1030 y395..525. At least60px of clear empty alpha at y450 on both sides. No strand may bridge these gaps. Keep natural hair volume above shoulders and below hand height, but no connection from hair to sleeves along those windows. Empty alpha holes must be visibly obvious.\nAlso move the two floating discs about50px farther outward from head, symmetrically, each with at least30px transparent gap from any hair, ear ornament or head.\nKeep the EXACT existing face, central torso and attire, approved silver scroll, pureblack shorts, legs and feet, frontal head direction, smile, canvas and scale. Full body no cropping, whole subject centered, roughly95%height. Only change arms/hand placement, outerhair flow and disc offsets needed for clean silhouette. True transparent background. Same clean anime celshading, no text/logos/effects/shadowplane.",
+          "references": [
+            "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_front.png",
+            "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_ref_sheet.png",
+            "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\listen_profile.png",
+            "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_stand.png"
+          ],
+          "source": "C:\\Users\\zaofenMachine\\.codex\\generated_images\\01a1408d-5dd4-7781-ab21-3edd8fac2f3c\\exec-f93fc522-d788-4794-93e2-43e341bdf695.png"
+        }
+      ],
+      "final_source": "C:\\Users\\zaofenMachine\\.codex\\generated_images\\01a1408d-5dd4-7781-ab21-3edd8fac2f3c\\exec-f93fc522-d788-4794-93e2-43e341bdf695.png"
+    },
+    {
+      "asset": "lishenna_sing_profile.png",
+      "prompt": "Use case identity-preserve / precise-object-edit. Image1 listen_profile.png is the COMPOSITION AND PAPER-BACKGROUND EDIT TARGET. Image2 approved Lishenna sheet is IDENTITY/OUTFIT authority. Image3 Lishenna stand is additional cel-anime STYLE reference.\nReplace Ralmia's portrait in Image1 with LISHENNA, while keeping the target's same canvas1672x941, warm paper background, eyelevel head-and-shoulders side-profile framing, face location and facial scale. This creates the singing partner to the existing listening portrait. Do not merely recolor Ralmia; draw Lishenna's correct face/hair/clothing.\nLeft-facing PROFILE of Lishenna, exactly facing the LEFT edge, nose tip near x730 y500, lips near x785 y575, chin near x855 y665 (approximate targets matching Image1); head and shoulders fill the same right-side region. The leftmost40% of canvas stays large clean EMPTY PAPER with the SAME paper hue/texture as Image1. Long CORAL-PINK hair with straight bangs flows to RIGHT edge, not left. EYES CLOSED, lips slightly parted softly singing, relaxed absorbed expression. Nose/lips/chin silhouette clearly readable and unobscured.\nShe holds ONE handheld microphone near chin from below, mic grille around x670 y655, always at least50px away from lips, pointed diagonally upward toward mouth. Grille must NOT cover her mouth, nose, cheek or facial outline. Natural bare hand partly visible below holding handle. No mechanical fingers or cyan palm core.\nOnly ONE of her floating gold-rimmed speaker discs is visible BEHIND her head on the rear/right side, roughly near x1400 y230; never in front of face. Head accessories are the approved black-white checker hairband and paired black rabbit-ear-like loops seen in profile, consistently mounted; cropping of the upper hair accessories may follow the tight reference framing. No Ralmia temple gem, no red neckbow.\nClothing visible at shoulders: white offshoulder puffy jacket with cyan shoulder accents over opaque sleeveless white top, black collar, CYAN neckbow and tie. Exactly same Diva outfit, no alternative costume.\nKeep Image1's gently warm palette, clean anime outlines and flat celshadows, little soft secondary shade. Keep actual paper background outside replaced figure unchanged as possible. No neonpaint, text, logo, signature, effects, waves, threads, familiars or other characters. OPAQUE paper background.",
+      "references": [
+        "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\listen_profile.png",
+        "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_ref_sheet.png",
+        "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_stand.png"
+      ],
+      "source": "C:\\Users\\zaofenMachine\\.codex\\generated_images\\01a1408d-5dd4-7781-ab21-3edd8fac2f3c\\exec-eca1870f-94ee-4b5e-9154-a55befa521eb.png"
+    }
+  ],
+  "postprocessing": "L8 is generated as a portrait replacement edit of listen_profile. Original paper pixels restored outside the figure/hand edit union under prior user permission. L7 alpha retained as generated. QA silhouette/side-by-side are derived previews only.",
+  "validation": "_qa/round5/validation.json"
+}

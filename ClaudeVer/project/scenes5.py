@@ -30,46 +30,130 @@ def wxf(x, y, push=1.0):
     pan = 34 * (WREF - B(24.5)); zoom = (1.035 + 0.02) * push
     return 960 - pan + (x - 960) * zoom, 540 + (y - 540) * zoom, zoom
 HIM_AT = (515, 842)            # beside her on the ledge (L4 coords); she stands at ~ (648, 836)
-WALK_FEET = (985, 1050); WALK_H = 1022     # n_creator_walk canvas: feet, figure height
-WALK_PINKY = (800, 560)
+# v2: "you" is Lishenna. n_lish_walk (prep7.py, anchors in gen/_qa/round4/anchors_v2.json): feet, height, her little finger
+WALK = 'n_lish_walk_hd'
+WALK_FEET = (974, 1060); WALK_H = 1050
+WALK_PINKY = (689, 618)
 
-def him_in_world(c, push, a=1.0, h=250):
+def him_in_world(c, push, a=1.0, h=232):
     X, Y, z = wxf(*HIM_AT, push)
-    img(c, 'n_creator_walk_hd', X, Y, h / WALK_H * z, a, *WALK_FEET)
+    img(c, WALK, X, Y, h / WALK_H * z, a, *WALK_FEET)
     return X, Y, h / WALK_H * z
 
 def ecg(tt):
-    """his heartbeat: lub on the beat, dub on the 16th after"""
+    """v1: his heartbeat (kept for reference; v2 uses song())"""
     if tt < B(224): return 0.0
     f = ((tt - T0) / P) % 1.0
     return (70 * math.exp(-((f - 0.02) / 0.012) ** 2) - 24 * math.exp(-((f - 0.055) / 0.016) ** 2)
             + 34 * math.exp(-((f - 0.27) / 0.014) ** 2) - 10 * math.exp(-((f - 0.30) / 0.016) ** 2))
+
+# v2 + L8: from k227.5 ("feel") the shot opens into two profiles face to face: Ralmia listening (left, facing right),
+# Lishenna singing (right, facing left); her voice crosses the gap and reaches Ralmia. n_listen is already mirrored.
+HAS_SING = os.path.exists(f'{WORK}/assets/n_lish_sing_hd.png')
+K_SPLIT = 227.5
+R_NOSE, L_NOSE, L_MOUTH = (1080, 580), (872, 615), (905, 643)     # n_listen / n_lish_sing canvas px
+DX_R, DX_L, DY_L = 600 - R_NOSE[0], 1320 - L_NOSE[0], -25
+def vibrations_split(c, g, t, kk):
+    u = eo_expo(prog(t, B(K_SPLIT), B(K_SPLIT) + 0.3))
+    push = 1.0 + 0.02 * prog(t, B(K_SPLIT), B(232))
+    s0 = 1.0 + 0.05 * eio_cubic(prog(t, B(224), B(232)))                # continue the push of the first half
+    img(c, 'n_listen_hd', 960 + DX_R * u, 540, lerp(s0, push, u))
+    c.push_group()
+    img(c, 'n_lish_sing_hd', 960 + lerp(1400, DX_L, u), 540 + DY_L, push)
+    pat = c.pop_group()
+    xr = 960 + lerp(1400, DX_L, u) - 560                       # her paper melts into Ralmia's
+    ramp = cairo.LinearGradient(xr, 0, xr + 170, 0); ramp.add_color_stop_rgba(0, 0, 0, 0, 0); ramp.add_color_stop_rgba(1, 0, 0, 0, 1)
+    c.set_source(pat); c.mask(ramp)
+    if u < 0.999: return
+    # her voice, from her lips to Ralmia, travelling left at the speed of the line
+    mx, my = L_MOUTH[0] + DX_L, L_MOUTH[1] + DY_L; ex, ey = R_NOSE[0] + DX_R + 40, 640
+    spd = 900
+    for who in (0, 1):
+        for cc, aa, lw in ((c, 1, 2.6), (g, 0.55 if who else 0.35, 4)):
+            rgba(cc, (LISH_P if cc is c else LISH) if who == 0 else CYAN, aa); cc.set_line_width(lw); cc.new_path()
+            started = False
+            for n_ in range(0, 241):
+                f = n_ / 240; x = lerp(mx, ex, f); y0 = lerp(my, ey, f)
+                tt = t - (mx - x) / spd                             # older song further from her mouth
+                if tt < B(K_SPLIT) + 0.3: break
+                taper = min(1, f * 12) * min(1, (1 - f) * 8)
+                if who == 0: v = song(tt) * taper
+                else:
+                    if t < B(K_VIB) or f < 0.35: continue          # Ralmia's own wave starts at her lips on VIBRATIONS
+                    grow = prog(t, B(K_VIB), B(K_VIB) + 0.8)
+                    if (1 - f) > grow * 0.65: continue
+                    vib = prog(t, B(K_VIB), B(K_VIB) + 0.6)
+                    v = (0.85 * song(tt) + 20 * math.sin(2 * math.pi * 4.33 * tt + 1.1 * vib * math.sin(2 * math.pi * 5.5 * tt))) * taper
+                (cc.move_to if not started else cc.line_to)(x, y0 - v); started = True
+            if started: cc.stroke()
+            else: cc.new_path()
+    rg = cairo.RadialGradient(ex - 30, ey, 0, ex - 30, ey, 60)                # where it arrives
+    rg.add_color_stop_rgba(0, *LISH, 0.25 * song_env(t - (mx - ex) / spd)); rg.add_color_stop_rgba(1, *LISH, 0)
+    g.set_source(rg); g.arc(ex - 30, ey, 60, 0, 6.283); g.fill()
+
+VIB_WORDS = [103.72, 103.92, 104.32, 104.74, 104.86, 105.22, 105.46, 105.76]
+def song_env(tt):
+    if tt < B(224) - 0.05: return 0.0
+    e = 0.0
+    for o in VIB_WORDS:
+        if tt >= o: e = max(e, (1 - math.exp(-(tt - o) / 0.025)) * (0.25 + 0.75 * math.exp(-(tt - o) / 0.32)))
+    if tt >= B(K_VIB): e = max(e, (1 - math.exp(-(tt - B(K_VIB)) / 0.03)) * (0.55 + 0.45 * math.exp(-(tt - B(K_VIB)) / 1.2)))
+    return e
+
+def song(tt):
+    """v2: Lishenna's voice as a line -- one swell per sung syllable, a carrier with vibrato in it"""
+    e = song_env(tt)
+    if e <= 0: return 0.0
+    return 44 * e * math.sin(2 * math.pi * 6.5 * tt + 0.9 * math.sin(2 * math.pi * 5.5 * tt))
+
+STICK_COLS = [hexc('#f4a7c4'), hexc('#fff1e0'), hexc('#e9a3d8')]       # the crowd's light sticks: pink, warm white (never cyan/red)
+def stick_motes(c, t, cx, cy, R, a=1.0, n=90, seed=31):
+    """light-stick glints drifting up in a stage light"""
+    rr = np.random.default_rng(seed); ang = rr.random(n) * 6.283; d = rr.random(n) ** 0.6; ph = rr.random(n); kind = rr.integers(0, 3, n)
+    for k in range(n):
+        f = (t * 0.12 + ph[k]) % 1.0
+        x = cx + math.cos(ang[k]) * R * d[k] * 1.3; y = cy + math.sin(ang[k]) * R * d[k] * 0.8 - 120 * f
+        aa = a * math.sin(math.pi * f) * (0.4 + 0.6 * abs(math.sin(t * 3 + ph[k] * 9)))
+        rgba(c, STICK_COLS[kind[k]], aa); c.arc(x, y, 2.2 + 2 * (1 - d[k]), 0, 6.283); c.fill()
 
 # ================================================================ S24 CHORUS 2  [B224, B256)
 def s_chorus2(c, g, t):
     fx = {}
     kk = (t - T0) / P
     if t < B(232):
-        # A — VIBRATIONS: she listens; his heartbeat and her wave converge into one line
+        # A — VIBRATIONS: she listens; Lishenna's voice and her wave converge into one line. on VIBRATIONS her pure sine
+        # takes on the vibrato (v2; was his heartbeat)
         paper_bg(c)
+        split = HAS_SING and t >= B(K_SPLIT)
+        if split:
+            vibrations_split(c, g, t, kk)
+            words(c, 'serif', [('If', 103.72), ('I', 103.92), ('can,', 104.32), ('if', 104.74), ('I', 104.86), ('can', 105.22),
+                               ('feel', 105.46), ('your', 105.76)], t, 640, 230, 58, SEPIA, 0.95)
+            if t >= B(K_VIB):
+                slam_word(c, g, 'VIBRATIONS', t, B(K_VIB), 975, 470, 118, key='bold', col=INK, align='center', ol=PAPER, glow=0.5)
+            fx['ab'] = 5 * pulse(t, B(K_VIB), 0.25) + 1.5 * pulse(t, B(math.floor(kk)), 0.12) + 4 * pulse(t, B(K_SPLIT), 0.2)
+            fx['vig'] = 0.4; fx['grain'] = 0.03
+            hud(c, t, False, a=0.6, log_a=0.85)
+            return fx
         img(c, 'n_listen_hd', 960, 540, 1.0 + 0.05 * eio_cubic(prog(t, B(224), B(232))))
         rgba(c, PAPER, 0.8); c.rectangle(0, 880, W, 160); c.fill()
         merge = eio_cubic(prog(t, B(227.5), B(K_VIB)))
         pen = 1560; spd = 760
         for who in (0, 1):
             base = 960 + (36 if who == 0 else -36) * (1 - merge)
-            for cc, aa, lw in ((c, 1, 2.6), (g, 0.55 if who else 0.0, 4)):
-                if aa <= 0: continue
-                rgba(cc, SEPIA if who == 0 else CYAN, aa); cc.set_line_width(lw); cc.new_path()
-                for s in range(0, 241):
-                    x = pen * s / 240; tt = t - (pen - x) / spd
-                    v = ecg(tt) if who == 0 else 16 * math.sin(2 * math.pi * 4.33 * tt) * (0.5 + 0.5 * prog(tt, B(224), B(K_VIB)))
-                    if who == 1 and tt >= B(K_VIB): v = ecg(tt) + 22 * math.sin(2 * math.pi * 4.33 * tt)
+            for cc, aa, lw in ((c, 1, 2.6), (g, 0.55 if who else 0.3, 4)):
+                rgba(cc, (LISH_P if cc is c else LISH) if who == 0 else CYAN, aa); cc.set_line_width(lw); cc.new_path()
+                for s in range(0, 321):
+                    x = pen * s / 320; tt = t - (pen - x) / spd
+                    v = song(tt) if who == 0 else 16 * math.sin(2 * math.pi * 4.33 * tt) * (0.5 + 0.5 * prog(tt, B(224), B(K_VIB)))
+                    if who == 1 and tt >= B(K_VIB):
+                        vib = prog(tt, B(K_VIB), B(K_VIB) + 0.6)
+                        v = 0.85 * song(tt) + 20 * math.sin(2 * math.pi * 4.33 * tt + 1.1 * vib * math.sin(2 * math.pi * 5.5 * tt))
                     (cc.move_to if s == 0 else cc.line_to)(x, base - v)
                 cc.stroke()
             if t < B(K_VIB):
                 text(c, 'mono', 'you' if who == 0 else 'me', pen + 18, base + 6, 20, SEPIA if who == 0 else CYAN, 0.8)
-        rgba(c, SEPIA, 1); c.arc(pen, 960 - ecg(t), 6, 0, 6.283); c.fill()
+        rgba(c, LISH_P, 1); c.arc(pen, 960 - song(t), 6, 0, 6.283); c.fill()
         words(c, 'serif', [('If', 103.72), ('I', 103.92), ('can,', 104.32), ('if', 104.74), ('I', 104.86), ('can', 105.22),
                            ('feel', 105.46), ('your', 105.76)], t, 1180, 380, 64, SEPIA, 0.95)
         if t >= B(K_VIB):
@@ -113,16 +197,16 @@ def s_chorus2(c, g, t):
         dark = True
         if j == 0:
             paper_bg(c); s_ = 1 + 0.03 * lp; dark = False
-            img(c, 'n_pinky_hd', 960, 540, s_); img(c, 'n_pinky_alone_hd', 960, 540, s_, u)
+            img(c, 'n_pinky2_hd', 960, 540, s_); img(c, 'n_pinky2_alone_hd', 960, 540, s_, u)
         elif j == 1:
             s_ = 1.04 + 0.03 * lp
-            img(c, 'n_lab_hd', 960, 540, s_); img(c, 'n_lab_empty_hd', 960, 540, s_, u)
+            img(c, 'n_stage_hd', 960, 540, s_); img(c, 'n_stage_empty_hd', 960, 540, s_, u)        # after the show
         elif j == 2:
             push = 1.05 + 0.03 * lp
             world_at(c, g, WREF, 0.0, push); dark = False
             X, Y, sc = him_in_world(c, push, 1 - u)
             if u > 0:                                   # he comes apart into points that drift up and away
-                xs, ys, col, rr, nz = alpha_points('n_creator_walk_hd')
+                xs, ys, col, rr, nz = alpha_points(WALK)
                 px = X + (xs - WALK_FEET[0]) * sc + nz[:, 0] * 40 * u + 60 * u * rr
                 py = Y + (ys - WALK_FEET[1]) * sc - 260 * u * (0.4 + rr) + nz[:, 1] * 12 * u
                 a_ = (1 - u) ** 0.7 * min(1, u * 6)
@@ -137,28 +221,29 @@ def s_chorus2(c, g, t):
             for a, b in edges: line(c, Pp[a][0], Pp[a][1], Pp[b][0], Pp[b][1], BONE, 0.7, 2)
             img(c, 'n_offer_hd', 860, 770, 0.4, 1, 960, 1034)
             # the select-and-delete of world.removeThing(you)
-            hx, hy = 1080, 770
+            hx, hy = 1110, 770
             if u < 1:
-                img(c, 'n_creator_walk_hd', hx, hy, 0.4 * 0.92, 1 - u, *WALK_FEET)
+                img(c, 'n_lish_stand_hd', hx, hy, 0.385, 1 - u, 960, 1050)
             sel = prog(t, B(k0) + P * 0.25, B(k0) + P * 0.5)
             if 0 < sel and u < 1:
                 c.set_dash([6, 5]); rgba(c, CYAN, 0.9); c.set_line_width(2)
-                c.rectangle(hx - 100, hy - 400, 200, 410); c.stroke(); c.set_dash([])
-                text(c, 'mono', 'you', hx - 100, hy - 412, 18, CYAN, 0.9)
+                c.rectangle(hx - 118, hy - 398, 236, 408); c.stroke(); c.set_dash([])
+                text(c, 'mono', 'you', hx - 118, hy - 410, 18, CYAN, 0.9)
             if u > 0:
                 text(c, 'mono', 'removed', hx, hy - 180, 20, GREY, 0.8 * (1 - prog(t, B(k1) - 0.2, B(k1))), align='center')
             for vi in (0, 7):
                 px, py = Pp[vi][:2]
                 padlock(c, g, px, py, 40, 1 - u if vi == 7 else 1)
         elif j == 4:
-            # he walks away into the light; the thread between them goes slack and falls
+            # she walks away into the stage light; the thread between them goes slack and falls
             fill_bg(c, BONE)
             rg = cairo.RadialGradient(1180, 380, 40, 1180, 380, 1100)
             rg.add_color_stop_rgba(0, 1, 1, 1, 1); rg.add_color_stop_rgba(1, *PAPER, 1)
             c.set_source(rg); c.paint()
+            stick_motes(c, t, 1180, 420, 520, 0.55)
             w_ = eio_cubic(lp)
-            sc = lerp(0.62, 0.22, w_); X, Y = lerp(980, 1180, w_), lerp(1090, 760, w_)
-            img(c, 'n_creator_walk_hd', X, Y, sc, 1 - 0.7 * prog(t, B(k1) - 0.3, B(k1)), *WALK_FEET)
+            sc = lerp(0.60, 0.21, w_); X, Y = lerp(980, 1180, w_), lerp(1090, 760, w_)
+            img(c, WALK, X, Y, sc, 1 - 0.7 * prog(t, B(k1) - 0.3, B(k1)), *WALK_FEET)
             hx, hy = X + (WALK_PINKY[0] - WALK_FEET[0]) * sc, Y + (WALK_PINKY[1] - WALK_FEET[1]) * sc
             for cc, aa, lw in ((c, 1, 4), (g, 0.5, 7)):
                 rgba(cc, RED, aa); cc.set_line_width(lw); cc.new_path()
@@ -215,11 +300,12 @@ def s_chorus2(c, g, t):
     return fx
 
 # ================================================================ S25 BRIDGE  [B256, B288)
+FRAG_PREFIX = 'frag2' if os.path.exists(f'{WORK}/assets/frag2.json') else 'frag'     # v2 tiles (prep7.py frag), else v1's
 FRAG = None
 def frag_layout():
     global FRAG
     if FRAG is None:
-        meta = json.load(open(f'{WORK}/assets/frag.json'))
+        meta = json.load(open(f'{WORK}/assets/{FRAG_PREFIX}.json'))
         tw, th, gp = 150, 84, 6; x0 = (W - (12 * tw + 11 * gp)) / 2; y0 = 300
         r = random.Random(3)
         dels = [m['i'] for m in meta if not m['keep']]; r.shuffle(dels)
@@ -227,6 +313,54 @@ def frag_layout():
         FRAG = dict(meta=meta, tw=tw, th=th, gp=gp, x0=x0, y0=y0, when=when,
                     tries=[m['i'] for m in meta if m['keep']][::5][:4])
     return FRAG
+
+# v2 "Challenging your God": the god is Lishenna, and she is made of the program's own source code. a giant of code lines
+# behind the wall Ralmia pushes on; on ILLEGAL ARGUMENTS her song (lavender) comes out of her and breaks on Ralmia.
+# silhouette: L7 n_lish_front once delivered, else n_lish_stand mirrored so that she faces Ralmia
+GOD_FIG = 'n_lish_front_hd' if os.path.exists(f'{WORK}/assets/n_lish_front_hd.png') else 'n_lish_stand_hd'
+GOD_FLIP = GOD_FIG == 'n_lish_stand_hd'
+GOD_AT, GOD_SC = (720, 1700), 1.62            # feet far below the frame: head to thighs fill it
+if GOD_FLIP:
+    GOD_MOUTH = (960, 252)                     # canvas px (n_lish_stand; on the axis, so the mirror keeps it)
+    HER_AT, HER_SC, POP_X = (1300, 1120), 0.95, 640
+else:                                          # L7 n_lish_front: arms open; Ralmia's palm on the wall meets her open hand
+    GOD_MOUTH, GOD_PALM = (953, 268), (1335, 428)
+    HER_SC = 1.05
+    _gp = (GOD_AT[0] + (GOD_PALM[0] - 960) * GOD_SC, GOD_AT[1] + (GOD_PALM[1] - 1050) * GOD_SC)
+    HER_AT = (_gp[0] - (1125 - 979) * HER_SC + 10, _gp[1] - (195 - 1045) * HER_SC + 6)    # n_back_reach: palm (1125, 195), feet (979, 1045)
+    POP_X = 1100
+def god_xf(cc):
+    cc.translate(*GOD_AT); cc.scale(-GOD_SC if GOD_FLIP else GOD_SC, GOD_SC); cc.translate(-960, -1050)
+def god_pt(p):
+    return GOD_AT[0] + (p[0] - 960) * GOD_SC * (-1 if GOD_FLIP else 1), GOD_AT[1] + (p[1] - 1050) * GOD_SC
+
+def god_of_code(c, g, t, lines_):
+    ug = eo_cubic(prog(t, B(272), B(K_GOD) + 0.6))
+    if ug <= 0: return
+    c.save(); god_xf(c); rgba(c, BONE, 0.07 * ug); c.mask_surface(surf(GOD_FIG), 0, 0); c.restore()
+    c.push_group()
+    lh2 = 25; scroll2 = (t - B(272)) * 120
+    f2 = int(scroll2 // lh2)
+    for n in range(f2, f2 + 48):
+        s_ = lines_[(n * 7) % len(lines_)]; y = n * lh2 - scroll2
+        for col_x in (60 + 24 * (n % 5), 640 + 24 * ((n + 2) % 5), 1180 + 24 * ((n + 4) % 5)):
+            text(c, 'mono', s_, col_x, y, 19, BONE, 1.0)
+    pat = c.pop_group()
+    c.save(); c.set_source(pat); god_xf(c); c.mask_surface(surf(GOD_FIG), 0, 0); c.restore()
+    c.save(); god_xf(c); rgba(c, BONE, 0.34 * ug); c.mask_surface(surf(GOD_FIG.replace('_hd', '_line')), 0, 0); c.restore()
+    if ug < 1:                                       # still coalescing: cover what has not arrived yet
+        c.save(); god_xf(c); rgba(c, INK, 1 - ug); c.mask_surface(surf(GOD_FIG), 0, 0); c.restore()
+
+def god_song(c, g, t, target):
+    mx, my = god_pt(GOD_MOUTH)
+    hits = [K_GOD] + [K_ILL + 0.5 * i for i in range(10)]
+    for kb in hits:
+        u = prog(t, B(kb), B(kb) + 0.9)
+        if not (0 < u < 1): continue
+        r = 30 + 1900 * eo_cubic(u)
+        for cc, k_, lw in ((c, 0.75, 3.0 * (1 - u) + 1), (g, 0.5, 5)):
+            rgba(cc, LISH, k_ * (1 - u)); cc.set_line_width(lw); cc.new_path(); cc.arc(mx, my, r, 0, 6.283); cc.stroke()
+    return mx, my
 
 def s_bridge(c, g, t):
     fx = {}
@@ -250,7 +384,7 @@ def s_bridge(c, g, t):
             if t >= B(264) and m['keep']: bright = 1.0
             elif t >= B(264): bright = 0.5
             c.save(); c.rectangle(x, y, tw, th); c.clip()
-            c.set_source_surface(surf(f'frag_{i:02d}'), x, y); c.paint_with_alpha(ua * bright); c.restore()
+            c.set_source_surface(surf(f'{FRAG_PREFIX}_{i:02d}'), x, y); c.paint_with_alpha(ua * bright); c.restore()
             rgba(c, BONE, 0.35 * ua * bright); c.set_line_width(1); c.rectangle(x + 0.5, y + 0.5, tw - 1, th - 1); c.stroke()
             if kd is not None and kd - 0.25 <= kk < kd:          # selected, about to go
                 rgba(c, CYAN, 0.9); c.set_line_width(3); c.rectangle(x - 2, y - 2, tw + 4, th + 4); c.stroke()
@@ -260,7 +394,7 @@ def s_bridge(c, g, t):
                 rgba(g, BONE, 0.25 * pulse(t, B(K_DISH), 0.8)); g.rectangle(x, y, tw, th); g.fill()
         ndel = sum(1 for i, kd in L['when'].items() if kk >= kd)
         text(c, 'mono', f'memory  {96 - ndel:2d} / 96 frames', x0, y0 - 16, 18, BONE, 0.6, track=0.15)
-        # failed deletes on the frames that have him in them
+        # failed deletes on the frames that have her (Lishenna) in them
         for n, i in enumerate(L['tries']):
             kt = 265 + n * 1.25
             if not (B(kt) - 0.2 <= t < B(kt) + 0.9): continue
@@ -295,20 +429,22 @@ def s_bridge(c, g, t):
         fx['flash'] = 0.25 * pulse(t, B(256), 0.1)
         hud(c, t, True, a=0.6, log_a=0.85)
         return fx
-    # C — Challenging your God: she pushes against the wall of her own source code
+    # C — Challenging your God: she pushes against the wall of her own source code -- and the god behind it is Lishenna (v2)
     fill_bg(c, INK)
-    lines_ = [s for _, s in CODE_LOG if not s.startswith('//')] * 3
+    lines_ = [s for _, s in CODE_LOG if not s.startswith('//') and s not in ADDED] * 3
     lh = 48; scroll = (t - B(272)) * 70
     first = int(scroll // lh)
     hot = t >= B(K_GOD)
     for n in range(first, first + 26):
         s = lines_[n % len(lines_)]; y = 80 + n * lh - scroll
         god = ('God' in s or 'god' in s)
-        a_ = 0.22 if not (god and hot) else 0.9
+        a_ = (0.22 - 0.1 * eo_cubic(prog(t, B(272), B(K_GOD) + 0.6))) if not (god and hot) else 0.9   # v2: dims as she forms
         text(c, 'mono', s, 120 + 40 * (n % 3), y, 30, CYAN if (god and hot) else BONE, a_)
         if god and hot: text(g, 'mono', s, 120 + 40 * (n % 3), y, 30, CYAN, 0.5 * pulse(t, B(math.floor(kk)), 0.4) + 0.2)
+    god_of_code(c, g, t, lines_)
+    god_song(c, g, t, None)
     # her, back to us, hand on the wall
-    sc = 0.95; bx, by = 1300, 1120
+    sc = HER_SC; bx, by = HER_AT
     img(c, 'n_back_reach_hd', bx, by, sc, 1, 979, 1045)
     px, py = bx + (1125 - 979) * sc, by + (195 - 1045) * sc
     for kb in range(272, 288):
@@ -328,9 +464,9 @@ def s_bridge(c, g, t):
         c.stroke()
         st = ['Exception in thread "main"', '  java.lang.IllegalArgumentException', '    at Thing.setOpinion(Thing.java:617)',
               '    at GodDrinksJava.main(GodDrinksJava.java:3691)']
-        rgba(c, BONE, 0.95); c.rectangle(640, 110, 760, 40 + 38 * 4); c.fill()
+        rgba(c, BONE, 0.95); c.rectangle(POP_X, 110, 760, 40 + 38 * 4); c.fill()
         for n, s in enumerate(st):
-            text(c, 'monom' if n < 2 else 'mono', type_on(s, t, B(K_ILL) + n * 0.12, 0.008), 660, 150 + n * 38, 22, INK, 1)
+            text(c, 'monom' if n < 2 else 'mono', type_on(s, t, B(K_ILL) + n * 0.12, 0.008), POP_X + 20, 150 + n * 38, 22, INK, 1)
     words_ol(c, [('Challenging', 126.14), ('your', 127.20), ('God,', 127.60)] if t < B(277.6) else
              [('you', 128.66), ('have', 129.28), ('made', 129.48), ('some', 129.98)], t, 150, 248 if t < B(K_ILL) else 1040, 66)
     slam_word(c, g, 'ILLEGAL', t, B(K_ILL), 120, 560, 220, align='left')
