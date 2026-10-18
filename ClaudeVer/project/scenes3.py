@@ -595,6 +595,24 @@ def s_infinity(c, g, t):
 
 # ================================================================ S15 OSCILLOSCOPE  [B95, B103)
 SX0, SY0, SX1, SY1 = 160, 150, 1760, 930
+# v2 round 2: on CURRENT the scope goes to X-Y mode and the beam draws her face; AC = it alternates between her and
+# Lishenna on every 8th; DC = both, steady, then flattened into the line. masks: prep7.py (n_scope_*, 960x540)
+_SCF = {}
+_SYY, _SXX = np.mgrid[0:540, 0:960].astype(np.float32)
+def face_trace(c, g, name, t, col, a=1.0, wob=1.0, reveal=1.0, squash=0.0):
+    if a <= 0.01: return
+    if name not in _SCF: _SCF[name] = cv2.imread(f'{WORK}/assets/{name}.png', cv2.IMREAD_GRAYSCALE).astype(np.float32)
+    m = _SCF[name]
+    if wob > 0:
+        ph = t * 9
+        m = cv2.remap(m, _SXX + wob * (0.9 * np.sin(_SYY / 11 + ph) + 0.6 * np.sin(_SYY / 37 - ph * 1.7)), _SYY, cv2.INTER_LINEAR)
+    if reveal < 1: m = m.copy(); m[int(540 * reveal):] = 0
+    arr = np.ascontiguousarray(np.clip(m * a, 0, 255).astype(np.uint8))
+    sf = cairo.ImageSurface.create_for_data(arr, cairo.FORMAT_A8, 960, 540, 960)
+    for cc, k in ((c, 1.0), (g, 0.55 if col is CYAN else 0.3)):
+        cc.save(); cc.translate(0, 540); cc.scale(1, max(1 - squash, 0.004)); cc.translate(0, -540); cc.scale(2, 2)
+        rgba(cc, col, k); cc.mask_surface(sf, 0, 0); cc.restore()
+
 def trace_y(x, t, A, lam):
     ph = math.pi * (t - B(95)) / P
     return 540 + A * math.sin(2 * math.pi * (x - SX0) / lam - ph)
@@ -636,8 +654,9 @@ def s_scope(c, g, t):
         c.rectangle(x, SY0 + 12, 58, 30); c.fill() if on else c.stroke()
         text(c, 'monom', md, x + 29, SY0 + 35, 20, INK if on else BONE, (1 if on else 0.4) * ga, align='center')
     text(c, 'mono', '50 ms/div      f = 2.17 Hz      130 BPM', SX0 + 14, SY1 - 18, 20, BONE, 0.5 * ga, track=0.1)
+    xy = prog(t, B(K_CURRENT) - 0.05, B(K_CURRENT) + 0.12)          # v2: X-Y mode from CURRENT
     # trace with phosphor persistence
-    for k, aa in ((3, 0.12), (2, 0.25), (1, 0.45), (0, 1.0)):
+    for k, aa in ((3, 0.12 * (1 - xy)), (2, 0.25 * (1 - xy)), (1, 0.45 * (1 - xy)), (0, 1.0 - 0.9 * xy)):
         tt = t - k / 60
         Ak = A
         for cc, a2, lw, col in ((c, aa, 3, CYAN), (g, aa * 0.8, 5, CYAN)):
@@ -648,7 +667,27 @@ def s_scope(c, g, t):
             x = x0_; cc.move_to(x, trace_y(x, tt, Ak, lam))
             while x < x1_: x = min(x1_, x + 6); cc.line_to(x, trace_y(x, tt, Ak, lam))
             cc.stroke()
-    # CURRENT rides the wave
+    # v2: the faces, drawn by the beam
+    if t >= B(K_CURRENT):
+        rv = prog(t, B(K_CURRENT), B(K_CURRENT) + P)
+        if rv < 1:                                                    # the raster beam drawing her in
+            by_ = 40 + 1000 * rv
+            line(c, SX0, by_ - 40, SX1, by_ - 40, CYAN, 0.6, 2); line(g, SX0, by_ - 40, SX1, by_ - 40, CYAN, 0.8, 4)
+        sq = eio_cubic(fade_out)
+        if t < B(K_AC):
+            face_trace(c, g, 'n_scope_ralmia', t, CYAN, 1.0, 1.0, min(1.0, rv * 1.04))
+        elif t < B(K_DC):
+            n8 = int((t - B(K_AC)) / (P / 2)); f8 = ((t - B(K_AC)) / (P / 2)) % 1.0
+            sw = 1 - prog(f8, 0, 0.18)                                # a flash of both at each switch
+            who, oth = ('n_scope_ralmia', 'n_scope_lish') if n8 % 2 == 0 else ('n_scope_lish', 'n_scope_ralmia')
+            face_trace(c, g, who, t, CYAN if who == 'n_scope_ralmia' else BONE, 1.0, 1.6)
+            face_trace(c, g, oth, t, CYAN if oth == 'n_scope_ralmia' else BONE, 0.5 * sw, 1.6)
+        else:
+            face_trace(c, g, 'n_scope_ralmia', t, CYAN, 0.9, 0.0, 1.0, sq)
+            face_trace(c, g, 'n_scope_lish', t, BONE, 0.9, 0.0, 1.0, sq)
+        text(c, 'monom', 'X-Y', SX1 - 228, SY0 + 35, 20, CYAN, 0.9 * (1 - fade_out), align='center')
+        text(c, 'mono', 'CH1  me' + ('      CH2  you' if t >= B(K_AC) else ''), SX0 + 14, SY0 + 64, 20, BONE, 0.6 * (1 - fade_out), track=0.1)
+    # CURRENT rides along the top
     if B(K_CURRENT) <= t < B(K_AC):
         f = fonts()['heavy']; size = 170
         lv = 1 - prog(t, B(99.75), B(K_AC))
@@ -657,25 +696,25 @@ def s_scope(c, g, t):
             u = prog(t, ti, ti + 0.1)
             if u <= 0: continue
             x = 330 + i * 190
-            y = 380 + 0.3 * (trace_y(x + 40, t, A, lam) - 540)
+            y = 300 + 0.15 * (trace_y(x + 40, t, A, lam) - 540) - 60 * (i % 2)
             gl_ = f.glyphs(ch, x, y, size)[0]
             c.new_path(); f.glyph_path(c, gl_['g'], x, y - 40 * (1 - eo_back(u, 2)), size)
             rgba(c, BONE, lv * min(1, u * 3)); c.fill()
     # AC: letters made of a wave; DC: flat and solid
-    f = fonts()['heavy']; size = 560
+    f = fonts()['heavy']; size = 330
     if B(K_AC) <= t < B(K_DC):
         ua = eo_expo(prog(t, B(K_AC), B(K_AC) + 0.15)) * (1 - prog(t, B(101.75), B(K_DC)))
         amp = 16 + 22 * pulse(t, B(beat), 0.3) + 10 * pulse(t, B(beat + 0.5), 0.2)
         ph = math.pi * (t - B(95)) / P * 2
-        c.new_path(); f.text_path(c, 'AC', 960, 760, size, align='center', track=0.04)
+        c.new_path(); f.text_path(c, 'AC', 1700, 900, size, align='right', track=0.04)
         warp_path(c, lambda x, y: (x, y + amp * math.sin(x / 42 - ph)))
         rgba(c, INK, 0.88 * ua); c.fill_preserve()
         rgba(c, BONE, ua); c.set_line_width(4); c.stroke()
     if t >= B(K_DC):
         ud = eo_expo(prog(t, B(K_DC), B(K_DC) + 0.12))
         s_ = 1.12 - 0.12 * ud
-        c.save(); c.translate(960, 760); c.scale(s_, s_); c.translate(-960, -760)
-        text(c, 'heavy', 'DC', 960, 760, size, BONE, ud * (1 - fade_out), align='center', track=0.04)
+        c.save(); c.translate(1700, 900); c.scale(s_, s_); c.translate(-1700, -900)
+        text(c, 'heavy', 'DC', 1700, 900, size, BONE, ud * (1 - fade_out), align='right', track=0.04)
         c.restore()
     pat = c.pop_group()
     # CRT turn-on (mirror of the 14.7 s turn-off)

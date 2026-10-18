@@ -22,6 +22,7 @@ FLOAT_HAND = (1180, 655)               # her right hand in n_floating (canvas px
 LAUNCH_HAND = (1460, 450)              # her forward hand in n_dash_launch
 REACH_CORE = (1153, 837)               # palm core in n_reach
 CHALK = (1752, 124)                    # chalk tip in n_blackboard
+STAGE_HAND = (1040, 613)               # Lishenna's outstretched hand in n_stage
 
 def red_line(c, g, pts, w=4.0, ga=0.5):
     for cc, aa, lw in ((c, 1, w), (g, ga, w * 1.8)):
@@ -570,52 +571,73 @@ def s_love(c, g, t):
         fx['vig'] = 0.7; fx['grain'] = 0.05
         hud(c, t, True, a=0.45, log_a=0.8)
         return fx
-    # "you are free, I am trapped in LOVE": Lishenna walks off into a stage light, the idol everyone looks up to (v2);
-    # Ralmia stays, a point cloud in the cube;
-    # the heart, stretched through the cube's wall, still ties the two of them
+    # v2 round 2: "you are free, I am trapped in LOVE" -- her stage again (63 s). she sings, free, the whole house lit
+    # for her; Ralmia is trapped in the giant screen behind her, a point cloud in the cube; the heart-shaped thread runs
+    # from Ralmia's hand in the screen down to Lishenna's outstretched hand. nobody walks anywhere: the camera pushes in
     fill_bg(c, INK)
-    lx, ly = 1560, 470
-    rg = cairo.RadialGradient(lx, ly, 0, lx, ly, 700)
-    rg.add_color_stop_rgba(0, *BONE, 0.55); rg.add_color_stop_rgba(1, *BONE, 0)
-    g.set_source(rg); g.arc(lx, ly, 700, 0, 6.283); g.fill()
-    rgba(c, BONE, 0.08); c.arc(lx, ly, 260, 0, 6.283); c.fill()
-    stick_motes(c, t, lx, ly + 40, 420, 0.7, n=120)
     walk = eio_cubic(prog(t, B(408), B(416)))
-    hsc = lerp(0.62, 0.36, walk); hx_ = lerp(1300, 1500, walk); hfeet = lerp(1010, 760, walk)
-    img(c, WALK, hx_, hfeet, hsc, 1 - 0.3 * walk, *WALK_FEET)
-    his = xform(WALK_PINKY, WALK_FEET, (hx_, hfeet), hsc)
-    # the cube, her inside it as points
-    CX, CY, CS_ = 560, 560, 210
+    zc = (960, 470); zs = 1.26 + 0.12 * walk + 0.03 * pulse(t, B(LOVE[3]), 0.6)
+    def cam(cc): cc.translate(*zc); cc.scale(zs, zs); cc.translate(-zc[0], -zc[1])
+    T = lambda p: (zc[0] + (p[0] - zc[0]) * zs, zc[1] + (p[1] - zc[1]) * zs)
+    beat = math.floor(kk)
+    c.save(); cam(c)
+    c.set_source_surface(surf('n_stage_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint()
+    c.push_group()
+    fill_bg(c, INK2)
+    for si, (x0, y0, x1, y1) in enumerate(STAGE_SCREENS):
+        if si == 1: continue
+        cols = 4; gp = 3; cw = (x1 - x0 - gp * (cols - 1)) / cols; ch = cw * 9 / 16
+        for r_ in range(int((y1 - y0) / (ch + gp)) + 1):
+            for k_ in range(cols):
+                name, bg = POOL[(k_ * 7 + r_ * 3 + si * 11 + beat * 5) % len(POOL)]
+                win(c, x0 + k_ * (cw + gp), y0 + r_ * (ch + gp), cw, ch, name, bg, '', 0.45)
+    # the centre screen: her, trapped -- the cube, and the point cloud in it
+    CX, CY, CS_ = 960, 268, 118
+    rgba(c, INK, 1); c.rectangle(*STAGE_SCREENS[1][:2], STAGE_SCREENS[1][2] - STAGE_SCREENS[1][0], STAGE_SCREENS[1][3] - STAGE_SCREENS[1][1]); c.fill()
+    for yy in range(STAGE_SCREENS[1][1], STAGE_SCREENS[1][3], 6): line(c, STAGE_SCREENS[1][0], yy, STAGE_SCREENS[1][2], yy, CYAN, 0.035, 1)
     ry, rx = 0.5 + 0.2 * (t - B(408)), -0.3
     V = [(x, y, z) for x in (-CS_, CS_) for y in (-CS_, CS_) for z in (-CS_, CS_)]
     Pp = [proj(*rot3(x, y, z, rx, ry), cx=CX, cy=CY) for (x, y, z) in V]
     edges = [(a, b) for a in range(8) for b in range(a + 1, 8) if bin(a ^ b).count('1') == 1]
-    for cc, aa, lw, col in ((c, 0.8, 2.0, BONE), (g, 0.3, 3, CYAN)):
-        rgba(cc, col, aa); cc.set_line_width(lw)
-        for a, b in edges: cc.move_to(Pp[a][0], Pp[a][1]); cc.line_to(Pp[b][0], Pp[b][1])
-        cc.stroke()
+    rgba(c, BONE, 0.8); c.set_line_width(1.6)
+    for a_, b_ in edges: c.move_to(Pp[a_][0], Pp[a_][1]); c.line_to(Pp[b_][0], Pp[b_][1])
+    c.stroke()
     X, Y, col, rr, nn = alpha_points('n_floating_hd', 2600, 8)
-    k_ = 0.34
-    px = CX + (X - 961) * k_ + nn[:, 0] * 1.5; py = CY + (Y - 552) * k_ + nn[:, 1] * 1.5 + 6 * math.sin(t * 2)
-    draw_points(c, px, py, CYAN, 0.75, 2.2)
-    hers = (CX + (FLOAT_HAND[0] - 961) * k_, CY + (FLOAT_HAND[1] - 552) * k_)
-    wall = (CX + CS_ * 0.95, CY - 20)                              # where it goes through the wall
-    st = 1 + 1.6 * walk + 0.15 * pulse(t, B(LOVE[3]), 0.8)       # the heart, pulled long
-    hs_ = 4.2
-    heart = [(wall[0] + 40 + hs_ * st * 16 * math.sin(a) ** 3 * 1.0 + hs_ * st * 12 * (1 - math.cos(a)) * 0,
-              wall[1] - hs_ * (13 * math.cos(a) - 5 * math.cos(2 * a) - 2 * math.cos(3 * a) - math.cos(4 * a))) for a in np.linspace(0, 2 * math.pi, 120)]
-    hx0 = min(p[0] for p in heart); hx1 = max(p[0] for p in heart)
-    heart = [(lerp(wall[0], wall[0] + (his[0] - wall[0]) * 0.45, (p[0] - hx0) / max(1, hx1 - hx0)), p[1]) for p in heart]
-    sag = 40 * (1 - walk)
-    left = [(lerp(hers[0], wall[0], s), lerp(hers[1], wall[1], s) + sag * math.sin(math.pi * s)) for s in np.linspace(0, 1, 20)]
-    hr = max(p[0] for p in heart)
-    right = [(lerp(hr, his[0], s), lerp(wall[1], his[1], s) + sag * math.sin(math.pi * s)) for s in np.linspace(0, 1, 20)]
-    red_line(c, g, left, 3.5, 0.6); red_line(c, g, heart, 4.5, 0.4 + 0.6 * pulse(t, B(LOVE[3]), 1.0)); red_line(c, g, right, 3.5, 0.6)
+    k_ = 0.195
+    px = CX + (X - 961) * k_ + nn[:, 0] * 0.8; py = CY + (Y - 552) * k_ + nn[:, 1] * 0.8 + 3 * math.sin(t * 2)
+    draw_points(c, px, py, CYAN, 0.85, 1.6)
+    text(c, 'mono', 'me.isTrappedIn("love") == true', CX, 425, 13, CYAN, 0.8 * eo_cubic(prog(t, B(412), B(412.5))), align='center')
+    pat = c.pop_group(); c.set_source(pat); c.mask_surface(surf('n_stage_screens'), 0, 0)
+    c.restore()
+    g.save(); cam(g)
+    for si in (0, 2):
+        x0, y0, x1, y1 = STAGE_SCREENS[si]; rgba(g, (1, 0.92, 0.8), 0.16 + 0.12 * pulse(t, B(beat), 0.3)); g.rectangle(x0, y0, x1 - x0, y1 - y0); g.fill()
+    rgba(g, (1, 0.78, 0.9), 0.4 + 0.4 * pulse(t, B(beat), 0.35)); g.mask_surface(surf('n_stage_sticks'), 0, 0)
+    g.restore()
+    c.save(); cam(c); g.save(); cam(g)
+    sway_sticks(c, g, t, 1.0, eo_cubic(prog(t, B(LOVE[3]) - 0.25, B(LOVE[3]))))
+    c.restore(); g.restore()
+    pts_g = [(CX + (x - 961) * k_, CY + (y - 552) * k_) for x, y in zip(X[::40], Y[::40])]
+    g.save(); cam(g); draw_points(g, np.array([p[0] for p in pts_g]), np.array([p[1] for p in pts_g]), CYAN, 0.5, 2.5); g.restore()
+    # the thread: from Ralmia's hand in the screen, a heart, down to Lishenna's hand
+    A_ = T((CX + (FLOAT_HAND[0] - 961) * k_, CY + (FLOAT_HAND[1] - 552) * k_))
+    B_ = T(STAGE_HAND)
+    hs_ = 6.2 * (1 + 0.12 * pulse(t, B(LOVE[3]), 0.8)) * eo_back(prog(t, B(408), B(408) + 0.5))
+    hc = (B_[0] + 250, (A_[1] + B_[1]) / 2 - 10)
+    def hp(a_): return (hc[0] + hs_ * 16 * math.sin(a_) ** 3,
+                        hc[1] - hs_ * (13 * math.cos(a_) - 5 * math.cos(2 * a_) - 2 * math.cos(3 * a_) - math.cos(4 * a_)))
+    cusp, tip = hp(0.0), hp(math.pi)
+    def bez(p0, p1, p2, n=24): return [((1 - u) ** 2 * p0[0] + 2 * (1 - u) * u * p1[0] + u * u * p2[0],
+                                       (1 - u) ** 2 * p0[1] + 2 * (1 - u) * u * p1[1] + u * u * p2[1]) for u in np.linspace(0, 1, n)]
+    path = bez(A_, (A_[0] + 160, A_[1] - 20), cusp) + [hp(a_) for a_ in np.linspace(0, 2 * math.pi, 120)] + \
+           [hp(a_) for a_ in np.linspace(0, math.pi, 60)] + bez(tip, (tip[0] - 40, B_[1] + 40), B_)[1:]
+    red_line(c, g, path, 4.0, 0.4 + 0.6 * pulse(t, B(LOVE[3]), 1.0))
     if kk >= LOVE[3]:
         u = eo_cubic(prog(t, B(LOVE[3]), B(LOVE[3]) + 0.2))
-        text(c, 'heavy', 'LOVE', 960, 980, 160, BONE, u * (1 - prog(t, B(415.6), B(416))), align='center', track=0.3)
-    text(c, 'mono', 'you.isFree() == true', W - 130, 1000, 22, BONE, 0.6 * eo_cubic(prog(t, B(409.5), B(410))), align='right')
-    text(c, 'mono', 'me.isTrappedIn("love") == true', 130, 1000, 22, CYAN, 0.8 * eo_cubic(prog(t, B(412), B(412.5))))
+        c.new_path(); fonts()['heavy'].text_path(c, 'LOVE', 960, 1000, 160, 'center', 0.3)
+        rgba(c, INK, 0.85 * u); c.set_line_width(10); c.set_line_join(cairo.LINE_JOIN_ROUND); c.stroke_preserve()
+        rgba(c, BONE, u * (1 - prog(t, B(415.6), B(416)))); c.fill()
+    text(c, 'mono', 'you.isFree() == true', W - 130, 1000, 22, BONE, 0.7 * eo_cubic(prog(t, B(409.5), B(410))), align='right')
     fx['ab'] = 6 * pulse(t, B(LOVE[3]), 0.3) + 2 * pulse(t, B(math.floor(kk)), 0.12)
     fx['flash'] = 0.25 * pulse(t, B(LOVE[3]), 0.12)
     fx['glow'] = 1.0
@@ -624,34 +646,13 @@ def s_love(c, g, t):
 
 # ================================================================ S34 me.escape(world)  [B416, END)
 PEEL = [420, 424, 428, 432, 436]          # cube, windows, fragments, HUD marks, the frame -- one per bar
-K_LEAP, K_GONE = 443.0, 444.0           # one beat: she leaps at us and is gone; the frame is empty paper for the last EXECUTION
+K_LEAP, K_GONE = 443.0, 443.55          # v2 round 2: half a beat -- she shoots up out of the frame, tearing the paper as she goes
 def s_escape(c, g, t):
     """inside out, one layer per bar: the cube scatters, the window wall flies past, the fragments fall away,
-    the HUD's corner marks are torn off, the frame cracks -- and behind the ink there is paper. she leaps out at us.
-    the last EXECUTION, then black (the voice stops at k448)"""
+    the HUD's corner marks are torn off, the frame cracks -- and behind the ink there is paper. from k443: escape_out()"""
     fx = {}
     kk = (t - T0) / P
-    if t >= B(K_SILENCE):
-        fill_bg(c, INK)
-        u = prog(t, B(K_SILENCE) + 0.8, B(K_SILENCE) + 1.4)
-        if int((t - B(K_SILENCE)) * 1.6) % 2 == 0:
-            rgba(c, BONE, 0.85); c.rectangle(130, 990 - 30, 16, 30); c.fill()
-        text(c, 'mono', 'touch = true', 170, 990, 26, RED, 0.85 * eo_cubic(u))
-        # v2: the song has stopped and she is still humming it -- the last thing in the film
-        uh = prog(t, B(K_SILENCE) + 2.0, B(K_SILENCE) + 2.6); fade = 1 - prog(t, END_T - 0.6, END_T)
-        if uh > 0:
-            text(c, 'mono', type_on('me.hum();', t, B(K_SILENCE) + 2.0, 0.05), 170, 1030, 20, BONE, 0.55 * fade)
-            reach = prog(t, B(K_SILENCE) + 2.5, B(K_SILENCE) + 4.2)
-            for cc, aa, lw in ((c, 0.7, 1.4), (g, 0.4, 3)):
-                rgba(cc, LISH, aa * fade); cc.set_line_width(lw); cc.new_path()
-                for n_ in range(0, 161):
-                    x = 300 + 360 * n_ / 160
-                    if n_ / 160 > reach: break
-                    e = math.sin(math.pi * n_ / 160) * (0.6 + 0.4 * math.sin(t * 1.3 + n_ * 0.05))
-                    (cc.move_to if n_ == 0 else cc.line_to)(x, 1023 - 5 * e * math.sin(n_ * 0.28 - t * 2.2))
-                cc.stroke()
-        fx['grain'] = 0.03; fx['vig'] = 1.0
-        return fx
+    if kk >= K_LEAP: return escape_out(c, g, t)
     def peel(i): return prog(t, B(PEEL[i]), B(PEEL[i]) + 0.9)
     pc = [peel(i) for i in range(5)]
     paper = pc[4] >= 1 or kk >= PEEL[4] + 2
@@ -712,7 +713,6 @@ def s_escape(c, g, t):
             win(c, x, y, ww, hh, name, bg, f'sim #{(7 + 97 * i) % 9000:04d}', (1 - pc[1]) * 0.9)
     # ---- her: points in the cube; the cube scatters at k420; then her, line first, colour arriving layer by layer
     hs = 0.30 + sum(0.035 * eo_back(prog(t, B(k), B(k) + 0.25), 2) for k in PEEL) + 0.012 * pulse(t, B(math.floor(kk)), 0.3)
-    leap = ei_cubic(prog(t, B(K_LEAP), B(K_GONE)))
     # every beat a ring goes out from her (the drums carry the outro); streaks outward, more with every layer gone
     npeel = sum(1 for k in PEEL if kk >= k)
     if kk < K_LEAP:
@@ -742,23 +742,13 @@ def s_escape(c, g, t):
         cond = eo_cubic(prog(t, B(PEEL[0]) - 0.3, B(PEEL[0])))
         px = cx + (X - 1000) * hs + nn[:, 0] * 18 * (1 - cond); py = cy + (Y - 540) * hs + nn[:, 1] * 18 * (1 - cond)
         draw_points(c, px, py, CYAN, 0.8 * pts_a, 2.2)
-    if PEEL[0] <= kk < K_GONE:
+    if PEEL[0] <= kk:
         la = eo_cubic(prog(t, B(PEEL[0]), B(PEEL[0]) + 0.3))
         colour = clamp((kk - PEEL[0]) / (PEEL[4] - PEEL[0]))      # the colour comes in as the layers go
-        s_ = hs * (1 + 13 * leap)                                 # straight at the lens, dropping as she comes
+        s_ = hs
         gather = prog(t, B(440), B(K_LEAP))                       # three beats of gathering: she trembles
-        xx = cx + 5 * gather * math.sin(t * 70) * (leap == 0)
-        yy = cy + 1700 * leap
-        if leap > 0:
-            rnd = np.random.default_rng(23); ang = rnd.random(120) * 6.283; ph = rnd.random(120)
-            for a_, p_ in zip(ang, ph):                           # the rush
-                f = (p_ + leap * 2) % 1.0
-                r0, r1 = 200 + 1500 * f, 200 + 1500 * min(1.2, f + 0.25 * leap)
-                rgba(c, SEPIA, 0.35 * leap); c.set_line_width(1.5 + 3 * f)
-                c.move_to(cx + math.cos(a_) * r0, cy + math.sin(a_) * r0); c.line_to(cx + math.cos(a_) * r1, cy + math.sin(a_) * r1); c.stroke()
-            for k in range(1, 4):                                 # after-images
-                lk = max(0.0, leap - 0.07 * k)
-                img(c, 'n_escape_hd', cx, cy + 1700 * lk, hs * (1 + 13 * lk), 0.22, 1000, 540)
+        xx = cx + 5 * gather * math.sin(t * 70)
+        yy = cy - 14 * gather                                     # ...and crouches a little lower into it
         c.save(); c.translate(xx, yy); c.scale(s_, s_); c.translate(-1000, -540)
         rgba(c, SEPIA if paper else BONE, la * (1 - colour * 0.6)); c.mask_surface(surf('n_escape_line'), 0, 0)
         c.set_source_surface(surf('n_escape_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint_with_alpha(la * colour)
@@ -784,16 +774,132 @@ def s_escape(c, g, t):
     for k, s in LOGS:
         if k <= kk < k + 4:
             text(c, 'mono', type_on(s, t, B(k), 0.02), cx, 1000, 26, SEPIA if paper else BONE, 0.75, align='center')
-    if K_GONE <= kk < FINAL_EX:                                   # she is no longer in the world
-        text(c, 'monom', type_on('world.getThingIndex(me);   // -1', t, B(K_GONE) + 0.1, 0.03), cx, 560, 30, SEPIA, 0.8, align='center')
-    # ---- the last EXECUTION
-    if kk >= FINAL_EX:
-        u = eo_expo(prog(t, B(FINAL_EX), B(FINAL_EX) + 0.14))
-        c.save(); c.translate(cx, 640); s2 = 1.25 - 0.25 * u; c.scale(s2, s2)
-        c.new_path(); fonts()['heavy'].text_path(c, 'EXECUTION', 0, 0, 330, 'center')
-        rgba(c, PAPER if paper else INK, 0.9 * min(1, u * 2)); c.set_line_width(16); c.stroke_preserve()
-        rgba(c, INK if paper else BONE, min(1, u * 2)); c.fill(); c.restore()
-    fx['ab'] = sum(6 * pulse(t, B(k), 0.25) for k in PEEL) + 2 * pulse(t, B(math.floor(kk)), 0.12) + 14 * leap * (kk < K_GONE) + 10 * pulse(t, B(FINAL_EX), 0.3)
-    fx['flash'] = sum(0.25 * pulse(t, B(k), 0.1) for k in PEEL) + 0.5 * pulse(t, B(FINAL_EX), 0.12) + 0.6 * pulse(t, B(K_GONE), 0.15)
+    fx['ab'] = sum(6 * pulse(t, B(k), 0.25) for k in PEEL) + 2 * pulse(t, B(math.floor(kk)), 0.12)
+    fx['flash'] = sum(0.25 * pulse(t, B(k), 0.1) for k in PEEL)
     if paper: fx['vig'] = 0.4; fx['grain'] = 0.03
+    return fx
+
+
+# ================================================================ v2 round 2: out of her world, towards the song  [B443, END)
+# k443   she shoots up out of the frame; the paper of her world tears along the way she went
+# k444   the tear opens: outside is warm light, and Lishenna's song comes in through it (she ran towards it this time)
+# k446.5 the last EXECUTION: the two halves of her world fall away
+# k448   the song stops. outside: the two of them, line first, then colour; touch = true; me.hum();
+ENDING = next((n for n in ('n_ending_hd', 'n_cube_together_hd', 'n_pinky2_hd') if os.path.exists(f'{WORK}/assets/{n}.png')))
+TEAR_X = 960
+_TEAR = {}
+def tear():
+    if not _TEAR:
+        r = np.random.default_rng(13)
+        ys = np.linspace(-40, H + 40, 110)
+        b = np.cumsum(r.normal(0, 7, len(ys))); b = b - b.mean() + TEAR_X + 26 * np.sin(ys / 230)
+        zz = np.where(np.arange(len(ys)) % 2, 1.0, -1.0)            # torn fibres: a fine zigzag on each edge
+        _TEAR.update(y=ys, b=b, jl=r.normal(0, 6, len(ys)) + 4 * zz, jr=r.normal(0, 6, len(ys)) - 4 * zz)
+    return _TEAR
+
+def tear_open(t):
+    """per row: how far apart the two edges are"""
+    T_ = tear(); ys = T_['y']
+    kk = (t - T0) / P
+    rise = ei_cubic(prog(t, B(K_LEAP), B(K_GONE)))
+    top_y = 540 - 1500 * rise                                   # her head: the tear runs from 540 up to her
+    down = eo_cubic(prog(t, B(K_GONE), B(444.3)))                # then it runs down to the bottom
+    bot_y = 540 + (H + 60 - 540) * down
+    w = 10 + 50 * eo_cubic(prog(t, B(K_GONE), B(444.2))) + 290 * eo_cubic(prog(t, B(444.2), B(FINAL_EX)))
+    f = np.clip((bot_y - ys) / 140, 0, 1) * np.clip((ys - top_y) / 60 + 1, 0, 1) * (kk >= K_LEAP + 0.08)
+    return ys, f * w, f
+
+def paper_piece(c, side, ys, wy, f, dx=0.0, dy=0.0, rot=0.0):
+    T_ = tear()
+    edge = T_['b'] + (T_['jl'] if side < 0 else T_['jr']) * f + side * wy / 2
+    piv = (TEAR_X - side * 480, 540)
+    c.save(); c.translate(piv[0] + dx, piv[1] + dy); c.rotate(rot); c.translate(-piv[0], -piv[1])
+    xo = -80 if side < 0 else W + 80
+    def path(cc):
+        cc.new_path(); cc.move_to(xo, ys[0])
+        for x, y in zip(edge, ys): cc.line_to(x, y)
+        cc.line_to(xo, ys[-1]); cc.close_path()
+    path(c); c.save(); c.clip(); c.set_source_surface(paper_tex(), 0, 0); c.paint()
+    rgba(c, SEPIA, 0.07); c.paint()                              # the old world, a little dimmer than the light outside
+    c.restore()
+    on = f > 0.02                                                # the torn edge, only where it is torn
+    for dxe, col, aa, lw in ((-side * 5, SEPIA, 0.2, 8), (0, (1, 1, 0.97), 0.95, 3)):
+        c.new_path(); started = False
+        for x, y, o in zip(edge, ys, on):
+            if o: (c.line_to if started else c.move_to)(x + dxe, y); started = True
+            else: started = False
+        rgba(c, col, aa); c.set_line_width(lw); c.stroke()
+    c.restore()
+
+def outside_light(c, g, a=1.0):
+    rgba(c, (1.0, 0.985, 0.94), 1); c.paint()
+    rg = cairo.RadialGradient(960, 520, 0, 960, 520, 900)
+    rg.add_color_stop_rgba(0, 1, 1, 1, 0.55 * a); rg.add_color_stop_rgba(1, 1, 1, 1, 0)
+    c.set_source(rg); c.paint()
+
+def escape_out(c, g, t):
+    fx = {}
+    kk = (t - T0) / P
+    outside_light(c, g)
+    fall = ei_cubic(prog(t, B(FINAL_EX), B(FINAL_EX) + 0.85))
+    if fall < 1:
+        ys, wy, f = tear_open(t)
+        for side in (-1, 1):
+            paper_piece(c, side, ys, wy, f, side * 760 * fall, 1000 * fall * fall, side * 0.28 * fall)
+    # her song, coming in from outside through the tear (it opens at k444)
+    for kb in np.arange(444.0, 448.5, 0.5):
+        u = prog(t, B(kb), B(kb) + 1.6)
+        if 0 < u < 1:
+            r = 40 + 1300 * eo_cubic(u)
+            for cc, aa, lw in ((c, 0.75 * (1 - u), 2.4 * (1 - u) + 0.8), (g, 0.4 * (1 - u), 4)):
+                rgba(cc, LISH_P if cc is c else LISH, aa); cc.set_line_width(lw); cc.new_path(); cc.arc(TEAR_X, 540, r, 0, 6.283); cc.stroke()
+    # her, shooting up out of the frame (half a beat), after-images and streaks below her
+    rise = ei_cubic(prog(t, B(K_LEAP), B(K_GONE)))
+    if rise < 1:
+        hs = 0.30 + 5 * 0.035
+        for k in (3, 2, 1):
+            rk = max(0.0, rise - 0.08 * k)
+            img(c, 'n_escape_hd', 960, 540 - 1500 * rk, hs * (1 + 0.15 * rk), 0.18, 1000, 540)
+        rnd = np.random.default_rng(23); xs_ = 960 + rnd.normal(0, 160, 60); ln_ = rnd.random(60)
+        for x, l in zip(xs_, ln_):
+            y0 = 540 - 1500 * rise + 200 + 500 * l
+            rgba(c, SEPIA, 0.3 * rise * (1 - rise)); c.set_line_width(1.5 + 2 * l); c.move_to(x, y0); c.line_to(x, y0 + 300 + 500 * l); c.stroke()
+        img(c, 'n_escape_hd', 960, 540 - 1500 * rise, hs * (1 + 0.15 * rise), 1, 1000, 540)
+    if B(K_GONE) <= t < B(FINAL_EX):                             # she is no longer in the world
+        text(c, 'monom', type_on('world.getThingIndex(me);   // -1', t, B(K_GONE) + 0.1, 0.03), 470, 990, 26, SEPIA, 0.8, align='center')
+    # the last EXECUTION
+    if B(FINAL_EX) <= t < B(K_SILENCE) + 0.3:
+        u = eo_expo(prog(t, B(FINAL_EX), B(FINAL_EX) + 0.14)) * (1 - prog(t, B(K_SILENCE), B(K_SILENCE) + 0.3))
+        c.save(); c.translate(960, 640); s2 = 1.25 - 0.25 * eo_expo(prog(t, B(FINAL_EX), B(FINAL_EX) + 0.14)); c.scale(s2, s2)
+        c.new_path(); fonts()['heavy'].text_path(c, 'EXECUTION', 0, 0, 330, 'center')
+        rgba(c, (1, 0.985, 0.94), 0.9 * min(1, u * 2)); c.set_line_width(16); c.stroke_preserve()
+        rgba(c, INK, min(1, u * 2)); c.fill(); c.restore()
+    # outside, after the song: the two of them
+    if t >= B(K_SILENCE):
+        ts = t - B(K_SILENCE)
+        la = eo_cubic(prog(ts, 0.25, 0.9)); col_ = eo_cubic(prog(ts, 0.9, 2.2))
+        sc = 1.0 if ENDING == 'n_pinky2_hd' else 0.94
+        c.save(); c.translate(960, 540); c.scale(sc * (1 + 0.012 * ts), sc * (1 + 0.012 * ts)); c.translate(-960, -540)
+        rgba(c, SEPIA, la * (1 - col_ * 0.85)); c.mask_surface(surf(ENDING.replace('_hd', '_line')), 0, 0)
+        c.set_source_surface(surf(ENDING), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint_with_alpha(col_)
+        c.restore()
+        u = eo_cubic(prog(ts, 2.4, 2.9))
+        if int(ts * 1.6) % 2 == 0 and ts > 2.2:
+            rgba(c, SEPIA, 0.8); c.rectangle(130, 990 - 30, 16, 30); c.fill()
+        text(c, 'mono', 'touch = true', 170, 990, 26, RED, 0.9 * u)
+        uh = prog(ts, 3.2, 3.6)
+        if uh > 0:
+            text(c, 'mono', type_on('me.hum();', t, B(K_SILENCE) + 3.2, 0.05), 170, 1030, 20, SEPIA, 0.6)
+            reach = prog(ts, 3.5, 4.6)
+            for cc, aa, lw in ((c, 0.8, 1.4), (g, 0.3, 3)):
+                rgba(cc, LISH_P if cc is c else LISH, aa); cc.set_line_width(lw); cc.new_path()
+                for n_ in range(0, 161):
+                    if n_ / 160 > reach: break
+                    x = 300 + 360 * n_ / 160
+                    e = math.sin(math.pi * n_ / 160) * (0.6 + 0.4 * math.sin(t * 1.3 + n_ * 0.05))
+                    (cc.move_to if n_ == 0 else cc.line_to)(x, 1023 - 5 * e * math.sin(n_ * 0.28 - t * 2.2))
+                cc.stroke()
+    fx['ab'] = 10 * pulse(t, B(K_LEAP), 0.25) + 5 * pulse(t, B(K_GONE), 0.2) + 10 * pulse(t, B(FINAL_EX), 0.3)
+    fx['flash'] = 0.35 * pulse(t, B(K_GONE), 0.12) + 0.4 * pulse(t, B(FINAL_EX), 0.12)
+    fx['vig'] = 0.3; fx['grain'] = 0.03; fx['glow'] = 0.6
     return fx

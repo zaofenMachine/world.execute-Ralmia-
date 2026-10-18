@@ -40,7 +40,12 @@
 
 **重渲顺序（碎片依赖，和 v1 相同）：** `render_all.py chunks 0 21` → 拼 c0–c20 → `qa.py <视频> qa_v2` → `prep7.py frag` → `render_all.py chunks 21 43` → `render_all.py dchunks` → `mux.py 211.9 deliver`。只改 105 秒以后的东西时，跳过前四步。
 
-**自评里留下的弱点**（下一轮可做）：舞台一镜仍是缓慢推镜，里榭娜只占画面三分之一；她走进光里时被光洗白（和 v1 研究员同样的处理）；trance 的兰紫圆环偏淡；荧光棒是画上去的，只能整片发光，不能摆动。
+**第二轮（2026-10-18，方案 `ClaudeVer/plan_v2_round2.md`，生图需求 `gen/request_v2c.md` 共 12 张，已转 GPT）：**
+- 已做（不用等图）：示波器 X–Y 模式画两人线稿脸（`scenes3.face_trace`，遮罩 `n_scope_*` 由 `prep7.py` 生成）；115 秒谢幕聚光灯（`scenes5.spotlight`）；188 秒舞台巨屏困住她（`scenes7`，`STAGE_HAND`）；结尾撕纸、暖光收尾（`scenes7.escape_out`，第一版的黑场已删）；会摇的荧光棒（`scenes4.sway_sticks`）；trance 声波调亮；SATISFACTION 推近。
+- 等图：L9 坐姿（35–44 秒）、L11 立方体合照、L12 崖边并肩坐、L13 神卡三层、L14 结尾合照、L15 猫娘。`prep7.py` 已能自动入库（`R6` 列表）；场景代码要等图到了、量过锚点再写。结尾在 L14 之前依次退回 `n_cube_together`、`n_pinky2`。
+- 分寸：用户同意贴贴（脸贴脸、靠肩、挽手、侧面搂抱），仍不亲吻。
+
+**第一轮自评里留下的弱点**：舞台一镜仍是缓慢推镜，里榭娜只占画面三分之一；她走进光里时被光洗白（和 v1 研究员同样的处理）；trance 的兰紫圆环偏淡；荧光棒是画上去的，只能整片发光，不能摆动。
 
 ---
 

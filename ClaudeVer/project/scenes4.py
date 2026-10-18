@@ -124,6 +124,22 @@ def padlock(c, g, x, y, s, u, col=BONE):
     rgba(c, INK, 1); c.arc(0, 0.02, 0.1, 0, 6.283); c.fill(); c.rectangle(-0.035, 0.02, 0.07, 0.25); c.fill()
     c.restore()
 
+STICK_COLS = [hexc('#f4a7c4'), hexc('#fff1e0'), hexc('#e9a3d8')]       # the crowd's light sticks: pink, warm white (never cyan/red)
+_SW = np.random.default_rng(5)
+SWAY = [(float(_SW.random() * 1920), float(905 + _SW.random() * 165), float(22 + _SW.random() * 18), float(_SW.random()),
+         int(_SW.integers(0, 3))) for _ in range(84)]
+def sway_sticks(c, g, t, a=1.0, lift=0.0):
+    """the crowd's light sticks swinging in time (one swing per two beats, the house more or less together); call
+    inside the stage camera. lift 0..1: everyone raises them (SATISFACTION)"""
+    ph = 2 * math.pi * (t - T0) / (2 * P)
+    for x, y, L, o, k in SWAY:
+        an = 0.42 * math.sin(ph + 0.6 * o) - 0.1 + 0.25 * lift * (o - 0.5)
+        L_ = L * (1 + 0.6 * lift); y_ = y - 30 * lift * (0.5 + o)
+        x1, y1 = x + math.sin(an) * L_, y_ - math.cos(an) * L_
+        for cc, aa, lw in ((c, 0.85 * a, 5), (g, 0.5 * a, 9)):
+            rgba(cc, STICK_COLS[k], aa); cc.set_line_width(lw); cc.set_line_cap(cairo.LINE_CAP_ROUND)
+            cc.move_to(x, y_); cc.line_to(x1, y1); cc.stroke(); cc.set_line_cap(cairo.LINE_CAP_BUTT)
+
 # ================================================================ S21 CHORUS 1  [B128, B160)
 STAGE_SCREENS = [(63, 149, 510, 434), (601, 103, 1318, 439), (1409, 149, 1856, 434)]   # n_stage (gen/_qa/round4/anchors_v2.json)
 GRID_LV = [(128, 1), (130, 2), (132, 4), (133, 8)]
@@ -174,9 +190,9 @@ def s_chorus1(c, g, t):
     elif t < B(144):
         # B (v2): Lishenna on her stage; behind her, three giant screens play the simulations Ralmia made, re-rendering on
         # every beat; the sea of light sticks breathes with the beat and goes up on SATISFACTION
-        s_ = 1.0 + 0.06 * eio_cubic(prog(t, B(136), B(144)))
+        s_ = 1.0 + 0.06 * eio_cubic(prog(t, B(136), B(144))) + 0.16 * eo_expo(prog(t, B(141.75), B(141.75) + 0.3))
         def cam(cc):
-            cc.translate(960, 420); cc.scale(s_, s_); cc.translate(-960, -420)
+            cc.translate(960, 520); cc.scale(s_, s_); cc.translate(-960, -520)
         c.save(); cam(c)
         c.set_source_surface(surf('n_stage_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint()
         c.push_group()
@@ -196,6 +212,9 @@ def s_chorus1(c, g, t):
         g.save(); cam(g); rgba(g, (1, 0.92, 0.8), 0.22 + 0.2 * pulse(t, B(beat), 0.3)); g.mask_surface(surf('n_stage_screens'), 0, 0); g.restore()
         sat = pulse(t, B(141.75), 1.4)
         g.save(); cam(g); rgba(g, (1, 0.78, 0.9), 0.35 + 0.45 * pulse(t, B(beat), 0.35) + 0.9 * sat); g.mask_surface(surf('n_stage_sticks'), 0, 0); g.restore()
+        c.save(); cam(c); g.save(); cam(g)
+        sway_sticks(c, g, t, 1.0, eo_cubic(prog(t, B(141.5), B(141.75))))
+        c.restore(); g.restore()
         levels = [(137, 0.15), (138, 0.30), (139, 0.45), (140, 0.60), (141, 0.80), (141.75, 1.0)]
         lv = 0.0
         for kb, v in levels:
@@ -795,8 +814,8 @@ def s_switch(c, g, t):
             te = n_ * P / 2; r = (tt - te) * 260
             if r > 1500: continue
             ex, ey = pos(te, 1)
-            aa = 0.5 * (1 - r / 1500) * min(1, r / 80) * (1.0 if n_ % 2 == 0 else 0.55)
-            for cc, k_, lw in ((c, 1.0, 1.6 + r / 600), (g, 0.4, 3)):
+            aa = 0.8 * (1 - r / 1500) * min(1, r / 80) * (1.0 if n_ % 2 == 0 else 0.6)
+            for cc, k_, lw in ((c, 1.0, 2.2 + r / 500), (g, 0.6, 4)):
                 rgba(cc, LISH, aa * k_); cc.set_line_width(lw); cc.new_path(); cc.arc(ex, ey, r, 0, 6.283); cc.stroke()
         for who in (0, 1):
             x, y = pos(tt, who)

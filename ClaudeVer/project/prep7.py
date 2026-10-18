@@ -151,5 +151,34 @@ if os.path.exists(os.path.join(SRC, 'lishenna_front.png')):
 if os.path.exists(os.path.join(SRC, 'lishenna_sing_profile.png')):
     save('lish_sing', load('lishenna_sing_profile'))
 
+# ---- sixth batch (gen/request_v2c.md), whichever have arrived. pairs are resized identically, so they stay aligned
+R6 = [('creation_plate', 'cr_plate', False), ('creation_hand_ralmia', 'cr_hand_r', True), ('creation_hand_lishenna', 'cr_hand_l', True),
+      ('cube_together', 'cube_together', True), ('cube_alone', 'cube_alone', True),
+      ('ledge_together', 'ledge2', False), ('ledge_alone', 'ledge2_alone', False),
+      ('cat_ralmia_v2', 'cat2', True), ('cat_ralmia_v2b', 'cat2b', True),
+      ('lishenna_sit', 'lish_sit', True), ('lishenna_sit_b', 'lish_sit_b', True), ('ending_together', 'ending', True)]
+for src, nm, rgba_ in R6:
+    if os.path.exists(os.path.join(SRC, src + '.png')):
+        save(nm, load(src, rgba_)); print('round 6:', nm)
+
+# ---- round 2: the two faces as oscilloscope traces (44-48 s, X-Y mode): line strength as an A8-style mask, 960x540,
+# both heads the same height and centred, lines thickened a little so they survive as phosphor
+def scope_mask(ln, box, nm, h=820):
+    x0, y0, x1, y1 = box
+    m = (1 - ln[y0:y1, x0:x1]).astype(np.float32)
+    s = h / m.shape[0]; m = cv2.resize(m, (round(m.shape[1] * s), h), interpolation=cv2.INTER_AREA)
+    m = cv2.dilate(m, np.ones((2, 2), np.uint8))
+    yy, xx = np.mgrid[0:m.shape[0], 0:m.shape[1]].astype(np.float32)          # soft edges: no square crop
+    d = ((xx / m.shape[1] - 0.5) / 0.5) ** 2 + ((yy / m.shape[0] - 0.42) / 0.58) ** 2
+    m *= np.clip((1.0 - d) / 0.35, 0, 1)
+    can = np.zeros((1080, 1920), np.float32); ox = 960 - m.shape[1] // 2; oy = 560 - h // 2
+    can[oy:oy + h, ox:ox + m.shape[1]] = m
+    can = cv2.resize(can, (960, 540), interpolation=cv2.INTER_AREA)
+    cv2.imwrite(f'{A}/n_scope_{nm}.png', np.clip(can * 1.35 * 255, 0, 255).astype(np.uint8))
+ra = cv2.imread(f'{A}/n_portrait2_line.png', cv2.IMREAD_GRAYSCALE).astype(np.float32) / 255
+scope_mask(ra, (500, 0, 1500, 1080), 'ralmia')
+rs_ln = line_of(rs)                                             # the reference sheet's close-up, native 1672 px
+scope_mask(rs_ln, (1040, 50, 1672, 760), 'lish')
+
 json.dump(anc, open(os.path.join(SRC, '_qa', 'round4', 'anchors_v2.json'), 'w'), indent=1)
 print(json.dumps(anc, indent=1))

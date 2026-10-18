@@ -106,7 +106,19 @@ def song(tt):
     if e <= 0: return 0.0
     return 44 * e * math.sin(2 * math.pi * 6.5 * tt + 0.9 * math.sin(2 * math.pi * 5.5 * tt))
 
-STICK_COLS = [hexc('#f4a7c4'), hexc('#fff1e0'), hexc('#e9a3d8')]       # the crowd's light sticks: pink, warm white (never cyan/red)
+SPOT_FIG = 'n_lish_front_hd' if os.path.exists(f'{WORK}/assets/n_lish_front_hd.png') else 'n_lish_stand_hd'
+SPOT_PINKY = (548, 440) if SPOT_FIG == 'n_lish_front_hd' else (900, 600)     # her mic hand, little-finger side (canvas px)
+def spotlight(c, g, x, y, rx, ry, a=1.0):
+    """a stage spotlight from above onto an ellipse on the floor at (x, y)"""
+    c.save(); c.new_path(); c.move_to(x - 70, -60); c.line_to(x + 70, -60); c.line_to(x + rx, y); c.line_to(x - rx, y); c.close_path()
+    lg = cairo.LinearGradient(0, -60, 0, y); lg.add_color_stop_rgba(0, 1, 0.96, 0.88, 0.30 * a); lg.add_color_stop_rgba(1, 1, 0.96, 0.88, 0.10 * a)
+    c.set_source(lg); c.fill(); c.restore()
+    c.save(); c.translate(x, y); c.scale(1, ry / rx)
+    rg = cairo.RadialGradient(0, 0, 0, 0, 0, rx); rg.add_color_stop_rgba(0, 1, 0.96, 0.88, 0.55 * a); rg.add_color_stop_rgba(1, 1, 0.96, 0.88, 0)
+    c.set_source(rg); c.arc(0, 0, rx, 0, 6.283); c.fill(); c.restore()
+    g.save(); g.new_path(); g.move_to(x - 70, -60); g.line_to(x + 70, -60); g.line_to(x + rx, y); g.line_to(x - rx, y); g.close_path()
+    rgba(g, (1, 0.95, 0.85), 0.10 * a); g.fill(); g.restore()
+
 def stick_motes(c, t, cx, cy, R, a=1.0, n=90, seed=31):
     """light-stick glints drifting up in a stage light"""
     rr = np.random.default_rng(seed); ang = rr.random(n) * 6.283; d = rr.random(n) ** 0.6; ph = rr.random(n); kind = rr.integers(0, 3, n)
@@ -235,26 +247,34 @@ def s_chorus2(c, g, t):
                 px, py = Pp[vi][:2]
                 padlock(c, g, px, py, 40, 1 - u if vi == 7 else 1)
         elif j == 4:
-            # she walks away into the stage light; the thread between them goes slack and falls
-            fill_bg(c, BONE)
-            rg = cairo.RadialGradient(1180, 380, 40, 1180, 380, 1100)
-            rg.add_color_stop_rgba(0, 1, 1, 1, 1); rg.add_color_stop_rgba(1, *PAPER, 1)
-            c.set_source(rg); c.paint()
-            stick_motes(c, t, 1180, 420, 520, 0.55)
-            w_ = eio_cubic(lp)
-            sc = lerp(0.60, 0.21, w_); X, Y = lerp(980, 1180, w_), lerp(1090, 760, w_)
-            img(c, WALK, X, Y, sc, 1 - 0.7 * prog(t, B(k1) - 0.3, B(k1)), *WALK_FEET)
-            hx, hy = X + (WALK_PINKY[0] - WALK_FEET[0]) * sc, Y + (WALK_PINKY[1] - WALK_FEET[1]) * sc
-            for cc, aa, lw in ((c, 1, 4), (g, 0.5, 7)):
-                rgba(cc, RED, aa); cc.set_line_width(lw); cc.new_path()
-                if u < 0.5:                         # taut, from his little finger to her, off-frame bottom-left
-                    cc.move_to(hx, hy); cc.curve_to(hx - 200, hy + 60, -100, 900, -40, 1100)
-                else:                               # let go: the end falls
-                    d = eo_cubic((u - 0.5) * 2)
-                    ex, ey = lerp(hx, 380, d), lerp(hy, 1120, d)
-                    cc.move_to(ex, ey); cc.curve_to(lerp(hx - 200, 200, d), lerp(hy + 60, 1100, d), -100, 1000, -40, 1100)
-                cc.stroke()
-            dark = False
+            # v2 round 2: curtain call. one spotlight on a dark stage, her arms open to the house, the thread from her little
+            # finger to Ralmia off-frame left. on "left" the light snaps off; in the dark only the thread, falling; the light
+            # comes back on an empty circle, the thread lying on the floor
+            fill_bg(c, INK)
+            k_off, k_on = k0 + 0.9, k0 + 1.5; SX = 1180
+            lit = 1.0 if t < B(k_off) else 0.0 if t < B(k_on) else 0.85
+            if lit > 0:
+                spotlight(c, g, SX, 1000, 360, 70, lit)
+            sc = 0.62; fy = 1000
+            hand = (SX + (SPOT_PINKY[0] - 960) * sc, fy + (SPOT_PINKY[1] - 1050) * sc)
+            if t < B(k_off):
+                img(c, SPOT_FIG, SX, fy, sc, 1, 960, 1050)
+            d = eo_cubic(prog(t, B(k_off), B(k_off) + 0.45))
+            ex, ey = lerp(hand[0], SX - 40, d), lerp(hand[1], 1012, d)
+            pts = []
+            for n_ in range(41):
+                f = n_ / 40
+                x = lerp(-40, ex, f); y = lerp(1060, ey, f)
+                sag = (120 * (1 - d) + 30) * math.sin(math.pi * f) * (1 if d < 1 else 0.25)
+                pts.append((x, y + sag * (1 - d) - (0 if d < 1 else 18 * math.sin(math.pi * f))))
+            if d >= 1:                                   # a little curl where it landed
+                for n_ in range(1, 13):
+                    an = n_ * 0.5; pts.append((ex + 26 * math.sin(an) * (1 - n_ / 14), ey - 8 * (1 - math.cos(an))))
+            for cc, aa, lw in ((c, 1, 4), (g, 0.5 if lit > 0 else 0.8, 7)):
+                rgba(cc, RED, aa); cc.set_line_width(lw); cc.set_line_cap(cairo.LINE_CAP_ROUND); cc.new_path()
+                for n_, (x, y) in enumerate(pts): (cc.move_to if n_ == 0 else cc.line_to)(x, y)
+                cc.stroke(); cc.set_line_cap(cairo.LINE_CAP_BUTT)
+            fx['flash'] = 0.35 * pulse(t, B(k_on), 0.1)
         else:
             img(c, 'n_eye_open_hd', 960, 540, 1.06 + 0.02 * lp); img(c, 'n_eye_tear_hd', 960, 540, 1.06 + 0.02 * lp, u)
             gl = u * (0.5 + 0.5 * math.sin(t * 7) ** 2)
