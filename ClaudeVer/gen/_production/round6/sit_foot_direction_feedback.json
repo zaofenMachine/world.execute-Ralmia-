@@ -1,0 +1,28 @@
+{
+  "status": "complete",
+  "generator": "built-in image_gen",
+  "request": "Correct version B raised shoe direction to screen left; preserve upper body and hanging leg",
+  "prompt": "Use case: precise-object-edit.\nImage 1 is the EDIT TARGET, a transparent seated character sprite, version B. Image 2 is her canonical character reference sheet; image 3 is version A for the correct leftward forward foot direction. Edit image 1, retaining its exact 1672x941 canvas, subject location, scale, style, and transparency.\nONLY correct the kicked lower leg and sneaker on the viewer's RIGHT. It is currently twisted outwards with the toe pointing to screen RIGHT; this is the error. The seated girl's torso faces three-quarter screen LEFT, so the raised foot must also kick FORWARD towards screen LEFT, like image 3, with anatomically coherent knee, shin, ankle and foot direction. Keep the raised knee anchored where it is near (828,550), swing its lower leg diagonally down-left and show a left-pointing white sneaker with purple laces, black sole/cyan edge and yellow accent. The raised shoe should sit above and mostly to the LEFT of the hanging shoe, toes pointing toward screen LEFT, natural side/three-quarter view, not splayed outward or towards the camera. The swinging lower leg may pass BEHIND the original hanging leg.\nPreserve the other hanging leg and its shoe exactly, and preserve both upper thighs/knees as much as possible. Absolutely preserve everything above the knees: face, head tilt, eyes, hair, headband, ears, discs, collar, cyan tie, white jacket, pure black shorts, silver waist ornament, microphone, hands and seated anchor. No reposing the torso. No extra limbs, no red thread, no chair/bar, no text. Keep transparent background. This is one local anatomical correction, not a redesign or a horizontal flip.",
+  "references": [
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_sit_b.png",
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_ref_sheet.png",
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_sit.png"
+  ],
+  "raw_output": "raw/sit_b_depth_knee_repair_ai6.png",
+  "output": "lishenna_sit_b.png",
+  "validation": "_qa/round6/sit_foot_direction_validation.json",
+  "accepted_prompt_record": "sit_foot_direction_attempt6.json",
+  "postprocessing": "Direct local edit of A. Restore all pixels outside the two lower-leg edit region. No detached-limb compositing, translation, or rescaling.",
+  "first_attempt": {
+    "raw_output": "raw/lishenna_sit_b_foot_direction_ai.png",
+    "status": "rejected",
+    "reason": "Changed both legs back toward version A"
+  },
+  "rejected_previous_result": "raw/sit_b_rejected_crossed_legs.png",
+  "user_diagram": "raw/sit_leg_depth_user_diagram.png",
+  "rejected_previous_results": [
+    "raw/sit_b_rejected_crossed_legs.png",
+    "raw/sit_b_superseded_separate_legs.png"
+  ],
+  "pose_prompt_record": "sit_foot_direction_attempt5.json"
+}

@@ -1,0 +1,412 @@
+{
+  "status": "complete",
+  "delivered_count": 12,
+  "transparent_count": 9,
+  "files": [
+    {
+      "name": "creation_plate.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 1813317,
+      "sha256": "0649d3c43cb0513aa3d74776bfed4e8b29a3217adc2db6eb85b535e6ed2897f5"
+    },
+    {
+      "name": "creation_hand_ralmia.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 388592,
+      "sha256": "37d3f45a4f5c1df77d684bd7dce126657dbff612a80f63337e2e941a53ce9a8f",
+      "visible_bbox": [
+        0,
+        0,
+        826,
+        559
+      ]
+    },
+    {
+      "name": "creation_hand_lishenna.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 320232,
+      "sha256": "52ac12965bdab8fff06e537f3a171623668efcd256f966e1a7417720cc53d7af",
+      "visible_bbox": [
+        826,
+        400,
+        1672,
+        941
+      ]
+    },
+    {
+      "name": "cube_together.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 769044,
+      "sha256": "3c38b9c5a4e71f46acd99ac385f3576dc76248bc2d470a32e9c5f091533b8bf2",
+      "visible_bbox": [
+        498,
+        37,
+        1174,
+        903
+      ]
+    },
+    {
+      "name": "cube_alone.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 483771,
+      "sha256": "5961085cf4bf7f8400581636e56356d5d56567edb3a0aa39d9e5e71c1487186d",
+      "visible_bbox": [
+        498,
+        37,
+        939,
+        902
+      ]
+    },
+    {
+      "name": "ledge_together.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 2648366,
+      "sha256": "c6b7051075570a0bad3a79d290c496467b5bcb121cc029ca92580c2a282070e1"
+    },
+    {
+      "name": "ledge_alone.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 2598516,
+      "sha256": "aeaafffefeeb81938be2d2cb0b07b7ebac79e8cedefdeb6ab1c913055f85f9f8"
+    },
+    {
+      "name": "cat_ralmia_v2.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 987656,
+      "sha256": "e093dc262ee4700c056f53f42ccb1060b9794fb98b3475fce9ae65f615df3d9e",
+      "visible_bbox": [
+        361,
+        47,
+        1310,
+        894
+      ]
+    },
+    {
+      "name": "cat_ralmia_v2b.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 984609,
+      "sha256": "75d705fb0268c29bd5613a76d4f6acb3ebd9b8c317d2f8b641edae9b947d045a",
+      "visible_bbox": [
+        361,
+        47,
+        1310,
+        894
+      ]
+    },
+    {
+      "name": "lishenna_sit.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 466092,
+      "sha256": "98c00615be088a2af9a043ea7dc17c92b10a59feab91457d9e9f1863c70f2ce5",
+      "visible_bbox": [
+        498,
+        94,
+        1173,
+        847
+      ],
+      "max_rotation_radius": 390.95
+    },
+    {
+      "name": "lishenna_sit_b.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 477951,
+      "sha256": "0ef92a9002c4b6ee736e057b5567d3f9e82f8342d8df595ae6b25231018b468a",
+      "visible_bbox": [
+        497,
+        94,
+        1173,
+        859
+      ],
+      "max_rotation_radius": 398.76
+    },
+    {
+      "name": "ending_together.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 1381546,
+      "sha256": "d23bd528b4bba7e4e17450af943f5d7f780629f8f87f7acf0601f2f9ecb9ab63",
+      "visible_bbox": [
+        178,
+        70,
+        1494,
+        870
+      ]
+    }
+  ],
+  "pairs": [
+    {
+      "group": "cube",
+      "A": "cube_together.png",
+      "B": "cube_alone.png",
+      "edit_mask": "cube_edit_mask.png",
+      "outside_pixels": 809209,
+      "outside_changed_pixels": 0
+    },
+    {
+      "group": "ledge",
+      "A": "ledge_together.png",
+      "B": "ledge_alone.png",
+      "edit_mask": "ledge_edit_mask.png",
+      "outside_pixels": 1481317,
+      "outside_changed_pixels": 0
+    },
+    {
+      "group": "cat",
+      "A": "cat_ralmia_v2.png",
+      "B": "cat_ralmia_v2b.png",
+      "edit_mask": "cat_face_edit_mask.png",
+      "outside_pixels": 1557881,
+      "outside_changed_pixels": 0
+    },
+    {
+      "group": "sit",
+      "A": "lishenna_sit.png",
+      "B": "lishenna_sit_b.png",
+      "edit_mask": "sit_edit_mask.png",
+      "outside_pixels": 1372562,
+      "outside_changed_pixels": 0
+    }
+  ],
+  "preexisting_count": 53,
+  "preexisting_changed": [],
+  "root": {
+    "sit": {
+      "A": "lishenna_sit.png",
+      "B": "lishenna_sit_b.png",
+      "outside_edit_pixels": 1372562,
+      "outside_changed_pixels": 0,
+      "above_y490_exact": true,
+      "foot_direction_feedback": {
+        "basis": "User blue/red depth diagram plus subsequent lower-kick request",
+        "foreground_leg": "Anatomical left leg from viewer-right knee, kicking down-left",
+        "background_leg": "Anatomical right leg from viewer-left knee, hanging behind foreground calf",
+        "outside_edit_pixels": 1372562,
+        "outside_changed_pixels": 0,
+        "above_y490_exact": true,
+        "knee_contour_included_from_y490": true,
+        "hands_and_microphone_locked_pixels": 6793,
+        "hands_and_microphone_changed_pixels": 0,
+        "AI_source_size": [
+          1672,
+          941
+        ],
+        "translation": [
+          0,
+          0
+        ],
+        "rescaled": false,
+        "upscaled": false,
+        "A_sha256": "98c00615be088a2af9a043ea7dc17c92b10a59feab91457d9e9f1863c70f2ce5",
+        "root_png_count": 65,
+        "changed_root_png": [
+          "lishenna_sit_b.png"
+        ],
+        "unchanged_root_png_count": 64
+      }
+    },
+    "cube": {
+      "A": "cube_together.png",
+      "B": "cube_alone.png",
+      "outside_edit_pixels": 809209,
+      "outside_changed_pixels": 0,
+      "face_exact": true
+    },
+    "mechanical_layer": {
+      "opaque_rgb_matches_source": true,
+      "opaque_pixels": 159276
+    },
+    "human_layer": {
+      "AI_tip": [
+        818,
+        394
+      ],
+      "registration_translation": [
+        8,
+        9
+      ],
+      "final_tip": [
+        826,
+        403
+      ],
+      "upscaled": false
+    },
+    "plate": {
+      "outside_changed_pixels": 0
+    }
+  },
+  "cat": {
+    "canvas": [
+      1672,
+      941
+    ],
+    "A_alpha_min": 0,
+    "A_alpha_max": 255,
+    "bbox_alpha_gt32": [
+      361,
+      47,
+      1310,
+      894
+    ],
+    "subject_height_fraction": 0.900106269925611,
+    "edit_mask_pixels": 15471,
+    "outside_mask_pixels": 1557881,
+    "outside_mask_changed_pixels": 0,
+    "inside_mask_changed_pixels": 15364,
+    "alpha_identical": true,
+    "pixel_lock": "Only facial feature regions from the built-in local edit were composited; hair, ears, hands, torso, gem and all alpha are from A."
+  },
+  "ledge": {
+    "size": [
+      1672,
+      941
+    ],
+    "opaque": true,
+    "edit_mask_pixels": 92035,
+    "outside_pixels": 1481317,
+    "outside_changed_pixels": 0,
+    "outside_match_percent": 100.0,
+    "fixed_rois": {
+      "head_and_gem": {
+        "bbox": [
+          873,
+          306,
+          980,
+          405
+        ],
+        "changed_pixels": 0
+      },
+      "boots": {
+        "bbox": [
+          866,
+          727,
+          983,
+          854
+        ],
+        "changed_pixels": 0
+      },
+      "right_hair": {
+        "bbox": [
+          904,
+          415,
+          1069,
+          610
+        ],
+        "changed_pixels": 0
+      }
+    },
+    "notes": [
+      "B generated by local removal from final A; only Lishenna removal/revealed background and tiny contact region accepted.",
+      "Hands were detail-edited with built-in image_gen then reduced to original crop size; no final enlargement.",
+      "Figure height approximately 542/941=57.6%, close to requested half-height."
+    ],
+    "files": {
+      "ledge_together.png": {
+        "sha256": "c6b7051075570a0bad3a79d290c496467b5bcb121cc029ca92580c2a282070e1",
+        "bytes": 2648366
+      },
+      "ledge_alone.png": {
+        "sha256": "aeaafffefeeb81938be2d2cb0b07b7ebac79e8cedefdeb6ab1c913055f85f9f8",
+        "bytes": 2598516
+      }
+    }
+  },
+  "ending": {
+    "asset": "ending_together.png",
+    "status": "complete",
+    "canvas": [
+      1672,
+      941
+    ],
+    "mode": "RGBA",
+    "visible_bbox_alpha_gt32": [
+      178,
+      70,
+      1494,
+      870
+    ],
+    "subject_height_fraction": 0.8501594048884166,
+    "alpha_min": 0,
+    "alpha_max": 255,
+    "transparent_pixels": 907842,
+    "registration": {
+      "source_visible_bbox": [
+        106,
+        21,
+        1585,
+        920
+      ],
+      "crop": [
+        104,
+        19,
+        1587,
+        922
+      ],
+      "scale": 0.8898776418242491,
+      "paste_xy": [
+        176,
+        68
+      ],
+      "no_upscale": true
+    },
+    "visual_checks": {
+      "ralmia_viewer_left_and_lishenna_viewer_right": true,
+      "both_eyes_closed": true,
+      "cheeks_touch": true,
+      "lishenna_lips_parted_humming": true,
+      "ralmia_gem_viewer_left": true,
+      "full_ahoge_and_ear_loop_tips": true,
+      "pinky_hook_visible": true,
+      "fully_clothed": true,
+      "no_red_thread": true,
+      "no_text_logo": true,
+      "note": "One Lishenna speaker disc is partly hidden behind the two heads; the outer disc is fully visible. Hands inspected in a close-up."
+    }
+  }
+}

@@ -333,19 +333,9 @@ def s_ch3c(c, g, t):
 CR_TP, CR_AX = (948, 463), (0.82, 0.57)          # creation_inverse: where the fingertips nearly meet, and the hands' axis
 DR_R, DR_D = 0.2, 230                             # each window is 1/5 of the one around it; the hands held 2 x 230 px apart
 def creation_split(c, d):
-    """creation_inverse cut along the gap and pulled apart by d each side (the god card of 85 s -- but it never closes)"""
-    nx, ny = CR_AX; px_, py_ = -ny, nx; L = 3000
+    """the god card of 85 s with the hands held d apart each side -- but it never closes (v2 round 2: from the layers)"""
     fill_bg(c, INK)
-    for side in (-1, 1):
-        c.save()
-        c.move_to(CR_TP[0] + px_ * L, CR_TP[1] + py_ * L); c.line_to(CR_TP[0] - px_ * L, CR_TP[1] - py_ * L)
-        c.line_to(CR_TP[0] - px_ * L + side * nx * L, CR_TP[1] - py_ * L + side * ny * L)
-        c.line_to(CR_TP[0] + px_ * L + side * nx * L, CR_TP[1] + py_ * L + side * ny * L); c.close_path(); c.clip()
-        c.translate(side * nx * d, side * ny * d)
-        c.set_source_surface(surf('n_creation2_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint()
-        c.restore()
-    rgba(c, (0.08, 0.06, 0.05), 1); c.set_line_width(2 * d)
-    c.move_to(CR_TP[0] + px_ * L, CR_TP[1] + py_ * L); c.line_to(CR_TP[0] - px_ * L, CR_TP[1] - py_ * L); c.stroke()
+    creation_layers(c, d, 1.0, CR_TP, CR_AX)
 
 def s_ch3d(c, g, t):
     """d comes back, and this time it is a trap. her hand and his reach for a window between them; in the window the

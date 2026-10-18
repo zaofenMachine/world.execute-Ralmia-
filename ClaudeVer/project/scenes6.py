@@ -80,11 +80,12 @@ D_EXE = [dist(k) for k in EXE]
 GATE_W, Z_STOP = 2.0, 1.6                 # gates are bigger than the side windows; the twelfth stops us 1.6 ahead
 Z_SLAM = 6.3                              # gates 1-11 slam this far ahead; at 4th gear we reach them one beat later (z 0.3)
 CORR = POOL + [('n_stage_empty_hd', None), ('n_creation2_hd', None), ('n_eye_tear_hd', None), ('n_listen_hd', None), ('n_wL2n_hd', INK2),
-               ('n_offer_hd', PAPER), ('n_cat_hd', PAPER), ('n_role_s_hd', INK2), ('n_sitting_hd', PAPER), ('n_back_reach_hd', PAPER),
+               ('n_offer_hd', PAPER), ('n_cat2_hd', PAPER), ('n_role_s_hd', INK2), ('n_sitting_hd', PAPER), ('n_back_reach_hd', PAPER),
                ('n_spec_egg_hd', PAPER), ('n_spec_tomato_hd', INK2), ('n_pinky2_alone_hd', None), ('n_portrait2_hd', None)]
 # v2: the frames with Lishenna in them
 LISH_POOL = [('n_lish_face_hd', None), ('n_stage_hd', None), ('n_pinky2_hd', None), ('n_lish_walk_hd', PAPER), ('n_lish_float_hd', INK2),
-             ('n_creation2_hd', None), ('n_lish_stand_hd', PAPER), ('n_lish_sheet_hd', None)]
+             ('n_creation2_hd', None), ('n_lish_stand_hd', PAPER), ('n_lish_sheet_hd', None), ('n_ledge2_hd', None),
+             ('n_cube_together_hd', INK2), ('n_lish_sit_hd', PAPER)]
 LISH_SET = {n for n, _ in LISH_POOL}
 NON = [it for it in CORR if it[0] not in LISH_SET]
 def lish_share(d):

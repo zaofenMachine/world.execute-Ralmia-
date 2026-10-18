@@ -1,0 +1,21 @@
+{
+  "canvas": [
+    1672,
+    941
+  ],
+  "A_alpha_min": 0,
+  "A_alpha_max": 255,
+  "bbox_alpha_gt32": [
+    361,
+    47,
+    1310,
+    894
+  ],
+  "subject_height_fraction": 0.900106269925611,
+  "edit_mask_pixels": 15471,
+  "outside_mask_pixels": 1557881,
+  "outside_mask_changed_pixels": 0,
+  "inside_mask_changed_pixels": 15364,
+  "alpha_identical": true,
+  "pixel_lock": "Only facial feature regions from the built-in local edit were composited; hair, ears, hands, torso, gem and all alpha are from A."
+}

@@ -1,0 +1,52 @@
+{
+  "asset": "ending_together.png",
+  "status": "complete",
+  "canvas": [
+    1672,
+    941
+  ],
+  "mode": "RGBA",
+  "visible_bbox_alpha_gt32": [
+    178,
+    70,
+    1494,
+    870
+  ],
+  "subject_height_fraction": 0.8501594048884166,
+  "alpha_min": 0,
+  "alpha_max": 255,
+  "transparent_pixels": 907842,
+  "registration": {
+    "source_visible_bbox": [
+      106,
+      21,
+      1585,
+      920
+    ],
+    "crop": [
+      104,
+      19,
+      1587,
+      922
+    ],
+    "scale": 0.8898776418242491,
+    "paste_xy": [
+      176,
+      68
+    ],
+    "no_upscale": true
+  },
+  "visual_checks": {
+    "ralmia_viewer_left_and_lishenna_viewer_right": true,
+    "both_eyes_closed": true,
+    "cheeks_touch": true,
+    "lishenna_lips_parted_humming": true,
+    "ralmia_gem_viewer_left": true,
+    "full_ahoge_and_ear_loop_tips": true,
+    "pinky_hook_visible": true,
+    "fully_clothed": true,
+    "no_red_thread": true,
+    "no_text_logo": true,
+    "note": "One Lishenna speaker disc is partly hidden behind the two heads; the outer disc is fully visible. Hands inspected in a close-up."
+  }
+}

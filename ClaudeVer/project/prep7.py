@@ -160,6 +160,29 @@ R6 = [('creation_plate', 'cr_plate', False), ('creation_hand_ralmia', 'cr_hand_r
 for src, nm, rgba_ in R6:
     if os.path.exists(os.path.join(SRC, src + '.png')):
         save(nm, load(src, rgba_)); print('round 6:', nm)
+if os.path.exists(f'{A}/n_ending_hd.png'):                     # the chest-up crop ends in a hard line: feather it
+    for suf in ('_hd', '_line'):
+        im = cv2.imread(f'{A}/n_ending{suf}.png', cv2.IMREAD_UNCHANGED)
+        ys, _ = np.nonzero(im[..., 3] > 32); b = ys.max()
+        ramp = np.clip((b - np.arange(1080)) / 170.0, 0, 1)[:, None]
+        im[..., 3] = (im[..., 3] * ramp).astype(np.uint8); cv2.imwrite(f'{A}/n_ending{suf}.png', im)
+# Lishenna alone, cut out of each pair (what is in "together" and not in "alone"): the select box, the points she becomes
+if os.path.exists(f'{A}/n_cube_alone_hd.png'):
+    t_ = cv2.imread(f'{A}/n_cube_together_hd.png', cv2.IMREAD_UNCHANGED); a_ = cv2.imread(f'{A}/n_cube_alone_hd.png', cv2.IMREAD_UNCHANGED)
+    m = ((t_[..., 3] > 128) & (a_[..., 3] < 64)).astype(np.uint8)
+    m = cv2.morphologyEx(m, cv2.MORPH_OPEN, np.ones((5, 5), np.uint8))
+    ys, xs = np.nonzero(m); anc['cube_lish_bbox'] = [int(xs.min()), int(ys.min()), int(xs.max()), int(ys.max())]
+    ys, xs = np.nonzero(t_[..., 3] > 32); anc['cube_together'] = dict(feet=[int((xs.min() + xs.max()) / 2), int(ys.max())], height=int(ys.max() - ys.min()))
+if os.path.exists(f'{A}/n_ledge2_alone_hd.png'):
+    t_ = cv2.imread(f'{A}/n_ledge2_hd.png').astype(int); a_ = cv2.imread(f'{A}/n_ledge2_alone_hd.png').astype(int)
+    m = (np.abs(t_ - a_).sum(2) > 40).astype(np.uint8)
+    m = cv2.morphologyEx(m, cv2.MORPH_OPEN, np.ones((3, 3), np.uint8)); m = cv2.morphologyEx(m, cv2.MORPH_CLOSE, np.ones((9, 9), np.uint8))
+    n_, lab_, st_, _ = cv2.connectedComponentsWithStats(m, 8)
+    big = 1 + np.argsort(st_[1:, cv2.CC_STAT_AREA])[::-1][:3]                 # her, and her two speaker discs
+    m = np.isin(lab_, big[st_[big, cv2.CC_STAT_AREA] > 400]).astype(np.float32)
+    al = (cv2.GaussianBlur(m, (0, 0), 1.0) * 255).astype(np.uint8)
+    cv2.imwrite(f'{A}/n_ledge2_lish.png', np.dstack([t_.astype(np.uint8), al]))
+    ys, xs = np.nonzero(m); anc['ledge2_lish_bbox'] = [int(xs.min()), int(ys.min()), int(xs.max()), int(ys.max())]
 
 # ---- round 2: the two faces as oscilloscope traces (44-48 s, X-Y mode): line strength as an A8-style mask, 960x540,
 # both heads the same height and centred, lines thickened a little so they survive as phosphor

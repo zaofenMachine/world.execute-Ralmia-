@@ -1,0 +1,11 @@
+{
+  "status": "superseded_user_requires_near_left_leg_in_front",
+  "generator": "built-in image_gen",
+  "request": "Correct leg anatomy without crossing; edit original B directly",
+  "prompt": "Precise local edit of image 1. Image 2 is the character reference sheet.\nCorrect ONLY the viewer-RIGHT raised calf and sneaker on this seated anime girl. Keep the viewer-LEFT leg hanging vertically in exactly its present position.\nThe raised sneaker currently points outwards toward screen right. Rotate that foot naturally to face forward and slightly screen-left, consistent with the seated three-quarter-left torso. Redraw its calf and ankle as necessary, with a modest forward kick and natural foreshortening. The raised leg MUST REMAIN ON THE VIEWER-RIGHT SIDE of the hanging leg, with a visible gap between them. The raised foot must be fully visible to the RIGHT of the hanging shin and ABOVE the hanging shoe. DO NOT cross the legs, DO NOT tuck a foot underneath or behind the other leg. DO NOT swap the two legs.\nOn the 1672x941 target: preserve the right-side knee near (835,550); its raised ankle should be around (865,650), and its LEFT-FACING sneaker should occupy roughly x=780..925, y=640..745, toe toward lower-left at x=785, heel on the right at x=915. The hanging leg around x=715 and its shoe around y=800 stay unchanged. Leave empty space between the raised shoe's leftmost edge and the hanging shin.\nSame white chunky sneaker with purple laces, yellow heel detail and cyan-edged dark sole; same dark thigh-high stocking. Anatomically continuous knee-calf-ankle-foot. Both calves easy to follow from their own knees to their own feet.\nKeep the full 1672x941 canvas and exact character placement. Preserve everything above the knees, all hair, face, clothes, microphone and hands. Transparent background. This is a local correction of the original B, not a new pose.",
+  "references": [
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\_production\\round6\\raw\\lishenna_sit_b_before_foot_direction.png",
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_ref_sheet.png"
+  ],
+  "raw_output": "raw/sit_b_foot_direction_ai3.png"
+}

@@ -140,6 +140,14 @@ def sway_sticks(c, g, t, a=1.0, lift=0.0):
             rgba(cc, STICK_COLS[k], aa); cc.set_line_width(lw); cc.set_line_cap(cairo.LINE_CAP_ROUND)
             cc.move_to(x, y_); cc.line_to(x1, y1); cc.stroke(); cc.set_line_cap(cairo.LINE_CAP_BUTT)
 
+def creation_layers(c, d, push=1.0, tp=(948, 463), ax=(0.82, 0.57)):
+    """the god card from its three layers: Ralmia's hand moved back by d up the axis, Lishenna's down it"""
+    for nm, sg in (('n_cr_plate_hd', 0), ('n_cr_hand_r_hd', -1), ('n_cr_hand_l_hd', 1)):
+        c.save(); c.translate(*tp); c.scale(push, push); c.translate(-tp[0], -tp[1])
+        c.translate(sg * ax[0] * d, sg * ax[1] * d)
+        c.set_source_surface(surf(nm), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint()
+        c.restore()
+
 # ================================================================ S21 CHORUS 1  [B128, B160)
 STAGE_SCREENS = [(63, 149, 510, 434), (601, 103, 1318, 439), (1409, 149, 1856, 434)]   # n_stage (gen/_qa/round4/anchors_v2.json)
 GRID_LV = [(128, 1), (130, 2), (132, 4), (133, 8)]
@@ -325,8 +333,8 @@ def s_chorus1(c, g, t):
                     rgba(cc, BONE if cc is c else CYAN, aa * uc); cc.set_line_width(lw)
                     cc.move_to(*Pp[a][:2]); cc.line_to(*Pp[b][:2]); cc.stroke()
         edges_draw(False)
-        figure(c, 'n_offer_hd', 850, 760, 0.40, uc, (960, 1035))
-        figure(c, 'n_lish_stand_hd', 1125, 760, 0.385, uc)          # v2: Lishenna, turned towards her
+        bob = 5 * abs(math.sin(math.pi * (t - T0) / P)) + 8 * sum(pulse(t, B(k), 0.25) for k in (155, 156))   # a little bounce on the beat
+        figure(c, 'n_cube_together_hd', 975, 778 - bob, 0.43, uc, (959, 1036))    # v2 round 2: the two of them, cheek to cheek
         edges_draw(True)
         for kb, vi, lab in ((155, 0, 'world.lockThing(me);'), (156, 7, 'world.lockThing(you);')):
             if t >= B(kb) - 0.15:
@@ -410,8 +418,8 @@ def her_points(n=1400):
         _HP['x'] = (xs[idx] - 960) / 960.0; _HP['y'] = (ys[idx] - 570) / 960.0
     return _HP['x'], _HP['y']
 
-SPEC_IMG = ['n_spec_egg', 'n_spec_tomato', 'n_cat']           # the cat is her, curled up asleep (cat_ralmia)
-SPEC_CORE = [(1006, 784), (524, 695), (1205, 375)]         # where the colour starts: the gems (on the cat, her own temple gem)
+SPEC_IMG = ['n_spec_egg', 'n_spec_tomato', 'n_cat2']          # v2 round 2: the cat is her, waist up, paws up (cat_ralmia_v2)
+SPEC_CORE = [(1006, 784), (524, 695), (815, 315)]          # where the colour starts: the gems (on the cat, her own temple gem)
 _SM = {}
 def spec_morph(i, cx=560, cy=610, H_=620):
     if i not in _SM:
@@ -542,15 +550,17 @@ def s_verse2(c, g, t):
         ul_ = prog(t, tm + 0.3, tm + 0.45)
         if ul_ > 0:                                   # line art, then colour from her core outwards
             c.save(); c.translate(cx, cy)
-            if i == 2:                                # asleep: she breathes with the purr, one breath every two beats
-                br = abs(math.sin(math.pi * kk / 2)) * prog(t, tm + 0.3, tm + 0.8)
-                c.translate(0, 300); c.scale(1 + 0.006 * br, 1 + 0.014 * br); c.translate(0, -300)
+            img_ = SPEC_IMG[i]
+            if i == 2:                                # a bob on every beat; eyes shut, content, while she purrs
+                bb = abs(math.sin(math.pi * (t - T0) / P)) * prog(t, tm + 0.3, tm + 0.8)
+                c.translate(0, -10 * bb); c.rotate(0.025 * math.sin(math.pi * (t - T0) / P) * prog(t, tm + 0.3, tm + 0.8))
+                if kk >= 182.5 or (180.0 <= kk < 180.5) or (181.0 <= kk < 181.25): img_ = 'n_cat2b'
             c.scale(sc_, sc_); c.translate(-bx, -by)
             rgba(c, SEPIA, ul_); c.mask_surface(surf(SPEC_IMG[i] + '_line'), 0, 0)
             rr_ = 1500 * eo_cubic(prog(t, tm + 0.42, tm + 0.8))
             if rr_ > 0:
                 c.new_path(); c.arc(core[0], core[1], rr_, 0, 6.283); c.clip()
-                c.set_source_surface(surf(SPEC_IMG[i] + '_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint()
+                c.set_source_surface(surf(img_ + '_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint()
             c.restore()
             gp_ = (cx + (core[0] - bx) * sc_, cy + (core[1] - by) * sc_)
             p_ = pulse(t, tm + 0.42, 0.6)
@@ -610,26 +620,12 @@ def s_verse2(c, g, t):
             text(c, 'monom', 'me.purr();', x0_, y0_ - 20, 26, ink, ua)
             text(c, 'mono', '25 Hz', x0_ + w_, y0_ - 20, 22, ink, 0.7 * ua, align='right')
     else:
-        # god: her hand from above, Lishenna's from below (creation_inverse_v2, split along the gap); they close and touch on k189
+        # god: her hand from above, Lishenna's from below -- three layers (gen/request_v2c.md L13): the plate, and each hand
+        # pulled back along the axis by d; they close and touch on k189
         TP = (948, 463); AX = (0.82, 0.57)
-        d = 150 * (1 - eio_cubic(prog(t, B(184), B(189)))) + 4
+        d = 150 * (1 - eio_cubic(prog(t, B(184), B(189)))) - 1.2
         push = 1.0 + 0.05 * prog(t, B(184), B(192))
-        for side in (-1, 1):
-            c.save()
-            c.translate(TP[0], TP[1]); c.scale(push, push); c.translate(-TP[0], -TP[1])
-            # half-plane on this side of the line through TP perpendicular to the hands
-            nx, ny = AX; L = 3000
-            px_, py_ = -ny, nx
-            c.move_to(TP[0] + px_ * L, TP[1] + py_ * L); c.line_to(TP[0] - px_ * L, TP[1] - py_ * L)
-            c.line_to(TP[0] - px_ * L + side * nx * L, TP[1] - py_ * L + side * ny * L)
-            c.line_to(TP[0] + px_ * L + side * nx * L, TP[1] + py_ * L + side * ny * L); c.close_path(); c.clip()
-            c.translate(side * AX[0] * d, side * AX[1] * d)
-            c.set_source_surface(surf('n_creation2_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint()
-            c.restore()
-        if d > 6:                                     # the dark seam between them
-            nx, ny = AX; px_, py_ = -ny, nx
-            rgba(c, (0.08, 0.06, 0.05), 1); c.set_line_width(2 * d * push)
-            c.move_to(TP[0] + px_ * 3000, TP[1] + py_ * 3000); c.line_to(TP[0] - px_ * 3000, TP[1] - py_ * 3000); c.stroke()
+        creation_layers(c, d, push)
         touch = t >= B(189)
         ft = TP; hf = TP
         if touch:
@@ -638,7 +634,7 @@ def s_verse2(c, g, t):
             rg.add_color_stop_rgba(0, *CYAN, 0.4 + 0.6 * p_); rg.add_color_stop_rgba(1, *CYAN, 0)
             g.set_source(rg); g.arc(*TP, 180, 0, 6.283); g.fill()
         else:
-            text(c, 'monom', f'd = {d / 400:.6f}', 1400, 470 + 0 * 0, 26, CYAN, 0.85 * eo_cubic(prog(t, B(184.5), B(185))))
+            text(c, 'monom', f'd = {(d + 1.2) / 400:.6f}', 1400, 470 + 0 * 0, 26, CYAN, 0.85 * eo_cubic(prog(t, B(184.5), B(185))))
         # the proof
         x0_ = 1400
         for j, (s_, kb_, key_) in enumerate((('Theorem.  me exists.', 186.5, 'serif'), ('Proof.  you.', 188.0, 'serif'))):

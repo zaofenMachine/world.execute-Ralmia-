@@ -128,6 +128,21 @@ def stick_motes(c, t, cx, cy, R, a=1.0, n=90, seed=31):
         aa = a * math.sin(math.pi * f) * (0.4 + 0.6 * abs(math.sin(t * 3 + ph[k] * 9)))
         rgba(c, STICK_COLS[kind[k]], aa); c.arc(x, y, 2.2 + 2 * (1 - d[k]), 0, 6.283); c.fill()
 
+# v2 round 2 anchors (gen/_qa/round4/anchors_v2.json)
+CUBE_LISH = (947, 53, 1337, 1036)       # Lishenna in n_cube_together (what n_cube_alone does not have)
+LEDGE_SUN = (1711, 454)                 # the sun in n_ledge2
+def water_glints(c, g, t, push=1.0):
+    """the sun's path on the water in n_ledge2, glittering"""
+    rr = np.random.default_rng(41)
+    for k in range(70):
+        y = 560 + 380 * rr.random() ** 1.4; x = 1700 + rr.normal(0, 18 + 0.25 * (y - 560))
+        f = 0.5 + 0.5 * math.sin(t * (5 + 7 * rr.random()) + rr.random() * 6.283)
+        if f < 0.6: continue
+        X = 820 + (x - 820) * push; Y = 640 + (y - 640) * push
+        a_ = (f - 0.6) / 0.4
+        rgba(c, (1, 0.97, 0.85), 0.9 * a_); c.arc(X, Y, 1.2 + 1.6 * a_, 0, 6.283); c.fill()
+        rgba(g, (1, 0.9, 0.7), 0.6 * a_); g.arc(X, Y, 4, 0, 6.283); g.fill()
+
 # ================================================================ S24 CHORUS 2  [B224, B256)
 def s_chorus2(c, g, t):
     fx = {}
@@ -175,12 +190,13 @@ def s_chorus2(c, g, t):
         fx['vig'] = 0.4; fx['grain'] = 0.03
         hud(c, t, False, a=0.6, log_a=0.85)
     elif t < B(240):
-        # B — COMPLETION: the warm world from 12 s, the two of them on the ledge. the fullest bar of the film
+        # B — COMPLETION: the same ledge, closer (L12a): the two of them sitting on its edge, her head on Ralmia's shoulder,
+        # little fingers hooked. the fullest bar of the film
         push = 1 + 0.05 * eio_cubic(prog(t, B(232), B(240)))
-        world_at(c, g, WREF, 0.0, push)
-        him_in_world(c, push)
+        img(c, 'n_ledge2_hd', 820, 640, push, 1, 820, 640)
+        water_glints(c, g, t, push)
         sun = 0.35 + 0.65 * pulse(t, B(K_COMP), 1.2)
-        sx, sy, _ = wxf(1246, 574, push)
+        sx, sy = 820 + (LEDGE_SUN[0] - 820) * push, 640 + (LEDGE_SUN[1] - 640) * push
         rg = cairo.RadialGradient(sx, sy, 0, sx, sy, 420)
         rg.add_color_stop_rgba(0, 1, 0.9, 0.65, 0.7 * sun); rg.add_color_stop_rgba(1, 1, 0.9, 0.65, 0)
         g.set_source(rg); g.arc(sx, sy, 420, 0, 6.283); g.fill()
@@ -196,7 +212,7 @@ def s_chorus2(c, g, t):
         words_ol(c, [('then', 107.12), ('I', 107.70), ('can,', 108.02), ('then', 108.40), ('I', 108.64), ('can', 108.94),
                      ('finally', 109.16), ('be', 109.94)], t, 150, 248, 66, col=BONE, ol=SEPIA)
         if t >= B(K_COMP):
-            slam_word(c, g, 'COMPLETION', t, B(K_COMP), 960, 380, 170, key='bold', col=BONE, ol=SEPIA, glow=0.4)
+            slam_word(c, g, 'COMPLETION', t, B(K_COMP), 1480, 880, 140, key='bold', col=BONE, ol=SEPIA, glow=0.4)
         fx['ab'] = 4 * pulse(t, B(K_COMP), 0.25); fx['vig'] = 0.4; fx['grain'] = 0.03
         fx['flash'] = 0.25 * pulse(t, B(K_COMP), 0.15)
         hud(c, t, False, a=0.6, log_a=0.85)
@@ -214,15 +230,18 @@ def s_chorus2(c, g, t):
             s_ = 1.04 + 0.03 * lp
             img(c, 'n_stage_hd', 960, 540, s_); img(c, 'n_stage_empty_hd', 960, 540, s_, u)        # after the show
         elif j == 2:
-            push = 1.05 + 0.03 * lp
-            world_at(c, g, WREF, 0.0, push); dark = False
-            X, Y, sc = him_in_world(c, push, 1 - u)
-            if u > 0:                                   # he comes apart into points that drift up and away
-                xs, ys, col, rr, nz = alpha_points(WALK)
-                px = X + (xs - WALK_FEET[0]) * sc + nz[:, 0] * 40 * u + 60 * u * rr
-                py = Y + (ys - WALK_FEET[1]) * sc - 260 * u * (0.4 + rr) + nz[:, 1] * 12 * u
+            # the ledge (L12a / L12b): she comes apart into points that drift up and away; Ralmia's head still leans
+            push = 1.05 + 0.03 * lp; dark = False
+            img(c, 'n_ledge2_alone_hd', 820, 640, push, 1, 820, 640)
+            img(c, 'n_ledge2_hd', 820, 640, push, 1 - u, 820, 640)
+            water_glints(c, g, t, push)
+            if u > 0:
+                xs, ys, col, rr, nz = alpha_points('n_ledge2_lish', 3000, 8)
+                k_ = push
+                px = 820 + (xs - 820) * k_ + nz[:, 0] * 40 * u + 90 * u * rr
+                py = 640 + (ys - 640) * k_ - 300 * u * (0.4 + rr) + nz[:, 1] * 12 * u
                 a_ = (1 - u) ** 0.7 * min(1, u * 6)
-                draw_points(c, px, py, SEPIA, 0.8 * a_, 2.2)
+                draw_points(c, px, py, (1.0, 0.86, 0.74), 0.9 * a_, 2.4)
         elif j == 3:
             fill_bg(c, INK); dotgrid(c, BONE, 0.05)
             rx, ry = -0.3, 0.5 + 0.12 * (t - B(246))
@@ -231,16 +250,19 @@ def s_chorus2(c, g, t):
             Pp = [proj(*rot3(x, y, z, rx, ry), cx=960, cy=520) for (x, y, z) in V]
             edges = [(a, b) for a in range(8) for b in range(a + 1, 8) if bin(a ^ b).count('1') == 1]
             for a, b in edges: line(c, Pp[a][0], Pp[a][1], Pp[b][0], Pp[b][1], BONE, 0.7, 2)
-            img(c, 'n_offer_hd', 860, 770, 0.4, 1, 960, 1034)
-            # the select-and-delete of world.removeThing(you)
-            hx, hy = 1110, 770
-            if u < 1:
-                img(c, 'n_lish_stand_hd', hx, hy, 0.385, 1 - u, 960, 1050)
+            # the select-and-delete of world.removeThing(you): she goes; Ralmia is still holding on to nothing (L11b)
+            fx_, fy_, fs_ = 975, 778, 0.43
+            img(c, 'n_cube_alone_hd', fx_, fy_, fs_, 1, 959, 1036)
+            if u < 1: img(c, 'n_cube_together_hd', fx_, fy_, fs_, 1 - u, 959, 1036)
+            bx0, by0, bx1, by1 = CUBE_LISH
+            rx0, ry0 = fx_ + (bx0 - 959) * fs_ - 8, fy_ + (by0 - 1036) * fs_ - 8
+            rw, rh = (bx1 - bx0) * fs_ + 16, (by1 - by0) * fs_ + 16
+            hx, hy = rx0 + rw / 2, fy_
             sel = prog(t, B(k0) + P * 0.25, B(k0) + P * 0.5)
             if 0 < sel and u < 1:
                 c.set_dash([6, 5]); rgba(c, CYAN, 0.9); c.set_line_width(2)
-                c.rectangle(hx - 118, hy - 398, 236, 408); c.stroke(); c.set_dash([])
-                text(c, 'mono', 'you', hx - 118, hy - 410, 18, CYAN, 0.9)
+                c.rectangle(rx0, ry0, rw, rh); c.stroke(); c.set_dash([])
+                text(c, 'mono', 'you', rx0, ry0 - 12, 18, CYAN, 0.9)
             if u > 0:
                 text(c, 'mono', 'removed', hx, hy - 180, 20, GREY, 0.8 * (1 - prog(t, B(k1) - 0.2, B(k1))), align='center')
             for vi in (0, 7):

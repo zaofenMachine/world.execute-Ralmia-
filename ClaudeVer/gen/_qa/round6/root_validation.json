@@ -1,0 +1,65 @@
+{
+  "sit": {
+    "A": "lishenna_sit.png",
+    "B": "lishenna_sit_b.png",
+    "outside_edit_pixels": 1372562,
+    "outside_changed_pixels": 0,
+    "above_y490_exact": true,
+    "foot_direction_feedback": {
+      "basis": "User blue/red depth diagram plus subsequent lower-kick request",
+      "foreground_leg": "Anatomical left leg from viewer-right knee, kicking down-left",
+      "background_leg": "Anatomical right leg from viewer-left knee, hanging behind foreground calf",
+      "outside_edit_pixels": 1372562,
+      "outside_changed_pixels": 0,
+      "above_y490_exact": true,
+      "knee_contour_included_from_y490": true,
+      "hands_and_microphone_locked_pixels": 6793,
+      "hands_and_microphone_changed_pixels": 0,
+      "AI_source_size": [
+        1672,
+        941
+      ],
+      "translation": [
+        0,
+        0
+      ],
+      "rescaled": false,
+      "upscaled": false,
+      "A_sha256": "98c00615be088a2af9a043ea7dc17c92b10a59feab91457d9e9f1863c70f2ce5",
+      "root_png_count": 65,
+      "changed_root_png": [
+        "lishenna_sit_b.png"
+      ],
+      "unchanged_root_png_count": 64
+    }
+  },
+  "cube": {
+    "A": "cube_together.png",
+    "B": "cube_alone.png",
+    "outside_edit_pixels": 809209,
+    "outside_changed_pixels": 0,
+    "face_exact": true
+  },
+  "mechanical_layer": {
+    "opaque_rgb_matches_source": true,
+    "opaque_pixels": 159276
+  },
+  "human_layer": {
+    "AI_tip": [
+      818,
+      394
+    ],
+    "registration_translation": [
+      8,
+      9
+    ],
+    "final_tip": [
+      826,
+      403
+    ],
+    "upscaled": false
+  },
+  "plate": {
+    "outside_changed_pixels": 0
+  }
+}

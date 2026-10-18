@@ -1,0 +1,11 @@
+{
+  "status": "complete",
+  "source": "C:/Users/zaofenMachine/.codex/generated_images/01a1408d-5dd4-7781-ab21-3edd8fac2f3c/exec-00bc50d2-9ded-4b88-a5af-4bde2a8ba9d5.png",
+  "generator": "built-in image_gen",
+  "prompt": "Precise local edit of Image1 cube_alone. Image2 is Ralmia's master reference; Image3 style board. Repair ONLY the exposed hand hanging at viewerRIGHT hip, around x890..924 y490..548. It was incorrectly drawn with peach HUMAN SKIN. Ralmia is a robot: this hand must be BLACK SEGMENTED MECHANICAL FINGERS and dark mechanical palm, matching her raised mechanical hand and reference. Keep exactly the same wrist and hand position, relaxed curling gesture, length and silhouette as far as possible, no flesh. Cyan palmcore only if palm side visible; dorsal side can stay dark. Do not move the arm or body. Every other part including face, gem, raised hand, hairstyle, costume, boots, transparency and canvas must stay as-is. No new props/redthread/words/watermark. Whole same1672x941 transparent PNG.",
+  "references": [
+    "cube_alone.png",
+    "ref_sheet.png",
+    "_production/round6/style_references.jpg"
+  ]
+}

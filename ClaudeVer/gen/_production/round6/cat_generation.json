@@ -1,0 +1,58 @@
+{
+  "mode": "built-in image_gen",
+  "status": "complete",
+  "assets": [
+    {
+      "filename": "cat_ralmia_v2.png",
+      "step": "A initial",
+      "prompt": "Use case: illustration-story. Asset: L15a, a transparent anime MV character cutout, wide 16:9 canvas approximately 1672 by 941. Image 1 is the exact RALMIA identity and outfit reference. Image 2 is the MV STYLE reference only; do not add the second character.\nPrimary request: waist-up RALMIA as a playful cat-girl, facing viewer at a slight angle, eye-level. Only to the waist, NO legs and NO tail. Exactly two fluffy GOLDEN TABBY cat ears close to blonde hair color, pale inner ear, visibly striped golden-brown fur. Keep her long blonde hair and ahoge. Tilt her head slightly, wink one eye, other eye cyan, small omega-shaped \"ω\" cat smile and rosy blushing cheeks.\nBoth black articulated MECHANICAL hands curl into loose small fists as cat paws raised beside her cheeks. Five mechanical fingers per hand folded naturally, not organic hands; cyan details retained. Slender forearms, natural modest posture. Her usual white-and-black mechanical armor suit, cyan lights, black neck underlayer and red neck bow EXACTLY from image 1. Cyan oval gem on HER RIGHT temple, which is VIEWER LEFT. Only this side has a temple gem.\nFraming: centered and upright, entire silhouette including ears and ahoge in frame with about 5% clear space above and below, subject occupies about 90% of image height. End the cutout at the WAIST, no skirt-length view, no lower body. Pleasant modest framing, no emphasized chest, nonsexual pose. Clean crisp animation lineart, flat cel shading, soft secondary shadows, slightly warm restrained palette like image 2. No glossy neon card rendering.\nTrue transparent alpha background, clean non-colored edges. No floor, no scene, no props, no other people, no tail, no legs, no human skin hands, no red thread, no text, no symbols or signature, no watermark.",
+      "references": [
+        "ref_sheet.png",
+        "_production/round6/style_references.jpg"
+      ],
+      "source": "C:\\Users\\zaofenMachine\\.codex\\generated_images\\01a14edb-d956-7ae2-b8c5-5d4d3f241d21\\exec-12f5f9b4-d897-4a21-a56d-a49f4fc98481.png"
+    },
+    {
+      "filename": "cat_ralmia_v2.png",
+      "step": "A framing correction",
+      "prompt": "Use case: precise-object-edit. Image 1 is the edit target, image 2 the canonical character identity. Produce the EXACT same waist-up Ralmia cat-paw illustration, same wink, cute omega mouth, black mechanical fists, tabby cat ears, gem on viewer-left, red bow and white armor. Only adjust framing: zoom the entire figure OUT uniformly about 10%, centered, leaving transparent breathing space at top and bottom. Complete the very top of the ahoge hair loop so it is fully inside the frame and has a smooth uncut curve. Keep lower edge at waist and NO legs/tail. Same 16:9 canvas, true transparent background. Keep all outfit, face, ears, hair, hands, pose and style otherwise unchanged. No words or watermark.",
+      "references": [
+        "_production/round6/cat_a_initial.png",
+        "ref_sheet.png"
+      ],
+      "source": "C:\\Users\\zaofenMachine\\.codex\\generated_images\\01a14edb-d956-7ae2-b8c5-5d4d3f241d21\\exec-fbbdca44-86cb-49d3-b139-1d1f1d88f6fa.png"
+    },
+    {
+      "filename": "cat_ralmia_v2b.png",
+      "step": "B face-only local edit",
+      "prompt": "Use case: precise-object-edit. Image 1 is the EDIT TARGET, a finished waist-up cat-girl Ralmia cutout. Image 2 is her canonical identity reference only.\nEdit ONLY the exposed facial skin features inside image 1, to create matching alternate expression L15b. Keep the same exact face angle, outline, scale and position. Change the one open cyan eye into a content closed eye, and make BOTH closed eyes happy upward-curving \"^ ^\" arcs. Give her a slightly wider, upward happy omega smile, calm satisfaction and blush as if purring while being petted. No hand actually petting her; no added object.\nEverything outside the face must be pixel-identical: especially all hair and bangs, cat ears, ahoge, temple gem, mechanical paw fists and fingers, forearms, shoulders, torso, red bow, armor, alpha outline and transparent canvas. Do not recompose or resize the subject. Keep exact 1672x941 canvas and original transparent background. No text, symbols, watermark, tail or legs.",
+      "references": [
+        "cat_ralmia_v2.png",
+        "ref_sheet.png"
+      ],
+      "source": "C:\\Users\\zaofenMachine\\.codex\\generated_images\\01a14edb-d956-7ae2-b8c5-5d4d3f241d21\\exec-022e09aa-6a9d-4bab-b045-b97373fc6fb2.png"
+    }
+  ],
+  "authorization": "User allowed scale down / translation, alpha edge cleanup, and restoring A pixels outside B local edit.",
+  "A_registration": {
+    "source_bbox": [
+      345,
+      13,
+      1363,
+      921
+    ],
+    "scale": 0.9327092511013215,
+    "target_bbox": [
+      361,
+      47,
+      1310,
+      894
+    ]
+  },
+  "validation": "_qa/round6/cat_validation.json",
+  "edit_mask": "_qa/round6/cat_face_edit_mask.png",
+  "final_files": [
+    "cat_ralmia_v2.png",
+    "cat_ralmia_v2b.png"
+  ]
+}

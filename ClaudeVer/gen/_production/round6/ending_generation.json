@@ -1,0 +1,42 @@
+{
+  "asset": "ending_together.png",
+  "mode": "built-in image_gen",
+  "status": "complete",
+  "references": [
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\ref_sheet.png",
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_ref_sheet.png",
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\_production\\round6\\style_references.jpg"
+  ],
+  "generations": [
+    {
+      "prompt": "Use case: illustration-story\nAsset type: ending_together.png, a transparent anime MV ending still, wide landscape 16:9 canvas, native 1672×941.\nInput references: Image 1 is the canonical RALMIA design; Image 2 is the canonical LISHENNA Diva design; Image 3 is a style board of the existing MV frames. Match identities and clothing from the two sheets, match the warm restrained line-art rendering of the style board.\nPrimary request: A chest-up portrait of two fully clothed girls pressed cheek to cheek, facing the viewer at eye level. RALMIA is on the left; LISHENNA is on the right. Both eyes closed, calm and deeply content, tiny relaxed smiles. LISHENNA's lips are slightly parted as she softly hums. Their cheeks physically touch at the center. No kissing.\nHands: Below and between their chins, clearly visible against a small gap between their torsos, one slender black mechanical RALMIA hand and one natural fair-skinned LISHENNA hand make a pinky promise: only their little fingers gently hook around each other; the remaining fingers curl naturally inward. Show two complete coherent hands, one from each corresponding arm. The hands do not cover mouths or chins. No thread or knot of any kind. Keep forearms slender and the white puffy cuff moderate, not an enormous sleeve.\nRALMIA: long blonde hair, ahoge, cyan oval gem on her anatomical RIGHT temple, which must be on the LEFT side of her face in the image, visible near her outer left silhouette. White-and-black mechanical armor outfit fully covering torso, red neck bow, black articulated mechanical fingers and cyan palm core as in sheet. No bare torso, no new accessories.\nLISHENNA: long coral-pink hair and straight bangs; exact black-and-white checkered hairband and two black rabbit-ear-like loops with cyan motif; two floating gold-rimmed black speaker discs with cyan sigils grouped BEHIND her head toward the upper right outer silhouette so they do not separate the faces. Exact white sleeveless top, cyan bow AND cyan necktie, off-shoulder white jacket, black collar/straps as in canonical sheet. Fully dressed, modest chest-up crop.\nComposition: The two figures form one central wide silhouette. Complete ahoge and ear-loop tips with clear transparent margin. Subjects together about 85% of frame height, chest-up, bottom silhouette ends at chest. Both heads same scale; their faces have frontal planar symmetry, gently tilted toward each other, cheeks make contact. Quiet affectionate ending, no props.\nStyle: clean anime line art, flat cel shading with a little soft secondary shading, slightly warm colors, crisp edges, matching existing MV frames. No glossy highlights, no highly saturated neon card painting.\nBackground: genuinely transparent alpha, clean anti-aliased cutout edges with no colored matte, no shadow rectangle. No scene, text, logo, watermark, red thread, kiss, low-angle view or sexualized framing.",
+      "source": "C:\\Users\\zaofenMachine\\.codex\\generated_images\\01a14edc-d889-76f0-a16f-b3babec6382a\\exec-8ce34d4e-daf5-4476-bcea-f40ffc713cdb.png",
+      "raw": "ending_raw/ending_initial.png"
+    },
+    {
+      "prompt": "Use case: precise-object-edit. Edit Image 1 only to fix its framing and clipped extremities. Keep the SAME two characters, faces, expressions, cheek contact, exact hand gesture, costume, camera, color and line art. Zoom the entire combined portrait OUT about 20%, centered on the same 1672×941 landscape canvas, leaving real transparent margin on ALL four sides. Restore the full tip of Ralmia's blonde ahoge and the full black/cyan bunny-loop tip above Lishenna so neither touches the top. Chest-up lower boundary should end naturally below the chest with transparent margin beneath; do not add legs or waist. The combined visible subject should be about 85% of the image height. Bottom hair tips, white sleeves and armor must be entirely inside the frame. Ralmia LEFT, Lishenna RIGHT; cheeks still touching, both eyes closed and calm, Lishenna slightly parted humming mouth. Pinky promise clearly visible centrally under chins, black mechanical hand and natural skin hand. No thread. Ralmia gem stays on viewer LEFT, her anatomical RIGHT temple. Keep canonical clothes strictly. Supporting references: Images 2 and 3 are the exact character sheets; Image 4 is the established MV style. Clean flat cel anime, modest and fully dressed, genuine transparent alpha, no matte halo, no text or watermark. This is a framing correction, do not redesign the scene or invent extra hands.",
+      "references": [
+        "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\_production\\round6\\ending_raw\\ending_initial.png",
+        "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\ref_sheet.png",
+        "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_ref_sheet.png",
+        "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\_production\\round6\\style_references.jpg"
+      ],
+      "source": "C:\\Users\\zaofenMachine\\.codex\\generated_images\\01a14edc-d889-76f0-a16f-b3babec6382a\\exec-c020898e-58ae-4fc3-977c-1c56a5779bd4.png",
+      "raw": "ending_raw/ending_margin_corrected.png"
+    }
+  ],
+  "final": "ending_together.png",
+  "postprocessing": {
+    "authorized_by_user": true,
+    "script": "_production/round6/ending_finalize.py",
+    "steps": [
+      "threshold only alpha below 8 to zero",
+      "uniformly downscale only to approximately 85 percent visible frame height",
+      "center on same 1672 by 941 transparent canvas",
+      "zero RGB of fully transparent pixels"
+    ],
+    "no_painting_or_content_redraw": true,
+    "no_upscale": true
+  },
+  "validation": "_qa/round6/ending_validation.json"
+}

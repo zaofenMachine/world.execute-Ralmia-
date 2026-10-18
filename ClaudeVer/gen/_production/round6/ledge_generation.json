@@ -1,0 +1,104 @@
+{
+  "status": "complete",
+  "mode": "built-in image_gen",
+  "assets": [
+    {
+      "asset": "ledge_together.png",
+      "attempt": "initial",
+      "prompt": "Use case: illustration-story. Asset: opaque landscape anime MV frame, 1672 by 941.\nInput images: Image 1 RALMIA identity reference, Image 2 LISHENNA identity reference. Image 3 is a three-panel STYLE board only. Image 4 is a three-panel WORLD reference board only; draw one coherent scene, no panels.\nCreate L12a: a quiet medium shot from behind and slightly above two fully clothed friends sitting side by side on a dark metal-framed cliff ledge overlooking the SAME warm flooded ruined white city as the world reference: broken white monumental arch, slender white spires and towers, water, and low setting sun ON THE RIGHT. Their legs dangle over the edge. Put the pair near the central foreground, about HALF of the total canvas height including dangling feet, leaving expansive city and sunset sky around them.\nLISHENNA sits on the LEFT with her long coral-pink hair, black-and-white checkered band with two black rabbit-ear-like loops, two floating gold-rimmed black speaker discs with cyan sigils beside her head, off-shoulder white jacket and puffy sleeves, black high-waisted shorts, black thigh-highs and chunky white sneakers with purple laces. RALMIA sits on the RIGHT, long golden blonde hair and ahoge, white-and-black mechanical dress armor, cyan accent lights, black mechanical hands, white mechanical boots. Preserve their exact reference outfits.\nLISHENNA rests her head against RALMIA's left shoulder. RALMIA gently tilts her head left toward LISHENNA. Rear view, no faces visible. If any RALMIA temple gem peeks out, only on the RIGHT side of her head in this rear view.\nCRITICAL: clearly show their INNER hands resting on the bare rock ledge in the gap between them, one slender bare hand from LISHENNA and one black mechanical hand from RALMIA. Their LITTLE FINGERS hook together in a clearly readable pinky promise, all other fingers resting relaxed; keep this hand contact visible below and between their bodies and not hidden by hair or sleeves. No red thread anywhere.\nWarm golden rim light from the right, calm affectionate wholesome mood, eye-level or slightly elevated camera, no kissing. Clean anime outlines, flat cel shading with only soft secondary shadows, slightly warm muted palette matching Image 3, crisp edges; no glossy neon painting. Single continuous image, no labels, no text, no watermark, no inset. Opaque background.",
+      "references": [
+        "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/ref_sheet.png",
+        "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/lishenna_ref_sheet.png",
+        "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/_production/round6/style_references.jpg",
+        "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/_production/round6/world_references.jpg"
+      ],
+      "source": "C:\\Users\\zaofenMachine\\.codex\\generated_images\\01a14ed9-b751-7b42-a735-fac4e352edab\\exec-f98801d9-cd4a-4206-a177-4531ab353041.png",
+      "workspace_raw": "_production/round6/raw/ledge_a_initial.png"
+    },
+    {
+      "asset": "ledge_together.png",
+      "attempt": "framing_correction",
+      "prompt": "Use case: precise-object-edit. Image 1 is the edit target, images 2 and 3 are character identity references, image 4 is style board, image 5 is world board. Keep this same sunset-world scene, rear view, same two fully clothed characters and same warm clean anime style, but correct the framing: zoom OUT so the pair's entire visible height from the blonde ahoge to the bottoms of their dangling feet is about 500 pixels of this 941-high canvas (53%). They currently fill 80%, which is too much. Their head tops should be around y=360 and lowest foot around y=860. Keep them seated near center. Extend the foreground ledge naturally for this slightly wider view; preserve the distant broken arch, towers and sunset sun on the RIGHT.\nKeep Lishenna LEFT resting her head on Ralmia RIGHT's shoulder, heads gently tilted together, no faces visible. Preserve exact original outfits and their slim proportions; both legs dangle beyond the ledge.\nCRITICAL HAND DETAIL: make their two inner hands distinct and visible resting on the ledge between them: Lishenna's bare right hand and Ralmia's black mechanical left hand. Their two LITTLE FINGERS MUST CURL AND HOOK TOGETHER, visibly interlocked; the other fingers relax separately on the stone. No thread, no ribbon, no line at the joined fingers. Do not hide the contact under sleeves or hair. Ralmia's cyan temple gem is on the RIGHT side of her head in rear view, as already depicted. No text, logos, panels or watermark. Output same 1672x941 opaque canvas.",
+      "references": [
+        "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/_production/round6/raw/ledge_a_initial.png",
+        "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/ref_sheet.png",
+        "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/lishenna_ref_sheet.png",
+        "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/_production/round6/style_references.jpg",
+        "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/_production/round6/world_references.jpg"
+      ],
+      "source": "C:\\Users\\zaofenMachine\\.codex\\generated_images\\01a14ed9-b751-7b42-a735-fac4e352edab\\exec-57997307-eaac-47ad-8a74-e549c67f01fb.png",
+      "workspace_raw": "_production/round6/raw/ledge_a_framing.png"
+    },
+    {
+      "asset": "ledge_together.png",
+      "attempt": "local_pinky_correction",
+      "prompt": "Use case: precise-object-edit. Image 1 is the only edit target. Images 2 and 3 are the exact character identity references, image 4 style reference and image 5 world reference. Correct ONLY the small hand contact at image coordinates around x=790–865,y=615–662. Keep every other pixel of the image unchanged: framing, seated bodies, heads, hair, clothing, dangling legs, sunset background and ledge.\nThe current two hands merely lie side by side. Change them into a readable PINKY PROMISE: LISHENNA's bare right hand on the LEFT, RALMIA's black mechanical left hand on the RIGHT. Their nearest LITTLE FINGERS at the gap CURL inward and INTERLOCK around each other in a loop, visibly hooked. The other four fingers of each hand remain loosely curled or rest on the ledge, anatomically distinct and NOT interlocked. The forearms and wrists stay precisely in place. No red string, no ribbon, no line or extra prop, only a bare pink little finger and a black mechanical little finger visibly hooked together. Preserve original image scale 1672x941. Opaque. No text.",
+      "references": [
+        "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/ledge_together.png",
+        "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/ref_sheet.png",
+        "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/lishenna_ref_sheet.png",
+        "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/_production/round6/style_references.jpg",
+        "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/_production/round6/world_references.jpg"
+      ],
+      "source": "C:\\Users\\zaofenMachine\\.codex\\generated_images\\01a14ed9-b751-7b42-a735-fac4e352edab\\exec-955e9f31-d091-4822-bb35-62726155beb5.png",
+      "workspace_raw": "_production/round6/raw/ledge_a_hands.png"
+    },
+    {
+      "asset": "ledge_together.png",
+      "attempt": "local_pinky_detail_crop",
+      "prompt": "Use case: precise-object-edit. Image 1 is a tightly cropped EDIT TARGET from a seated friendship scene. It shows Lishenna's white puffy sleeve and bare RIGHT hand on the left, Ralmia's white mechanical forearm and black LEFT hand on the right, and the rock ledge under them. Correct these hands to make a PINKY PROMISE. The only changes are the fingers. Keep wrists, sleeve outlines, armor, stone and warm anime coloring in their existing positions.\nDraw the two hands with relaxed closed fists resting on the ledge, then extend only each nearest LITTLE FINGER toward the other hand and CURL THE LITTLE FINGERS AROUND EACH OTHER so they make a clearly readable interlocking hook between the two fists. One pale skin pinky from the left hand, one black segmented mechanical pinky from the right hand. The little fingers should be small and short. There must be a visible loop and clear outlined overlap where the two small fingers hook. Do not clasp whole hands, do not extend index fingers, do not overlap all fingers. Anatomically correct five digits each. Both forearms stay at their original coordinates and angles. The figures remain seated behind the contact; do not turn hands into faces or add objects. No red thread, no text. This is a detail crop which will be reduced and placed at the original location; use the SAME relative canvas composition and aspect ratio 160:100, opaque background. Images 2 and 3 are identity references only; image 4 is style reference.",
+      "references": [
+        "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/_production/round6/ledge_hands_crop_input.png",
+        "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/ref_sheet.png",
+        "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/lishenna_ref_sheet.png",
+        "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/_production/round6/style_references.jpg"
+      ],
+      "source": "C:\\Users\\zaofenMachine\\.codex\\generated_images\\01a14ed9-b751-7b42-a735-fac4e352edab\\exec-cfe88b6b-a0c9-4757-83cc-54a1272b8846.png",
+      "workspace_raw": "_production/round6/raw/ledge_a_hands_detail.png",
+      "postprocess": "AI detail crop reduced to original 160x100 location [740,570,900,670], only hand area merged; no enlargement of final asset."
+    },
+    {
+      "asset": "ledge_alone.png",
+      "attempt": "remove_lishenna_local_edit",
+      "prompt": "Use case: precise-object-edit. Image 1 is the EDIT TARGET L12a. Images 2/3 are the identity sheets, image 4 is the style board, image 5 is the matching world board.\nMake L12b by LOCAL REMOVAL ONLY: remove the LEFT coral-pink-haired LISHENNA completely, including her long pink hair, rabbit-ear-like hairband, BOTH floating speaker discs, white sleeve, bare hand, black shorts, dangling legs and purple-laced sneakers. Naturally restore the ruined white city, water, stone ledge, and dark metal framework that she was covering. Leave NO pink fragments, no translucent ghost and no disappearance sparkles.\nPreserve the RIGHT blonde mechanical girl RALMIA exactly: her position, head tilt toward the now-empty left side, entire golden hair silhouette, ahoge and right-side gem, mechanical dress/armor, black mechanical arm/hand, and both dangling white boots. Her hand stays in its original place on the ledge, her little finger still curled to hook NOTHING; do not straighten or move it. Only reveal any small portion of RALMIA previously hidden by the removed girl/disc.\nEverything else in the whole image must remain in precisely the same position and appearance: sun on right, clouds, horizon, architectural silhouette, water reflections, ledge outlines, shadows. Absolutely no camera move, no resize, no relighting, no red thread, no text. Same 1672x941 opaque canvas. This must cut perfectly with Image 1.",
+      "references": [
+        "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/ledge_together.png",
+        "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/ref_sheet.png",
+        "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/lishenna_ref_sheet.png",
+        "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/_production/round6/style_references.jpg",
+        "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/_production/round6/world_references.jpg"
+      ],
+      "source": "C:\\Users\\zaofenMachine\\.codex\\generated_images\\01a14ed9-b751-7b42-a735-fac4e352edab\\exec-17220ae6-1d81-4723-bf83-73eb883f69a9.png",
+      "workspace_raw": "_production/round6/raw/ledge_b_ai.png"
+    },
+    {
+      "asset": "ledge_alone.png",
+      "attempt": "remove_residual_skin_detail",
+      "prompt": "Use case: precise-object-edit. This is a tightly cropped detail edit target. It shows a black robotic LEFT hand attached to a white armored forearm resting on a grey stone ledge, water behind. There is an erroneous small PALE PINK HUMAN HAND to the LEFT of the black hand (lower left of this detail). Remove EVERY pale pink / skin-colored human finger fragment completely and fill that small area with the same grey stone ledge. Keep the black robot hand, cyan light, white armored wrist and garment exactly in place, same dimensions and angle. All fingers of the remaining hand must be BLACK segmented metal; keep its far-left little finger curled leftward in an empty hook, touching nothing. No human skin anywhere in this detail. Same relative canvas composition and aspect ratio 115:65, opaque background, same warm cel-shaded anime style. No text, no objects.",
+      "references": [
+        "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/_production/round6/ledge_b_hand_crop_input.png",
+        "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/ref_sheet.png"
+      ],
+      "source": "C:\\Users\\zaofenMachine\\.codex\\generated_images\\01a14ed9-b751-7b42-a735-fac4e352edab\\exec-82241996-0162-4112-8002-90d20d3ab7c2.png",
+      "workspace_raw": "_production/round6/raw/ledge_b_hand_ai.png",
+      "postprocess": "Reduced to original crop 115x65 at [760,600,875,665]; only residual human fingertips and newly exposed small hook area accepted, existing robot hand pixels retained."
+    }
+  ],
+  "delivered": [
+    "ledge_together.png",
+    "ledge_alone.png"
+  ],
+  "validation": "_qa/round6/ledge_validation.json",
+  "edit_mask": "_qa/round6/ledge_edit_mask.png",
+  "preview": "_qa/round6/ledge_switch.gif",
+  "postprocess_scripts": [
+    "_production/round6/ledge_merge_hands.py",
+    "_production/round6/ledge_lock_validate.py"
+  ],
+  "notes": [
+    "Both final images are opaque 1672x941 RGB; all source image generations retained.",
+    "B locally removes Lishenna from A; allowed area includes her silhouette, hidden background and small finger contact area. Outside allowed mask 1481317 pixels match exactly.",
+    "Ralmia head/gem, right hair and boots ROI pixel checks show zero changes.",
+    "Two figures occupy about 57.6% of height, rear view, leaning shoulder, visible hooked little fingers, no red thread."
+  ]
+}

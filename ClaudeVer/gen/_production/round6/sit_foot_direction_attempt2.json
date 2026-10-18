@@ -1,0 +1,6 @@
+{
+  "status": "rejected_by_user_crossed_legs",
+  "generator": "built-in image_gen",
+  "raw_output": "raw/sit_b_leg_foot_direction_ai2.png",
+  "discarded_changes": "Tool also moved the hanging leg; that portion was not used."
+}

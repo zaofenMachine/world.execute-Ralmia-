@@ -418,6 +418,10 @@ def s_circum(c, g, t):
         fa = math.pi / 2 - rem
         rgba(c, RED if False else INK, 1); c.arc(xc + math.cos(fa) * R, CC_Y + math.sin(fa) * R, 6, 0, 6.283); c.fill()
     rgba(c, INK, 1); c.arc(CC_X, yb, 6, 0, 6.283); c.fill()
+    # v2: she is sitting at the far end of the line, waiting for it to roll out to her
+    end_x = CC_X + 2 * math.pi * R + 330                         # past the C = 2πr label
+    ua_ = eo_cubic(prog(t, B(76), B(76) + 0.35))
+    lish_sit(c, end_x, yb, 0.33, ua_, 0.0, t)
     # CIRCUMFERENCE laid along the 2πr line
     L = 2 * math.pi * R
     if t >= B(K_CIRC) and t < B(79.4) + 0.15:
@@ -433,6 +437,16 @@ def s_circum(c, g, t):
     fx['flash'] = 0.0
     hud(c, t, False)
     return fx
+
+# v2 round 2: "then you can sit on all my ..." -- Lishenna sits on what Ralmia gives her. n_lish_sit: the underside of
+# her seat is a horizontal line through SIT_SEAT (canvas px); the A/B pair swings her feet, one swap per beat
+SIT_SEAT = (960, 552)
+def lish_sit(c, x, y, sc, a=1.0, rot=0.0, t=0.0, swing=True):
+    if a <= 0.003: return
+    b = swing and int(math.floor((t - T0) / P)) % 2 == 1
+    c.save(); c.translate(x, y); c.rotate(rot); c.scale(sc, sc); c.translate(-SIT_SEAT[0], -SIT_SEAT[1])
+    c.set_source_surface(surf('n_lish_sit_b_hd' if b else 'n_lish_sit_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD)
+    c.paint_with_alpha(min(1, a)); c.restore()
 
 # ================================================================ S13 SINE + TANGENTS  [B80, B88)
 LAM = 640.0
@@ -508,11 +522,11 @@ def s_sine(c, g, t):
                 line(cc, xt - dx * Lh, yy - dy * Lh, xt + dx * Lh, yy + dy * Lh, BONE, 0.9 * aa, 2)
             for cc, aa in ((c, 1), (g, 0.8)):
                 rgba(cc, CYAN, aa * ua); cc.arc(xt, yy, 8, 0, 6.283); cc.fill()
-            # "you", sitting on the tangent
-            hop = 10 * abs(math.sin(math.pi * (t - T0) / P))          # a little bounce each beat
-            c.save(); c.translate(xt + dx * 30, yy + dy * 30); c.rotate(math.atan2(dy, dx))
-            text(c, 'serif', 'you', 0, -6 - hop, 64, BONE, ua, align='left')
-            c.restore()
+            # "you" -- v2: Lishenna, sitting on the tangent, rocking with the wave
+            hop = 8 * abs(math.sin(math.pi * (t - T0) / P))           # a little bounce each beat
+            an = clamp(math.atan2(dy, dx), -0.55, 0.55)                  # she rocks, but doesn't fall off
+            ox_, oy_ = xt + dx * 40 + math.sin(an) * hop, yy + dy * 40 - math.cos(an) * hop
+            lish_sit(c, ox_, oy_, 0.26, ua, an, t)
             text(c, 'mono', f"y' = {-m:+.3f}", W - 130, 1000, 26, CYAN, 0.85 * ua, align='right', track=0.1)
         lyric(c, [('then', 38.86), ('you', 39.02), ('can', 39.24), ('sit', 39.46), ('on', 39.70), ('all', 39.92), ('my', 40.20)], t)
         if t >= B(K_TAN):
@@ -524,6 +538,7 @@ def s_sine(c, g, t):
 
 # ================================================================ S14 INFINITY + LIMITATION  [B88, B95)
 YA = 330
+DASH_HAND = (1748, 535)                 # her outstretched palm core in n_dash_full
 def asym_gap(x, t):
     s = 110 * max(0, t - B(88))
     return 560 / (1 + max(0, x + s - 60) / 150) ** 1.05
@@ -548,7 +563,9 @@ def s_infinity(c, g, t):
     if you > 0:
         for cc, aa in ((c, 0.95), (g, 0.4 * pulse(t, B(92), 0.6) + 0.1)):
             line(cc, 0, YA, W, YA, BONE, aa, 3)
-        text(c, 'serif', 'you', 150, YA - 22, 72, BONE, you)
+    # v2: she is sitting on the asymptote, near its far end, feet hanging down towards the curve
+    LX = 1470
+    lish_sit(c, LX, YA, 0.30, eo_cubic(prog(t, B(88), B(88) + 0.4)), 0.0, t)
     # the curve, always approaching
     xh = lerp(60, W + 40, eo_cubic(prog(t, B(88), B(89.5))))
     for cc, aa, lw, col in ((c, 1, 3, BONE), (g, 0.35, 4, CYAN)):
@@ -557,6 +574,13 @@ def s_infinity(c, g, t):
         while x < xh: x = min(xh, x + 8); cc.line_to(x, YA + asym_gap(x, t))
         cc.stroke()
     hx = min(xh, W - 260); hy = YA + asym_gap(hx, t)
+    # Ralmia flies up the curve (the 18.8 s picture), reaching for her shoe; d shrinks and never reaches 0
+    reach = prog(t, B(88.5), B(94.5))                              # her hand rides the curve to just under the shoe
+    fx_ = lerp(-60, LX - 45, eo_cubic(reach)); fy_ = YA + asym_gap(fx_, t) + 58
+    sl = math.atan((asym_gap(fx_ + 20, t) - asym_gap(fx_, t)) / 20)
+    c.save(); c.translate(fx_, fy_); c.rotate(-0.12 + 0.6 * sl); c.scale(0.30, 0.30); c.translate(-DASH_HAND[0], -DASH_HAND[1])
+    c.set_source_surface(surf('n_dash_full_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD)
+    c.paint_with_alpha(eo_cubic(prog(t, B(88.5), B(89)))); c.restore()
     for cc in (c, g):
         rgba(cc, CYAN, 1); cc.arc(hx, hy, 8, 0, 6.283); cc.fill()
     line(c, hx + 24, YA + 4, hx + 24, hy - 4, CYAN, 0.8, 1.2)
