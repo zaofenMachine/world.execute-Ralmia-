@@ -1277,7 +1277,7 @@ def s_deeply(c, g, t):
         # the knot glows as we go in
         kp = (scr2[0] + (WRAP_C[0] - anc[0]) * sc, scr2[1] + (WRAP_C[1] - anc[1]) * sc)
         rg = cairo.RadialGradient(kp[0], kp[1], 0, kp[0], kp[1], 60 * sc)
-        rg.add_color_stop_rgba(0, *LISH, 0.8 * zi); rg.add_color_stop_rgba(1, *LISH, 0)
+        rg.add_color_stop_rgba(0, *LISH, 0.4 * zi); rg.add_color_stop_rgba(1, *LISH, 0)        # lavender blooms more than red did
         g.set_source(rg); g.arc(kp[0], kp[1], 60 * sc, 0, 6.283); g.fill()
     elif t < to_pinky + 0.05:
         # part 2: inside. the knot is wired into her circuitry; pull back: it is tied around her core; then dive into the core
