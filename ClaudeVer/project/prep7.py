@@ -203,6 +203,33 @@ scope_mask(ra, (500, 0, 1500, 1080), 'ralmia')
 rs_ln = line_of(rs)                                             # the reference sheet's close-up, native 1672 px
 scope_mask(rs_ln, (1040, 50, 1672, 760), 'lish')
 
+# ---- round 5 (plan_v2_redline.md, plan B): the thread between them is her song -- the painted red threads turn lavender.
+# hue shift of the thread pixels only (connected red strokes near the thread; her bow and his skin are not touched).
+# v1's n_hand_gap / n_hand_tied are kept; the v2 copies are n_hand_gap_s / n_hand_tied_s; n_pinky2* are v2-only (in place)
+LAV_H = 141                                                     # OpenCV hue of LISH / LISH_P (~283 deg)
+def thread_mask(im, box, min_area=25, smin=80):
+    hsv = cv2.cvtColor(im, cv2.COLOR_BGR2HSV)
+    m = (((hsv[..., 0] < 11) | (hsv[..., 0] > 168)) & (hsv[..., 1] > smin) & (hsv[..., 2] > 55)).astype(np.uint8)
+    x0, y0, x1, y1 = box; keep = np.zeros_like(m); keep[y0:y1, x0:x1] = 1; m &= keep
+    n_, lab_, st_, _ = cv2.connectedComponentsWithStats(cv2.dilate(m, np.ones((3, 3), np.uint8)), 8)
+    big = np.nonzero(st_[:, cv2.CC_STAT_AREA] >= min_area)[0]; big = big[big > 0]
+    return (np.isin(lab_, big) & (cv2.dilate(m, np.ones((3, 3), np.uint8)) > 0)).astype(np.float32)
+def to_song(src, dst, box, sat=0.62, val=1.06, smin=80):
+    im = cv2.imread(f'{A}/{src}.png', cv2.IMREAD_UNCHANGED); bgr = im[..., :3]
+    mk = cv2.GaussianBlur(thread_mask(bgr, box, smin=smin), (0, 0), 0.8)[..., None]
+    hsv = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV).astype(np.float32)
+    hsv[..., 0] = LAV_H; hsv[..., 1] *= sat; hsv[..., 2] = np.clip(hsv[..., 2] * val, 0, 255)
+    rec = cv2.cvtColor(hsv.astype(np.uint8), cv2.COLOR_HSV2BGR).astype(np.float32)
+    out = (bgr * (1 - mk) + rec * mk).astype(np.uint8)
+    cv2.imwrite(f'{A}/{dst}.png', np.dstack([out, im[..., 3]]) if im.shape[2] == 4 else out)
+    return int((mk > 0.5).sum())
+anc['song_recolour_px'] = {
+    'n_hand_gap_s_hd': to_song('n_hand_gap_hd', 'n_hand_gap_s_hd', (1150, 0, 1920, 520)),
+    'n_hand_tied_s_hd': to_song('n_hand_tied_hd', 'n_hand_tied_s_hd', (1150, 0, 1920, 520)),
+    'n_pinky2_hd': to_song('n_pinky2_hd', 'n_pinky2_hd', (860, 440, 1012, 720), 0.7, 0.95, 140),
+    'n_pinky2_alone_hd': to_song('n_pinky2_alone_hd', 'n_pinky2_alone_hd', (860, 440, 1012, 720), 0.7, 0.95, 140),
+    'n_pinky2_alone_clean': to_song('n_pinky2_alone_clean', 'n_pinky2_alone_clean', (860, 440, 1012, 720), 0.7, 0.95, 140)}
+
 # ---- round 3: the figures of 39-44 s as phosphor line art (like the AC/DC faces): line strength as a grey mask on the
 # 1920 canvas scaled by TRACE_F, lines found at that size (so they stay solid), plus the silhouette edge
 TRACE_F = 0.6

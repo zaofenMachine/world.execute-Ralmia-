@@ -1137,24 +1137,24 @@ def s_unite(c, g, t):
     # once the knot is tied the painting takes over (n_hand_tied is the same frame with the thread tied)
     ut = prog(t, B(K_UNITE + TIED_AT), B(K_UNITE + TIED_AT) + 0.12)
     if ut > 0:
-        c.set_source_surface(surf('n_hand_tied_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint_with_alpha(ut)
+        c.set_source_surface(surf('n_hand_tied_s_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint_with_alpha(ut)
     c.restore()
     va = 1 - ut                                  # vector thread opacity
     P0 = thread_shape(t)
     lw = 3.0 * sc
-    for cc, aa, lw_ in ((c, va, lw), (g, 0.6 * va + 0.25 * ut, lw * 1.8)):
-        rgba(cc, RED, aa); cc.set_line_width(lw_); cc.set_line_cap(cairo.LINE_CAP_ROUND); cc.set_line_join(cairo.LINE_JOIN_ROUND)
-        cc.new_path()
-        for i, p in enumerate(P0[::-1]):
-            (cc.move_to if i == 0 else cc.line_to)(*T(p))
-        cc.stroke()
+    # v2: the string (her song) comes to her finger; it stops shaking as it is tied
+    song_string(c, g, [T(p) for p in P0[::-1]], t, lw, 0.6, 2.4 * sc * (1 - eo_cubic(prog(t, B(K_UNITE), B(K_UNITE + TIED_AT)))),
+                va, LISH, 'start', 70 * sc, 300 * sc)
+    rgba(g, LISH, 0.25 * ut); g.set_line_width(lw * 1.8); g.new_path()
+    for i, p in enumerate(P0[::-1]): (g.move_to if i == 0 else g.line_to)(*T(p))
+    g.stroke()
     # wraps + knot
     uw = eo_cubic(prog(t, B(K_UNITE), B(K_UNITE) + 0.45))
     if uw > 0:
         wp = wrap_path(uw)
         for front in (False, True):
             for cc, aa, lw_ in ((c, (1 if front else 0.45) * va, lw), (g, (0.6 if front else 0.2) * va, lw * 1.8)):
-                rgba(cc, RED, aa); cc.set_line_width(lw_); cc.new_path()
+                rgba(cc, LISH, aa); cc.set_line_width(lw_); cc.new_path()
                 prev = None
                 for p, fr in wp:
                     if fr == front:
@@ -1165,8 +1165,8 @@ def s_unite(c, g, t):
         if uk > 0:
             kp = WRAP_C + FN * 24 - FD * 14
             for cc, aa in ((c, va), (g, 0.8 * va)):
-                rgba(cc, RED, aa); cc.arc(*T(kp), 5 * sc * uk, 0, 6.283); cc.fill()
-                rgba(cc, RED, aa); cc.set_line_width(lw * 0.8); cc.new_path()
+                rgba(cc, LISH, aa); cc.arc(*T(kp), 5 * sc * uk, 0, 6.283); cc.fill()
+                rgba(cc, LISH, aa); cc.set_line_width(lw * 0.8); cc.new_path()
                 a_ = T(kp); b_ = T(kp + FN * 26 * uk - FD * 10 * uk); d_ = T(kp + FN * 40 * uk + FD * 6 * uk)
                 cc.move_to(*a_); cc.curve_to(*b_, *b_, *d_); cc.stroke()
     c.set_line_cap(cairo.LINE_CAP_BUTT); g.set_line_cap(cairo.LINE_CAP_BUTT)
@@ -1271,13 +1271,13 @@ def s_deeply(c, g, t):
         sc = sc0 * lerp(1, 3.2, zi)
         scr2 = np.array(scr) + (np.array([960.0, 540.0]) - np.array(scr)) * zi
         c.save(); c.translate(scr2[0], scr2[1]); c.scale(sc, sc); c.translate(-anc[0], -anc[1])
-        c.set_source_surface(surf('n_hand_tied_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD)
+        c.set_source_surface(surf('n_hand_tied_s_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD)
         c.paint_with_alpha(1 - 0.9 * prog(t, B(123.5), B(K_DEEP1)))
         c.restore()
         # the knot glows as we go in
         kp = (scr2[0] + (WRAP_C[0] - anc[0]) * sc, scr2[1] + (WRAP_C[1] - anc[1]) * sc)
         rg = cairo.RadialGradient(kp[0], kp[1], 0, kp[0], kp[1], 60 * sc)
-        rg.add_color_stop_rgba(0, *RED, 0.8 * zi); rg.add_color_stop_rgba(1, *RED, 0)
+        rg.add_color_stop_rgba(0, *LISH, 0.8 * zi); rg.add_color_stop_rgba(1, *LISH, 0)
         g.set_source(rg); g.arc(kp[0], kp[1], 60 * sc, 0, 6.283); g.fill()
     elif t < to_pinky + 0.05:
         # part 2: inside. the knot is wired into her circuitry; pull back: it is tied around her core; then dive into the core
@@ -1298,16 +1298,16 @@ def s_deeply(c, g, t):
         gr = eo_cubic(prog(t, B(K_DEEP1), B(K_DEEP1) + 0.9))
         for idx, pts in enumerate(TR['red']):
             for cc, aa, lw in ((c, 1, 3), (g, 0.5, 5)):
-                rgba(cc, RED, aa); cc.set_line_width(lw); cc.new_path()
+                rgba(cc, LISH, aa); cc.set_line_width(lw); cc.new_path()
                 end = poly_partial(cc, pts, gr, T); cc.stroke()
-            rgba(c, RED, 1); c.arc(*T(end), 5, 0, 6.283); c.fill()
+            rgba(c, LISH, 1); c.arc(*T(end), 5, 0, 6.283); c.fill()
             if gr >= 1:
                 rgba(c, INK, 1); c.arc(*T(end), 2.5, 0, 6.283); c.fill()
             pu = prog(t, B(K_DEEP2), B(K_DEEP2) + 0.45)          # pulses run inward to the core on "deeply"
             if 0 < pu < 1:
                 p = point_on(pts, 1 - eo_cubic(pu))
                 for cc in (c, g):
-                    rgba(cc, BONE if cc is c else RED, 1); cc.arc(*T(p), 6, 0, 6.283); cc.fill()
+                    rgba(cc, BONE if cc is c else LISH, 1); cc.arc(*T(p), 6, 0, 6.283); cc.fill()
         uc = eo_cubic(prog(t, B(K_SO4), B(K_SO4) + 0.4))
         hit = pulse(t, B(K_DEEP2) + 0.45, 0.6)
         rc = 64 * Z
@@ -1318,13 +1318,13 @@ def s_deeply(c, g, t):
             rgba(c, CYAN, uc); c.arc(cx, cy, rc * 0.82, 0, 6.283); c.fill()
             rgba(c, BONE, 0.8 * uc); c.arc(cx - rc * 0.25, cy - rc * 0.3, rc * 0.18, 0, 6.283); c.fill()
         for cc, aa, lw in ((c, 1, 4), (g, 0.6, 7)):
-            rgba(cc, RED, aa); cc.set_line_width(lw)
+            rgba(cc, LISH, aa); cc.set_line_width(lw)
             for rr_ in (rc * 1.02, rc * 1.16):
                 cc.new_path(); cc.arc(cx, cy, rr_, 0, 6.283); cc.stroke()
-            rgba(cc, RED, aa); cc.arc(cx + rc * 1.1 * 0.7, cy - rc * 1.1 * 0.7, 6 * max(Z, 0.4), 0, 6.283); cc.fill()
+            rgba(cc, LISH, aa); cc.arc(cx + rc * 1.1 * 0.7, cy - rc * 1.1 * 0.7, 6 * max(Z, 0.4), 0, 6.283); cc.fill()
         if uc > 0 and zin < 0.3:
             text(c, 'monom', 'ŌMETEŌTL', cx + 160 * Z + 40, cy - 120 * Z, 24, BONE, 0.8 * uc, track=0.15)
-            text(c, 'mono', 'core  ·  bound', cx + 160 * Z + 40, cy - 120 * Z + 30, 18, RED, 0.8 * uc, track=0.15)
+            text(c, 'mono', 'core  ·  tuned', cx + 160 * Z + 40, cy - 120 * Z + 30, 18, BONE, 0.8 * uc, track=0.15)   # v2: her song, wired into the core
     if t >= to_pinky:
         # the landing: her core is the one in her palm, and the thread ends on a pinky promise with her (v2: Lishenna's hand)
         rc_end = 64 * 0.5 * 3.4
@@ -1338,7 +1338,7 @@ def s_deeply(c, g, t):
         kx, ky = ax + (PINKY_KNOT[0] - PINKY_CORE[0]) * sc, ay + (PINKY_KNOT[1] - PINKY_CORE[1]) * sc
         kg = pulse(t, to_pinky + P * 0.6, 0.7)
         rg = cairo.RadialGradient(kx, ky, 0, kx, ky, 110)
-        rg.add_color_stop_rgba(0, *RED, 0.25 + 0.6 * kg); rg.add_color_stop_rgba(1, *RED, 0)
+        rg.add_color_stop_rgba(0, *LISH, 0.25 + 0.6 * kg); rg.add_color_stop_rgba(1, *LISH, 0)
         g.set_source(rg); g.arc(kx, ky, 110, 0, 6.283); g.fill()
     pinky = t >= to_pinky
     lyric(c, [('so', B(K_SO3)), ('deeply,', B(K_DEEP1))] if t < B(124.8) else [('so', B(K_SO4)), ('deeply', B(K_DEEP2))], t,

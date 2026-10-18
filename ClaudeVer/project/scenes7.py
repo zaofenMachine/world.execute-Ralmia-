@@ -24,11 +24,11 @@ REACH_CORE = (1153, 837)               # palm core in n_reach
 CHALK = (1752, 124)                    # chalk tip in n_blackboard
 STAGE_HAND = (1040, 613)               # Lishenna's outstretched hand in n_stage
 
-def red_line(c, g, pts, w=4.0, ga=0.5):
-    for cc, aa, lw in ((c, 1, w), (g, ga, w * 1.8)):
-        rgba(cc, RED, aa); cc.set_line_width(lw); cc.set_line_cap(cairo.LINE_CAP_ROUND); cc.new_path()
-        for n_, (x, y) in enumerate(pts): (cc.move_to if n_ == 0 else cc.line_to)(x, y)
-        cc.stroke(); cc.set_line_cap(cairo.LINE_CAP_BUTT)
+_SONG_T = [0.0]
+def red_line(c, g, pts, w=4.0, ga=0.5, amp=4.0, pin='both'):
+    """v2 (plan B): the line between them is her song -- lavender, and it vibrates with the music (red is only touch
+    and the sound barrier now). name kept so v1-era call sites read the same"""
+    song_string(c, g, pts, _SONG_T[0], w, ga, amp, 1.0, LISH, pin)
 
 def xform(p, anchor, at, sc, rot=0.0):
     """where image point p lands when the image is drawn with img(c, name, *at, sc, ..., *anchor, rot)"""
@@ -38,6 +38,7 @@ def xform(p, anchor, at, sc, rot=0.0):
 
 # ================================================================ S28 THE COUNT  [B342, B352)
 def s_count2(c, g, t):
+    _SONG_T[0] = t
     """k342: the twelfth gate shuts in our face. k343: she is adrift; EINS..LIU light a hexagon (k344-349);
     the 13th (k350) closes it into a cage. the red thread is yanked taut through the bars (k350.5); at k351 the cage
     bursts and she is already crouched to go; white at k352."""
@@ -66,7 +67,7 @@ def s_count2(c, g, t):
         tw = 12 * math.exp(-max(0, t - B(350.7)) * 5) * (t > B(350.7))
         pts = thread_tail(t, hand, 120, 0.6, taut, target=(W + 60, 380))
         pts = [(x, y + tw * math.sin(n_ / 39 * math.pi * 3) * math.sin(t * 70)) for n_, (x, y) in enumerate(pts)]
-        red_line(c, g, pts, 4.0, 0.3 + 0.6 * taut)
+        red_line(c, g, pts, 4.0, 0.3 + 0.6 * taut, 1.0 + 7.0 * taut, 'start')
         if t >= B(K_EX13B):
             (xa, ya), (xb, yb) = hexv(5, R), hexv(0, R)
             ue = eo_cubic(prog(t, B(K_EX13B), B(K_EX13B) + 0.12))
@@ -120,7 +121,7 @@ def s_count2(c, g, t):
     f = ((t * 2.6 + ph) % 1.0); r = (1 - f) * 900
     draw_points(c, th[0] + np.cos(ang) * r, th[1] + np.sin(ang) * r * 0.6, CYAN, 0.8, 3)
     hx, hy = xform(LAUNCH_HAND, (980, 943), (sx + shake, gy), sc)
-    red_line(c, g, [(hx, hy), (W + 40, hy - 160)], 4.0, 0.7)
+    red_line(c, g, [(lerp(hx, W + 40, u_), lerp(hy, hy - 160, u_)) for u_ in np.linspace(0, 1, 60)], 4.0, 0.7, 8.0, 'start')
     u = prog(t, B(351.25), B(352))
     rnd = np.random.default_rng(4); ys = rnd.random(120) * H; sp_ = rnd.random(120)
     for y, s_ in zip(ys, sp_):
@@ -485,6 +486,7 @@ def chalk(c, key, s, x, y, size, a, reveal=1.0, col=BONE, align='left'):
     c.restore()
 
 def s_love(c, g, t):
+    _SONG_T[0] = t
     fx = {}
     kk = (t - T0) / P
     if t < B(392):

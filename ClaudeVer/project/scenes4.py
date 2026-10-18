@@ -37,12 +37,12 @@ def win(c, x, y, w, h, name, bg=None, label='', a=1.0, pan=0.0):
     rgba(c, BONE, 0.55 * a); c.set_line_width(1.1); c.rectangle(x, y, w, h); c.stroke()
 
 POOL = [('n_pinky2_hd', None), ('n_world_hd', None), ('n_eye_open_hd', None), ('n_hand_palm_hd', PAPER),
-        ('n_portrait_hd', None), ('n_dash_full_hd', INK2), ('n_hand_tied_hd', None), ('n_world_line', None),
+        ('n_portrait_hd', None), ('n_dash_full_hd', INK2), ('n_hand_tied_s_hd', None), ('n_world_line', None),
         ('n_floating_hd', INK2), ('n_her_front_hd', PAPER), ('n_wL1_night_hd', None), ('n_eye_closed_hd', None),
-        ('n_dash_launch_hd', INK2), ('n_hand_gap_hd', None), ('n_portrait_line', None), ('n_wL1_hd', None)]
+        ('n_dash_launch_hd', INK2), ('n_hand_gap_s_hd', None), ('n_portrait_line', None), ('n_wL1_hd', None)]
 LINE_OF = {'n_pinky2_hd': 'n_pinky2_line', 'n_world_hd': 'n_world_line', 'n_eye_open_hd': 'n_eye_open_line',
-           'n_portrait_hd': 'n_portrait_line', 'n_hand_tied_hd': 'n_hand_tied_line', 'n_eye_closed_hd': 'n_eye_closed_line',
-           'n_hand_gap_hd': 'n_hand_gap_line', 'n_wL1_hd': 'n_wL1_line'}
+           'n_portrait_hd': 'n_portrait_line', 'n_hand_tied_s_hd': 'n_hand_tied_line', 'n_eye_closed_hd': 'n_eye_closed_line',
+           'n_hand_gap_s_hd': 'n_hand_gap_line', 'n_wL1_hd': 'n_wL1_line'}
 
 def words_ol(c, items, t, x, y, size, col=BONE, ol=INK, olw=9, key='serif'):
     """lyric words with an ink outline so they read over busy pictures"""

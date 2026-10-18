@@ -84,5 +84,12 @@
   384,
   998,
   970
- ]
+ ],
+ "song_recolour_px": {
+  "n_hand_gap_s_hd": 6683,
+  "n_hand_tied_s_hd": 10025,
+  "n_pinky2_hd": 3316,
+  "n_pinky2_alone_hd": 3502,
+  "n_pinky2_alone_clean": 1319
+ }
 }

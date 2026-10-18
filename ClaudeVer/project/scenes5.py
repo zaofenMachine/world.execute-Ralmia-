@@ -292,10 +292,7 @@ def s_chorus2(c, g, t):
             if d >= 1:                                   # a little curl where it landed
                 for n_ in range(1, 13):
                     an = n_ * 0.5; pts.append((ex + 26 * math.sin(an) * (1 - n_ / 14), ey - 8 * (1 - math.cos(an))))
-            for cc, aa, lw in ((c, 1, 4), (g, 0.5 if lit > 0 else 0.8, 7)):
-                rgba(cc, RED, aa); cc.set_line_width(lw); cc.set_line_cap(cairo.LINE_CAP_ROUND); cc.new_path()
-                for n_, (x, y) in enumerate(pts): (cc.move_to if n_ == 0 else cc.line_to)(x, y)
-                cc.stroke(); cc.set_line_cap(cairo.LINE_CAP_BUTT)
+            song_string(c, g, pts, t, 4, 0.5 if lit > 0 else 0.8, 7 * (1 - d), 1.0, LISH, 'start', 120, 400)   # the song stops
             fx['flash'] = 0.35 * pulse(t, B(k_on), 0.1)
         else:
             img(c, 'n_eye_open_hd', 960, 540, 1.06 + 0.02 * lp); img(c, 'n_eye_tear_hd', 960, 540, 1.06 + 0.02 * lp, u)

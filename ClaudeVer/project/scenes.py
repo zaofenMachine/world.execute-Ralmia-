@@ -344,7 +344,7 @@ def s_object(c, g, t):
     c.move_to(gx - 1500 * ug, gy); c.line_to(gx + 1500 * ug, gy); c.stroke()
     c.move_to(gx, gy - 900 * ug); c.line_to(gx, gy + 900 * ug); c.stroke()
     c.set_dash([6, 6]); c.new_path(); c.arc(gx, gy, 430, math.pi, math.pi + 2 * math.pi * ug); c.stroke(); c.set_dash([])
-    rgba(c, RED, 0.7 * ug); c.set_line_width(1.6); c.new_path(); c.arc(gx, gy, 92, 0, 2 * math.pi * ug); c.stroke()
+    rgba(c, CYAN, 0.7 * ug); c.set_line_width(1.6); c.new_path(); c.arc(gx, gy, 92, 0, 2 * math.pi * ug); c.stroke()   # v2: red is only touch / the barrier
     # points pop in
     xs, ys, rr = line_points('n_hand_palm', 1700, (640, 0, 1920, 1080))
     pa = 1 - prog(t, B(14), B(14) + 0.3)

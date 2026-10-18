@@ -1,4 +1,5 @@
 from scenes import *
+import json
 
 # ================================================================ S5 DATA  [B16, B21)
 def s_data(c, g, t):
@@ -338,6 +339,41 @@ def s_sim(c, g, t):
     return fx
 
 
+# ---------------------------------------------------------------- v2 (plan_v2_redline.md, plan B): the line between them is her song
+# a string that vibrates with the music: a travelling ripple along its normal, swelling on every beat and on every 8th a
+# little. pin: which ends are held still ('both' | 'start' | 'end' | 'none'). col LISH on ink, LISH_P on paper
+def song_string(c, g, pts, t, w=4.0, ga=0.5, amp=6.0, a=1.0, col=None, pin='both', lam=95.0, speed=520.0):
+    pts = np.asarray(pts, np.float64)
+    if len(pts) < 2 or a <= 0.003: return
+    col = col or LISH
+    seg = np.hypot(*np.diff(pts, axis=0).T); L = np.concatenate([[0.0], np.cumsum(seg)]); Lt = max(L[-1], 1e-6)
+    tx = np.gradient(pts[:, 0]); ty = np.gradient(pts[:, 1]); nn = np.hypot(tx, ty) + 1e-9
+    nx, ny = -ty / nn, tx / nn
+    kk = (t - T0) / P
+    A = amp * (0.45 + 0.55 * pulse(t, B(math.floor(kk)), 0.35) + 0.25 * pulse(t, B(math.floor(kk * 2) / 2), 0.15))
+    s = L / Lt
+    env = {'both': np.sin(np.pi * s), 'start': np.clip(s * 3, 0, 1), 'end': np.clip((1 - s) * 3, 0, 1), 'none': np.ones_like(s)}[pin]
+    off = A * env * (np.sin(2 * np.pi * (L - speed * t) / lam) + 0.35 * np.sin(2 * np.pi * (L + 0.6 * speed * t) / (lam * 0.47)))
+    q = pts + np.stack([nx * off, ny * off], 1)
+    for cc, aa, lw in ((c, a, w), (g, ga * a, w * 1.9)):
+        if aa <= 0.003: continue
+        rgba(cc, col if cc is c else LISH, aa); cc.set_line_width(lw); cc.set_line_cap(cairo.LINE_CAP_ROUND); cc.set_line_join(cairo.LINE_JOIN_ROUND)
+        cc.new_path(); cc.move_to(*q[0])
+        for x, y in q[1:]: cc.line_to(x, y)
+        cc.stroke(); cc.set_line_cap(cairo.LINE_CAP_BUTT)
+
+_THG = {}
+def gap_thread():
+    """the centre line of the painted thread in n_hand_gap (prep3: thread_gap.json), end near her fingertip first"""
+    if not _THG: _THG['p'] = np.array(json.load(open(f'{WORK}/assets/thread_gap.json')))
+    return _THG['p']
+
+def left_behind(c, t, a=1.0):
+    """the song in the air, already behind her: faint wavefronts sliding off to the left"""
+    for k in range(5):
+        x0 = -1150 - 520 * (t - B(48)) - 230 * k
+        rgba(c, LISH, a * 0.2 * (1 - k / 6)); c.set_line_width(2); c.new_path(); c.arc(x0, 540, 1500 + 120 * k, -0.7, 0.7); c.stroke()
+
 # ---------------------------------------------------------------- her dash, flashed in for a few frames on a downbeat
 DASH_FRAMES = 5
 def dash_flash(c, g, t, t0, name):
@@ -580,9 +616,11 @@ def s_gap(c, g, t):
     mx, my = (FT[0] + TH[0]) / 2, (FT[1] + TH[1]) / 2
     px, py = lerp(mx, 1150, u), lerp(my, 272, u)
     c.save(); c.translate(px, py); c.scale(sc, sc); c.translate(-mx, -my)
-    c.set_source_surface(surf('n_hand_gap_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint()
+    c.set_source_surface(surf('n_hand_gap_clean'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint()
     c.restore()
     P2 = lambda p: (px + (p[0] - mx) * sc, py + (p[1] - my) * sc)
+    # v2: the one sound she can't outrun -- her song, a string with its end just ahead of her fingertip
+    song_string(c, g, [P2(p) for p in gap_thread()], t, 3.2 * sc, 0.5, 3.0 * sc, 1.0, LISH, 'end', 70 * sc, 300 * sc)
     a, b = P2(FT), P2(TH)
     ud = eo_cubic(prog(t, B(49), B(49) + 0.25))
     if ud > 0:
@@ -664,17 +702,13 @@ def s_zeno(c, g, t):
     tip(c, 14); rgba(c, BONE, 0.35); c.set_line_width(1.2); c.stroke()
     tip(c); rgba(c, BONE, 1); c.set_line_width(3); c.stroke()
     tip(g); rgba(g, CYAN, 0.25); g.set_line_width(6); g.stroke()
-    # red thread on the right; trembles more the closer it gets (and most during the stop)
+    # v2: her song, as a string, on the right; it shakes harder the closer she gets (and most during the stop)
     tx = cx + gap_px / 2
-    rj = random.Random(int(t * 60))
-    amp = (1.0 + 1.1 * n) * (1.8 if frozen else 1.0)
-    j1 = ((rj.random() - 0.5) * amp, (rj.random() - 0.5) * amp)
-    j2 = ((rj.random() - 0.5) * amp * 3, (rj.random() - 0.5) * amp * 3)
-    for cc, aa, lw in ((c, 1, 6), (g, 0.7, 10)):
-        rgba(cc, RED, aa); cc.set_line_width(lw); cc.new_path()
-        cc.move_to(tx + j1[0] * 0.5, cy + j1[1])
-        cc.curve_to(tx + 200 + j2[0], cy - 40 * (1 / Z ** 0.3) + j2[1], tx + 600, cy + 160 / Z ** 0.3, W + 50, cy - 300 / Z ** 0.3)
-        cc.stroke()
+    amp = (3.0 + 2.2 * n) * (1.8 if frozen else 1.0)
+    p0, p1, p2, p3 = (tx, cy), (tx + 200, cy - 40 / Z ** 0.3), (tx + 600, cy + 160 / Z ** 0.3), (W + 50, cy - 300 / Z ** 0.3)
+    bz = [((1 - u) ** 3 * p0[0] + 3 * (1 - u) ** 2 * u * p1[0] + 3 * (1 - u) * u * u * p2[0] + u ** 3 * p3[0],
+           (1 - u) ** 3 * p0[1] + 3 * (1 - u) ** 2 * u * p1[1] + 3 * (1 - u) * u * u * p2[1] + u ** 3 * p3[1]) for u in np.linspace(0, 1, 90)]
+    song_string(c, g, bz, t, 6, 0.7, amp, 1.0, LISH, 'end', 110, 380)
     # dimension
     line(c, fx_, cy - 140, fx_, cy - 60, BONE, 0.6, 1.2); line(c, tx, cy - 140, tx, cy - 60, BONE, 0.6, 1.2)
     line(c, fx_, cy - 100, tx, cy - 100, CYAN, 0.9, 1.6)
@@ -697,8 +731,10 @@ def s_near(c, g, t):
     mx, my = (FT2[0] + TH2[0]) / 2, (FT2[1] + TH2[1]) / 2
     px, py = lerp(960, 1180, u), lerp(520, 262, u)
     c.save(); c.translate(px, py); c.scale(sc, sc); c.translate(-mx, -my)
-    c.set_source_surface(surf('n_hand_gap_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint_with_alpha(min(1, u * 1.6))
+    c.set_source_surface(surf('n_hand_gap_clean'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint_with_alpha(min(1, u * 1.6))
     c.restore()
+    P3 = lambda p: (px + (p[0] - mx) * sc, py + (p[1] - my) * sc)
+    song_string(c, g, [P3(p) for p in gap_thread()], t, 3.2 * sc, 0.5, 3.0 * sc, min(1, u * 1.6), LISH, 'end', 70 * sc, 300 * sc)
     a = (px + (FT2[0] - mx) * sc, py + (FT2[1] - my) * sc)
     b = (px + (TH2[0] - mx) * sc, py + (TH2[1] - my) * sc)
     ul = eo_cubic(prog(t, B(58.5), B(58.5) + 0.2))
@@ -718,7 +754,7 @@ def title_layout():
     if not _TP:
         f = fonts()['monom']; size = 126
         s = 'world.execute(me);'
-        cols = [BONE] * 5 + [GREY] + [CYAN] * 7 + [GREY] + [RED] * 2 + [GREY] + [BONE]
+        cols = [BONE] * 5 + [GREY] + [CYAN] * 7 + [GREY] + [BONE] * 2 + [GREY] + [BONE]     # v2: red is only touch / the barrier
         gl = f.glyphs(s, 960, 590, size, align='center')
         # sample points per glyph
         pts = []
