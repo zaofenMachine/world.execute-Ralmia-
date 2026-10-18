@@ -472,6 +472,55 @@ def phosphor(c, g, name, x, y, sc, anchor, t, col=BONE, a=1.0, rot=0.0, wob=1.0,
                 rgba(cc, col, 0.8 * aa); cc.set_line_width(2 / k); cc.move_to(xs_[0] - 20, ry); cc.line_to(xs_[-1] + 20, ry); cc.stroke()
         cc.restore()
 
+# v2 round 4: 39-44 s, simpler -- Ralmia is the curve (as she is the wave), Lishenna is only a face of light.
+# TANGENTS: her face (the AC/DC trace, n_scope_lish) appears only where Ralmia's tangents have swept -- "you can sit on all
+# my tangents" = she is made of them. LIMITATION: the same face, small, rests on the asymptote; it gets clearer as the
+# curve closes in on it, and the curve never arrives
+_LF = {}
+def lish_face_mask():
+    if 'm' not in _LF: _LF['m'] = cv2.imread(f'{WORK}/assets/n_scope_lish.png', cv2.IMREAD_GRAYSCALE)
+    return _LF['m']
+TF_C, TF_S = (1190, 520), 1.62                   # tangents: where the face centre (mask (465, 280)) lands, and its scale
+def tangent_face(c, g, t):
+    m = lish_face_mask()                         # 960 x 540; to screen: x = TF_C + (mx - 465) * TF_S
+    M = np.float32([[TF_S, 0, TF_C[0] - 465 * TF_S], [0, TF_S, TF_C[1] - 280 * TF_S]]) * 0.5   # into a half-res screen
+    face = cv2.warpAffine(m, M, (960, 540), flags=cv2.INTER_AREA if TF_S < 2 else cv2.INTER_LINEAR)
+    rv = np.zeros((540, 960), np.uint8)
+    tau = B(84.5)
+    while tau <= t:                              # every tangent she has drawn so far leaves a stripe of the face lit
+        ride = prog(tau, B(84.5), B(88))
+        xt = lerp(1700, 240, ride * 0.85 + 0.15 * eio_cubic(ride))
+        yy = wave_y(xt, tau); mm = wave_slope(xt, tau); nrm = math.hypot(1, mm); dx, dy = 1 / nrm, mm / nrm
+        cv2.line(rv, (int((xt - dx * 560) / 2), int((yy - dy * 560) / 2)), (int((xt + dx * 560) / 2), int((yy + dy * 560) / 2)), 255, 20)
+        tau += 1 / 30
+    if t >= B(K_TAN):                            # ...and all my tangents light the rest
+        for i in range(44):
+            xx = 30 + i * (W - 60) / 43
+            uu = eo_expo(prog(t, B(K_TAN) + abs(xx - 960) / 5000, B(K_TAN) + abs(xx - 960) / 5000 + 0.25))
+            if uu <= 0: continue
+            yy = wave_y(xx, t); mm = wave_slope(xx, t); nrm = math.hypot(1, mm); dx, dy = 1 / nrm, mm / nrm
+            Lh = 330 * uu
+            cv2.line(rv, (int((xx - dx * Lh) / 2), int((yy - dy * Lh) / 2)), (int((xx + dx * Lh) / 2), int((yy + dy * Lh) / 2)), 255, 26)
+    rv = cv2.GaussianBlur(rv, (0, 0), 3)
+    arr = ((face.astype(np.uint16) * rv) // 255).astype(np.uint8)
+    stride = cairo.ImageSurface.format_stride_for_width(cairo.FORMAT_A8, 960)
+    buf = np.zeros((540, stride), np.uint8); buf[:, :960] = arr
+    sf = cairo.ImageSurface.create_for_data(buf, cairo.FORMAT_A8, 960, 540, stride)
+    for cc, aa in ((c, 0.95), (g, 0.35)):
+        cc.save(); cc.scale(2, 2); rgba(cc, BONE, aa); cc.mask_surface(sf, 0, 0); cc.restore()
+
+def face_on_line(c, g, x, y, h, a, t):
+    """the face standing on a line at (x, y): the bottom of the mask's figure (y 475) on the line, h px tall"""
+    if a <= 0.01: return
+    m = lish_face_mask(); k = h / (475 - 87)
+    stride = cairo.ImageSurface.format_stride_for_width(cairo.FORMAT_A8, 960)
+    if 'sf' not in _LF:
+        buf = np.zeros((540, stride), np.uint8); buf[:, :960] = m; _LF['buf'] = buf
+        _LF['sf'] = cairo.ImageSurface.create_for_data(buf, cairo.FORMAT_A8, 960, 540, stride)
+    for cc, aa in ((c, a), (g, 0.4 * a)):
+        cc.save(); cc.translate(x, y); cc.scale(k, k); cc.translate(-465, -475)
+        rgba(cc, BONE, aa); cc.mask_surface(_LF['sf'], 0, 0); cc.restore()
+
 def lish_trace(c, g, x, y, sc, t, a=1.0, rot=0.0, reveal=1.0):
     """Lishenna sitting, as phosphor line art; the feet swing on the beat (the A/B pair)"""
     b = int(math.floor((t - T0) / P)) % 2 == 1
@@ -538,6 +587,7 @@ def s_sine(c, g, t):
         if t >= B(84.5):
             ride = prog(t, B(84.5), B(88))
             xt = lerp(1700, 240, ride * 0.85 + 0.15 * eio_cubic(ride))
+        if t >= B(84.5): tangent_face(c, g, t)
         # all my tangents
         if t >= B(K_TAN):
             for i in range(44):
@@ -558,11 +608,6 @@ def s_sine(c, g, t):
                 line(cc, xt - dx * Lh, yy - dy * Lh, xt + dx * Lh, yy + dy * Lh, BONE, 0.9 * aa, 2)
             for cc, aa in ((c, 1), (g, 0.8)):
                 rgba(cc, CYAN, aa * ua); cc.arc(xt, yy, 8, 0, 6.283); cc.fill()
-            # "you" -- v2: Lishenna, sitting on the tangent, rocking with the wave
-            hop = 8 * abs(math.sin(math.pi * (t - T0) / P))           # a little bounce each beat
-            an = clamp(math.atan2(dy, dx), -0.55, 0.55)                  # she rocks, but doesn't fall off
-            ox_, oy_ = xt + dx * 40 + math.sin(an) * hop, yy + dy * 40 - math.cos(an) * hop
-            lish_trace(c, g, ox_, oy_, 0.27, t, ua, an, eo_cubic(prog(t, B(84.5), B(84.5) + P)))
             text(c, 'mono', f"y' = {-m:+.3f}", W - 130, 1000, 26, CYAN, 0.85 * ua, align='right', track=0.1)
         lyric(c, [('then', 38.86), ('you', 39.02), ('can', 39.24), ('sit', 39.46), ('on', 39.70), ('all', 39.92), ('my', 40.20)], t)
         if t >= B(K_TAN):
@@ -599,9 +644,8 @@ def s_infinity(c, g, t):
     if you > 0:
         for cc, aa in ((c, 0.95), (g, 0.4 * pulse(t, B(92), 0.6) + 0.1)):
             line(cc, 0, YA, W, YA, BONE, aa, 3)
-    # v2: she is sitting on the asymptote, near its far end, feet hanging down towards the curve
+    # v2: the asymptote is her: her face rests on it, clearer the closer the curve comes
     LX = 1470
-    lish_trace(c, g, LX, YA, 0.30, t, 1.0, 0.0, eo_cubic(prog(t, B(88), B(88) + P)))
     # the curve, always approaching
     xh = lerp(60, W + 40, eo_cubic(prog(t, B(88), B(89.5))))
     for cc, aa, lw, col in ((c, 1, 3, BONE), (g, 0.35, 4, CYAN)):
@@ -610,12 +654,8 @@ def s_infinity(c, g, t):
         while x < xh: x = min(xh, x + 8); cc.line_to(x, YA + asym_gap(x, t))
         cc.stroke()
     hx = min(xh, W - 260); hy = YA + asym_gap(hx, t)
-    # Ralmia flies up the curve (the 18.8 s picture), reaching for her shoe; d shrinks and never reaches 0
-    reach = prog(t, B(88.5), B(94.5))                              # her hand rides the curve to just under the shoe
-    fx_ = lerp(-60, LX - 45, eo_cubic(reach)); fy_ = YA + asym_gap(fx_, t) + 58
-    sl = math.atan((asym_gap(fx_ + 20, t) - asym_gap(fx_, t)) / 20)
-    phosphor(c, g, 'dash', fx_, fy_, 0.30, DASH_HAND, t, CYAN, eo_cubic(prog(t, B(88.5), B(89))), -0.12 + 0.6 * sl, 1.0,
-             eo_cubic(prog(t, B(88.5), B(88.5) + P)), 0.6)
+    near = clamp(1 - asym_gap(hx, t) / 120)                        # 0 far .. 1 as close as it ever gets
+    face_on_line(c, g, LX, YA + 30, 330, eo_cubic(prog(t, B(88), B(88) + 0.4)) * (0.35 + 0.65 * near), t)
     for cc in (c, g):
         rgba(cc, CYAN, 1); cc.arc(hx, hy, 8, 0, 6.283); cc.fill()
     line(c, hx + 24, YA + 4, hx + 24, hy - 4, CYAN, 0.8, 1.2)
