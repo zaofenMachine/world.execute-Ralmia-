@@ -20,9 +20,7 @@ TIMELINE = [
     (B(32), B(36), S2.s_velocity),
     (B(36), B(40), S2.s_doppler),
     (B(40), B(48), S2.s_mach),
-    (B(48), B(52), S2.s_gap),
-    (B(52), B(58), S2.s_zeno),
-    (B(58), B(60), S2.s_near),
+    (B(48), B(60), S3.s_achilles),          # v2 round 6 (was S2.s_gap / s_zeno / s_near)
     (B(60), B(64), S2.s_title),
     (B(64),  B(68),  S3.s_points),
     (B(68),  B(72),  S3.s_dimension),

@@ -90,11 +90,11 @@ LISH_SET = {n for n, _ in LISH_POOL}
 NON = [it for it in CORR if it[0] not in LISH_SET]
 def lish_share(d):
     """how much of what rushes past is her, by distance travelled: one step per gear (= one me.update())"""
-    return 0.12 if d < dist(296) + 2 else 0.33 if d < dist(304) + 2 else 0.6 if d < dist(312) + 2 else 0.88
+    return 0.22 if d < dist(296) + 2 else 0.45 if d < dist(304) + 2 else 0.7 if d < dist(312) + 2 else 0.92
 SP = U / 2                                # side windows: one each side per beat in first gear
 N_SIDE = int(dist(342) / SP) + 24
 SIDE = [((-1 if j % 2 else 1) * (1.3 + 0.6 * random.Random(j * 7).random()), -0.85 + 1.15 * random.Random(j * 13).random(),
-         LISH_POOL[(j * 5 + 1) % len(LISH_POOL)] if random.Random(j * 31).random() < lish_share(j * SP) else NON[(j * 7 + 3) % len(NON)])
+         LISH_POOL[(j * 5 + 1) % len(LISH_POOL)] if (j * 0.618034) % 1.0 < lish_share(j * SP) else NON[(j * 11 + 3) % len(NON)])   # even spread
         for j in range(N_SIDE)]
 GATE_SRC = [NON[(i * 5 + 1) % len(NON)] for i in range(12)]
 for i_, it in ((2, ('n_lish_face_hd', None)), (5, ('n_stage_hd', None)), (8, ('n_lish_float_hd', INK2)), (11, ('n_pinky2_hd', None))):
@@ -123,6 +123,9 @@ def cwin(c, g, z, side, Y, name, bg, lab, size=1.0, dead=False, flash=0.0):
     fog = clamp((15 - z) / 6)
     reflect(c, s, x, y, w, h, name, bg, fog * (0.06 if dead else 0.16))
     win(c, x, y, w, h, name, bg, 'EXECUTED' if dead else lab, fog)
+    if name in LISH_SET and not dead:                 # v2 round 6: hers -- the song has got into the data
+        for cc, aa, lw in ((c, 0.9, max(1.5, w * 0.008)), (g, 0.45, max(3, w * 0.016))):
+            rgba(cc, LISH, aa * fog); cc.set_line_width(lw); cc.rectangle(x, y, w, h); cc.stroke()
     if dead:
         rgba(c, INK, 0.6 * fog); c.rectangle(x, y, w, h); c.fill()
         c.save(); c.translate(cx, cy); c.rotate(-0.12)

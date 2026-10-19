@@ -407,7 +407,7 @@ def s_ch3d(c, g, t):
 # ================================================================ S33 LOVE  [B384, B416)
 BOARD = (0.105, 0.135, 0.125)
 FORMULAE = ['C = 2πr', 'y = sin x', 'lim d → 0', 'M = v / c', 'v → 340.29 m/s', 'γ = 1 / √(1 − v²/c²)',
-            'd /= 2', 'Σ ½ⁿ = 1', 'x² + y² = r²', 'dt < 0', '617 A.D.  →  3691 B.C.', 'C40H56', 'f / 1.4', '25 Hz',
+            'd /= 2', 'Σ ½^{n} = 1', 'x² + y² = r²', 'dt < 0', '617 A.D.  →  3691 B.C.', 'C40H56', 'f / 1.4', '25 Hz',
             'v / c = ∞', 'd ≠ 0']
 EXAM = [('e^{iπ} + 1', '='), ('∫_{−∞}^{∞} e^{−x²} dx', '='), ('lim_{d→0} d', '='), ('Δx · Δp', '≥'), ('iħ ∂ψ/∂t', '='),
         ('∇ · E', '='), ('R_{μν} − ½R g_{μν}', '='), ('S = k_{B} ln', ''), ('Σ_{n=1}^{∞} ½^{n}', '='), ('E', '=')]
@@ -479,10 +479,11 @@ def board_bg(c, t):
 def chalk(c, key, s, x, y, size, a, reveal=1.0, col=BONE, align='left'):
     """chalk writing: revealed left to right, slightly broken"""
     if a <= 0 or reveal <= 0: return
-    w = text_w(key, s, size)
+    w = mtext_w(s, size) if key == 'math' else text_w(key, s, size)
     x0 = x - (w if align == 'right' else w / 2 if align == 'center' else 0)
     c.save(); c.rectangle(x0 - 4, y - size * 1.2, (w + 8) * reveal, size * 1.6); c.clip()
-    text(c, key, s, x0, y, size, col, 0.88 * a)
+    if key == 'math': mtext(c, s, x0, y, size, col, 0.88 * a)       # ^{} / _{} (v2: the Σ ½ⁿ had no ⁿ in the font)
+    else: text(c, key, s, x0, y, size, col, 0.88 * a)
     c.restore()
 
 def s_love(c, g, t):
@@ -654,7 +655,7 @@ def s_love(c, g, t):
     red_line(c, g, path, 4.0, 0.4 + 0.6 * pulse(t, B(LOVE[3]), 1.0))
     if kk >= LOVE[3]:
         u = eo_cubic(prog(t, B(LOVE[3]), B(LOVE[3]) + 0.2))
-        c.new_path(); fonts()['heavy'].text_path(c, 'LOVE', 960, 1000, 160, 'center', 0.3)
+        c.new_path(); fonts()['heavy'].text_path(c, 'LOVE', 150, 1000, 150, 'left', 0.3)
         rgba(c, INK, 0.85 * u); c.set_line_width(10); c.set_line_join(cairo.LINE_JOIN_ROUND); c.stroke_preserve()
         rgba(c, BONE, u * (1 - prog(t, B(415.6), B(416)))); c.fill()
     text(c, 'mono', 'you.isFree() == true', W - 130, 1000, 22, BONE, 0.7 * eo_cubic(prog(t, B(409.5), B(410))), align='right')
@@ -666,6 +667,9 @@ def s_love(c, g, t):
 
 # ================================================================ S34 me.escape(world)  [B416, END)
 PEEL = [420, 424, 428, 432, 436]          # cube, windows, fragments, HUD marks, the frame -- one per bar
+ESC_POOL = [CORR[(i * 3 + 2) % len(CORR)] if i % 2 == 0 else
+            [('n_pinky2_hd', None), ('n_ledge2_hd', None), ('n_cube_together_hd', INK2), ('n_stage_hd', None),
+             ('n_lish_face_hd', None), ('n_creation2_hd', None)][(i // 2) % 6] for i in range(12)]   # v2 round 6: half of them hers
 K_LEAP, K_GONE = 443.0, 443.55          # v2 round 2: half a beat -- she shoots up out of the frame, tearing the paper as she goes
 def s_escape(c, g, t):
     """inside out, one layer per bar: the cube scatters, the window wall flies past, the fragments fall away,
@@ -729,7 +733,7 @@ def s_escape(c, g, t):
             a_ = 2 * math.pi * i / 12 + 0.05 * (t - B(416))
             r = 330 * z; ww = 230 * z; hh = ww * 9 / 16
             x, y = cx + math.cos(a_) * r * 1.35 - ww / 2, cy + math.sin(a_) * r * 0.75 - hh / 2
-            name, bg = CORR[(i * 3 + 2) % len(CORR)]
+            name, bg = ESC_POOL[i % len(ESC_POOL)]
             win(c, x, y, ww, hh, name, bg, f'sim #{(7 + 97 * i) % 9000:04d}', (1 - pc[1]) * 0.9)
     # ---- her: points in the cube; the cube scatters at k420; then her, line first, colour arriving layer by layer
     hs = 0.30 + sum(0.035 * eo_back(prog(t, B(k), B(k) + 0.25), 2) for k in PEEL) + 0.012 * pulse(t, B(math.floor(kk)), 0.3)
@@ -852,7 +856,7 @@ def paper_piece(c, side, ys, wy, f, dx=0.0, dy=0.0, rot=0.0):
     c.restore()
 
 def outside_light(c, g, a=1.0):
-    rgba(c, (1.0, 0.985, 0.94), 1); c.paint()
+    rgba(c, (1.0, 0.965, 0.89), 1); c.paint()
     rg = cairo.RadialGradient(960, 520, 0, 960, 520, 900)
     rg.add_color_stop_rgba(0, 1, 1, 1, 0.55 * a); rg.add_color_stop_rgba(1, 1, 1, 1, 0)
     c.set_source(rg); c.paint()
@@ -867,11 +871,12 @@ def escape_out(c, g, t):
         for side in (-1, 1):
             paper_piece(c, side, ys, wy, f, side * 760 * fall, 1000 * fall * fall, side * 0.28 * fall)
     # her song, coming in from outside through the tear (it opens at k444)
-    for kb in np.arange(444.0, 448.5, 0.5):
+    for kb in np.arange(444.0, 448.5, 0.5):           # v2 round 6: louder -- this time she runs towards it
         u = prog(t, B(kb), B(kb) + 1.6)
         if 0 < u < 1:
             r = 40 + 1300 * eo_cubic(u)
-            for cc, aa, lw in ((c, 0.75 * (1 - u), 2.4 * (1 - u) + 0.8), (g, 0.4 * (1 - u), 4)):
+            big = 1.0 if kb % 1 == 0 else 0.6
+            for cc, aa, lw in ((c, big * (1 - u) ** 0.7, big * (6.0 * (1 - u) + 1.5)), (g, 0.7 * big * (1 - u), 10)):
                 rgba(cc, LISH_P if cc is c else LISH, aa); cc.set_line_width(lw); cc.new_path(); cc.arc(TEAR_X, 540, r, 0, 6.283); cc.stroke()
     # her, shooting up out of the frame (half a beat), after-images and streaks below her
     rise = ei_cubic(prog(t, B(K_LEAP), B(K_GONE)))

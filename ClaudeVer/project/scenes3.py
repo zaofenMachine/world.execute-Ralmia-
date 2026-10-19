@@ -533,6 +533,134 @@ def lish_sit(c, x, y, sc, a=1.0, rot=0.0, t=0.0, swing=True):
     c.set_source_surface(surf('n_lish_sit_b_hd' if b else 'n_lish_sit_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD)
     c.paint_with_alpha(min(1, a)); c.restore()
 
+# ================================================================ v2 round 6: ACHILLES AND THE TORTOISE  [B48, B60)
+# replaces the gap / Zeno / near shots of v1 (the fingertip and the loose end). the fastest thing in the world can never
+# catch the slowest: each beat Ralmia (cyan line art) reaches the place where Lishenna (bone line art) was -- and Lishenna
+# has strolled on by half that. after every step the camera zooms x2 so the picture repeats exactly (Zeno's halving).
+# her song, the lavender string, trails from her microphone back to just ahead of Ralmia's hand. k56: half a beat stopped,
+# only the string shakes. k58: pull back; a loupe on the gap: d != 0. "Nothing, not one thing, can touch her."
+STROLL = os.path.exists(f'{WORK}/assets/n_trace_stroll_a.png')
+if STROLL:
+    _A = json.load(open(os.path.join(WORK, '..', 'gen', '_qa', 'round4', 'anchors_v2.json')))['lish_stroll']
+    L_FEET, L_H, L_BACK = tuple(_A['feet']), _A['height'], _A['back_x']
+else:                                             # her standing picture, mirrored (n_trace_stand_m): she just stands and sings
+    L_FEET, L_H, L_BACK = (960, 1050), 1000, 668
+L_MIC = (L_BACK + 70, L_FEET[1] - 0.62 * L_H)    # roughly her hand / microphone side (canvas px)
+A_LX, A_GY, A_LS = 1210, 860, 0.56                # where her back sits, the ground, her scale
+A_G = 700                                         # screen gap from Ralmia's hand to Lishenna's back at the start of each step
+A_RS, A_RY = 0.40, -330                           # Ralmia's scale; her fingertip's height above the ground
+DASH_TIP = (1843, 539)                            # her outstretched fingertip in n_dash_full
+def lish_walker(c, g, x_back, t, n, a=1.0):
+    name = ('stroll_b' if n % 2 else 'stroll_a') if STROLL else 'stand_m'
+    fx = x_back + (L_FEET[0] - L_BACK) * A_LS
+    bob = (6 * abs(math.sin(math.pi * (t - T0) / P))) if STROLL else 0
+    phosphor(c, g, name, fx, A_GY - bob, A_LS, L_FEET, t, BONE, a, 0.0, 1.0, 1.0, 0.4)
+    return (fx + (L_MIC[0] - L_FEET[0]) * A_LS, A_GY - bob + (L_MIC[1] - L_FEET[1]) * A_LS)
+
+def ralmia_flyer(c, g, hx, t, a=1.0, ghosts=0.0):
+    hy = A_GY + A_RY
+    for k, aa in ((2, 0.15), (1, 0.3)):
+        if ghosts > 0.02: phosphor(c, g, 'dash', hx - 120 * k * ghosts, hy, A_RS, DASH_TIP, t, CYAN, aa * a, 0.0, 0.0, 1.0, 0.2)
+    phosphor(c, g, 'dash', hx, hy, A_RS, DASH_TIP, t, CYAN, a, 0.0, 1.0, 1.0, 0.55)
+    return hx, hy
+
+def zoom_grid(c, P_, Zc, a=1.0):
+    lv = math.log2(max(Zc, 1e-6))
+    for j in range(2):
+        cell = 40 * 2 ** (lv % 1 + j)
+        aa = a * (0.07 * (1 - (lv % 1)) + 0.03 if j == 0 else 0.07 * (lv % 1))
+        rgba(c, BONE, aa); c.set_line_width(1)
+        x = P_ % cell
+        while x < W: c.move_to(x, 0); c.line_to(x, H); x += cell
+        y = A_GY % cell
+        while y < H: c.move_to(0, y); c.line_to(W, y); y += cell
+        c.stroke()
+
+def s_achilles(c, g, t):
+    from scenes2 import song_string
+    fill_bg(c, INK)
+    fx = {}
+    kk = (t - T0) / P
+    if kk < 49:                                   # Ralmia comes in out of the white of LIGHT; Lishenna already ahead
+        n, approach, zoom, kf = 0, 0.0, 0.0, 0.0
+        enter = eo_expo(prog(t, B(48), B(48) + 0.45))
+    else:
+        kr = kk - 49
+        frozen = 7.0 <= kr < 7.5
+        kf = 7.0 if frozen else (7.0 + (kr - 7.5) * 2 if 7.5 <= kr < 8.0 else kr)
+        n = math.floor(kf); ph = kf - n
+        approach = eo_cubic(clamp(ph / 0.45)); zoom = eo_expo(clamp((ph - 0.5) / 0.4))
+        enter = 1.0
+    if kk >= 58:                                  # the pull-back (see below): the last step's state, held
+        n, approach, zoom = 9, 1.0, 0.0
+    s_ = 2 ** zoom; P_ = A_LX + A_G                  # zoom x2 about a point ahead of her: the picture repeats
+    Zc = 2 ** (n + zoom)
+    lb = A_LX + (A_G / 2) * approach              # her back, strolling on
+    hx = A_LX - A_G + A_G * approach              # Ralmia's hand reaches where her back was
+    lb, hx = P_ + (lb - P_) * s_, P_ + (hx - P_) * s_
+    hx = lerp(-500, hx, enter)
+    frozen_now = kk >= 49 and 7.0 <= kk - 49 < 7.5
+    zoom_grid(c, P_, Zc, 1.0)
+    line(c, 0, A_GY, W, A_GY, BONE, 0.45, 1.4)
+    if kk < 58:
+        mic = lish_walker(c, g, lb, t, n)
+        rh = ralmia_flyer(c, g, hx, t, eo_cubic(prog(t, B(48), B(48) + 0.2)), (1 - approach) * (approach > 0) + 0.6 * (1 - enter))
+        # her song: the string from her microphone back to just ahead of Ralmia's hand
+        end = (rh[0] + 14, rh[1] - 4)
+        pts = [(lerp(end[0], mic[0], u), lerp(end[1], mic[1], u) + 26 * math.sin(math.pi * u)) for u in np.linspace(0, 1, 70)]
+        song_string(c, g, pts, t, 3.4, 0.6, 9 if frozen_now else 5, 1.0, LISH, 'end', 90, 420)
+        for kb in range(48, math.floor(kk) + 1):  # a wavefront from her, each beat: the song reaches Ralmia (Ralmia can't reach her)
+            u = prog(t, B(kb), B(kb) + 1.1)
+            if 0 < u < 1:
+                rgba(c, LISH, 0.35 * (1 - u)); c.set_line_width(2); c.new_path(); c.arc(*mic, 40 + 1300 * eo_cubic(u), 0, 6.283); c.stroke()
+        # the distance
+        dval = 0.5 ** n * (1 - 0.5 * approach)
+        y_d = A_GY - 560
+        line(c, rh[0], y_d, lb, y_d, CYAN, 0.9, 1.6)
+        line(c, rh[0], y_d - 10, rh[0], y_d + 10, CYAN, 0.9, 1.6); line(c, lb, y_d - 10, lb, y_d + 10, CYAN, 0.9, 1.6)
+        text(c, 'monom', f'd = {dval:.6f}', (rh[0] + lb) / 2, y_d - 18, 28, CYAN, enter, align='center')
+        if kk >= 49:
+            terms = ' + '.join(f'1/{2 ** (i + 1)}' for i in range(min(n + 1, 4))) + (' + ...' if n >= 4 else '')
+            text(c, 'math', f'{terms}  =  {1 - dval:.6f}', 130, 1000, 30, BONE, 0.85)
+        text(c, 'mono', f'zoom  x{Zc:,.0f}'.replace(',', ' '), W - 130, 1000, 26, BONE, 0.7, align='right', track=0.1)
+        text(c, 'mono', 'lim d -> 0     d != 0', W - 130, 960, 22, BONE, 0.5, align='right', track=0.1)
+        if t < B(52):
+            words(c, 'serif', [('Nothing,', B(48)), ('not', B(48.5)), ('one', B(49)), ('thing,', B(49.5))], t,
+                  W - 130 - text_w('serif', 'Nothing, not one thing,', 80), 200, 80, BONE, 0.95)
+        else:
+            words(c, 'serif', [('can', B(54)), ('touch', B(54.5)), ('her.', B(55))], t,
+                  W - 130 - text_w('serif', 'can touch her.', 92), 200, 92, BONE, 0.95)
+        fx['ab'] = 3 * pulse(t, B(49 + n + 0.5), 0.15) + 3 * pulse(t, B(48), 0.2)
+        fx['flash'] = 0.9 * (1 - eo_cubic(prog(t, B(48), B(48) + 0.25)))
+    else:
+        # k58: the pull-back. at this distance they look as if they touch -- the loupe says they don't
+        u = eo_expo(prog(t, B(58), B(58) + 0.5))
+        gap = 5.0
+        lb2 = A_LX + 40; hx2 = lb2 - gap
+        mic = lish_walker(c, g, lb2, t, 9)
+        rh = ralmia_flyer(c, g, hx2, t)
+        end = (rh[0] + 4, rh[1] - 4)
+        pts = [(lerp(end[0], mic[0], v), lerp(end[1], mic[1], v) + 10 * math.sin(math.pi * v)) for v in np.linspace(0, 1, 50)]
+        song_string(c, g, pts, t, 3.4, 0.6, 4, 1.0, LISH, 'end', 90, 420)
+        lp = (hx2 + gap / 2, rh[1]); lc = (lerp(lp[0], 760, u), lerp(lp[1], 300, u)); R_ = lerp(10, 170, u); Zl = 5
+        c.save(); c.new_path(); c.arc(*lc, R_, 0, 6.283); c.clip(); fill_bg(c, INK)
+        c.translate(*lc); c.scale(Zl, Zl); c.translate(-lp[0], -lp[1])
+        phosphor(c, g, 'dash', hx2, rh[1], A_RS, DASH_TIP, t, CYAN, 1.0, 0.0, 0.0, 1.0, 0.0)
+        lish_walker(c, g, lb2, t, 9)
+        c.restore()
+        for cc, aa in ((c, 0.85), (g, 0.4)):
+            rgba(cc, BONE, aa); cc.set_line_width(2); cc.new_path(); cc.arc(*lc, R_, 0, 6.283); cc.stroke()
+        line(c, lp[0] + (lc[0] - lp[0]) * 0.0, lp[1], lc[0] + R_ * 0.7, lc[1] + R_ * 0.7, BONE, 0.4 * u, 1.2)
+        ul = eo_cubic(prog(t, B(58.5), B(58.5) + 0.2))
+        text(c, 'monom', 'd != 0', lc[0] - R_ - 30, lc[1] + 10, 30, CYAN, ul, align='right')
+        qs = 'Nothing, not one thing, can touch her.'
+        words(c, 'serif', [(qs, B(58.5))], t, W - 130 - text_w('serif', qs, 64), 200, 64, BONE, 0.9)
+        text(c, 'mono', type_on('— abandoned lab note, project ŌMETEŌTL', t, B(59), 0.02), W - 130, 260, 20, BONE, 0.5, align='right')
+        fx['ab'] = 3 * pulse(t, B(58), 0.2)
+    fx['grain'] = 0.04
+    hud(c, t, True, a=0.7)
+    return fx
+
 # ================================================================ S13 SINE + TANGENTS  [B80, B88)
 LAM = 640.0
 def theta(t): return math.pi / 2 + math.pi * (t - B(80)) / P       # crest on every even beat

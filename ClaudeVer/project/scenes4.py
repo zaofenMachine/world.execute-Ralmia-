@@ -205,7 +205,18 @@ def s_chorus1(c, g, t):
         c.set_source_surface(surf('n_stage_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint()
         c.push_group()
         beat = math.floor(kk)
+        live = t >= B(141.75)                         # v2 round 6: the big screen goes to the live camera on SATISFACTION
         for si, (x0, y0, x1, y1) in enumerate(STAGE_SCREENS):
+            if si == 1 and live:
+                lz = 1.0 + 0.04 * prog(t, B(141.75), B(144))
+                c.save(); c.rectangle(x0, y0, x1 - x0, y1 - y0); c.clip()
+                fs = (x1 - x0) / 1920 * 0.98 * lz
+                c.translate((x0 + x1) / 2, (y0 + y1) / 2); c.scale(fs, fs); c.translate(-960, -560)
+                c.set_source_surface(surf('n_lish_face_hd'), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint()
+                c.restore()
+                for yy in range(int(y0), int(y1), 5): line(c, x0, yy, x1, yy, INK, 0.10, 1)       # the LED screen's lines
+                rgba(c, BONE, 0.5 * pulse(t, B(141.75), 0.25)); c.rectangle(x0, y0, x1 - x0, y1 - y0); c.fill()
+                continue
             cols = 6 if si == 1 else 4; gp = 3
             cw = (x1 - x0 - gp * (cols - 1)) / cols; ch = cw * 9 / 16
             for r_ in range(int((y1 - y0) / (ch + gp)) + 1):

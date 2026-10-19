@@ -244,7 +244,17 @@ def trace_mask(src_png, nm):
     edge = cv2.Canny((a > 110).astype(np.uint8) * 255, 50, 150).astype(np.float32) / 255
     m = np.maximum(m, cv2.GaussianBlur(edge, (0, 0), 0.6) * 1.4)
     cv2.imwrite(f'{A}/n_trace_{nm}.png', np.clip(m * 255, 0, 255).astype(np.uint8))
-for src_png, nm in (('n_lish_sit_hd', 'sit'), ('n_lish_sit_b_hd', 'sit_b'), ('n_dash_full_hd', 'dash')):
+# round 6: 22-28 s, Achilles and the tortoise -- Lishenna strolling right (L17a/b, pixel-aligned pair: plain resize, never
+# re-centred, so the upper body stays put between the two steps); until they arrive, her standing picture mirrored
+for src, nm in (('lishenna_stroll_a', 'lish_stroll_a'), ('lishenna_stroll_b', 'lish_stroll_b')):
+    if os.path.exists(os.path.join(SRC, src + '.png')): save(nm, load(src, True)); print('round 7:', nm)
+if os.path.exists(f'{A}/n_lish_stroll_a_hd.png'):
+    a_ = cv2.imread(f'{A}/n_lish_stroll_a_hd.png', cv2.IMREAD_UNCHANGED)[..., 3]; fx_, fy_, top_ = bottom_centre(a_)
+    ys_, xs_ = np.nonzero(a_[int(top_ + 0.35 * (fy_ - top_)):int(top_ + 0.5 * (fy_ - top_))] > 60)
+    anc['lish_stroll'] = dict(feet=[round(fx_), round(fy_)], height=round(fy_ - top_), back_x=int(xs_.min()))
+st_ = cv2.imread(f'{A}/n_lish_stand_hd.png', cv2.IMREAD_UNCHANGED)[:, ::-1].copy(); cv2.imwrite(f'{A}/n_lish_stand_m_hd.png', st_)
+for src_png, nm in (('n_lish_sit_hd', 'sit'), ('n_lish_sit_b_hd', 'sit_b'), ('n_dash_full_hd', 'dash'), ('n_lish_stand_m_hd', 'stand_m'),
+                    ('n_lish_stroll_a_hd', 'stroll_a'), ('n_lish_stroll_b_hd', 'stroll_b')):
     trace_mask(src_png, nm)
 
 json.dump(anc, open(os.path.join(SRC, '_qa', 'round4', 'anchors_v2.json'), 'w'), indent=1)
