@@ -207,8 +207,14 @@ def scramble(s, t, t0, per, seed=0, settle=0.0):
 
 # ---------------------------------------------------------------- images
 _IMG = {}
+REG = [None]            # v3 (prep8.py): None = the picture as is; 'r' = raster (ink shots); 'm' = two-colour manga (paper shots)
+_ALT = {}
 def surf(name):
-    """cairo ImageSurface from assets/<name>.png (BGR or BGRA)."""
+    """cairo ImageSurface from assets/<name>.png (BGR or BGRA). With REG set, the treated variant <name>__<REG> if it exists."""
+    if REG[0]:
+        key = (name, REG[0])
+        if key not in _ALT: _ALT[key] = f'{name}__{REG[0]}' if os.path.exists(f'{WORK}/assets/{name}__{REG[0]}.png') else name
+        name = _ALT[key]
     if name not in _IMG:
         im = cv2.imread(f'{WORK}/assets/{name}.png', cv2.IMREAD_UNCHANGED)
         if im.ndim == 2: im = cv2.cvtColor(im, cv2.COLOR_GRAY2BGRA)

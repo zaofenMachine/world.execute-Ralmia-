@@ -51,7 +51,15 @@ TIMELINE = [
 ]
 END = 211.9                                # the song is 211.97 s
 
+import panel as PNL                        # v3: Ralmia's system around the scenes (panel.py); V3 = False renders v2
+V3 = True
+def scene_at(t):
+    for a, b, fn in TIMELINE:
+        if a <= t < b: return fn
+    return lambda c, g, t: {}
+
 def render_frame(t, fr):
+    if V3 and t < PNL.V3_UNTIL: return PNL.render_v3(t, fr, scene_at(t), composite)
     s = cairo.ImageSurface(cairo.FORMAT_ARGB32, W, H); c = cairo.Context(s)
     gs = cairo.ImageSurface(cairo.FORMAT_ARGB32, W // 2, H // 2); g = cairo.Context(gs); g.scale(0.5, 0.5)
     fx = {}

@@ -2,8 +2,11 @@
 from lib import *
 
 # ---------------------------------------------------------------- shared bits
+LYRICS_OFF = [False]    # v3: in panel mode the sung line goes to the VOICE module instead (panel.py)
+HUD_OFF = [False]       # v3: the panel's top bar replaces the corner HUD
 def words(c, key, items, t, x, y, size, col, a=1.0, rise=10, dur=0.12, gap=0.28):
     """items: [(word, t_on)]. Words laid out in a row; each fades/rises in at its time."""
+    if LYRICS_OFF[0]: return x
     cx = x
     sp = text_w(key, ' ', size)
     for w, ton in items:
@@ -22,6 +25,7 @@ LOG = [(B(0), 'sys.power(ON)'), (B(4), 'shield.enable()'), (B(8), 'pieces.lay(gr
 
 def hud(c, t, dark=True, a=1.0, log=True, log_a=1.0):
     """log_a: extra opacity for the boot log only. Scenes pass < 1 while big type sits in the top-left."""
+    if HUD_OFF[0]: return
     col = BONE if dark else SEPIA
     m = 56; L = 20
     for (x, y, sx, sy) in [(m, m, 1, 1), (W - m, m, -1, 1), (m, H - m, 1, -1), (W - m, H - m, -1, -1)]:
