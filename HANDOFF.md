@@ -14,6 +14,15 @@
 
 ---
 
+## V3. 第三版（2026-10-19，分支 `v3`）
+
+从第二版第七轮（标签 `v2-narrative`）开出，内容等用户说明。
+
+- **版本隔离：** v3 的分段、拼图、成片写到 `chunks_v3/`、`qa_v3/`、`out_v3.mp4` / `out_v3_delivery.mp4`（`render_all.py`、`mux.py`、`qa.py`、`prep7.py frag` 默认值已改）。开分支时把 `chunks_v2/`、`qa_v2/` 复制了一份进去，所以 v3 一开始和第二版第七轮完全相同，可以只重渲改动的段落。
+- **碎片链：** `ClaudeVer/project/frag_chain.sh`（以前在临时脚本里）：拼 c0–c20 → `qa.py` → `prep7.py frag`，之后重渲 c23–c25、c38–c39。
+- **切回第二版：** `git checkout v2` 即可，它用的仍是 `chunks_v2/`、`qa_v2/`，互不干扰。素材文件（`assets/`）跟着分支切换。
+- 成片命名建议 `ClaudeVer/world_execute_me_Ralmia_v3_roundN.mp4`。
+
 ## V2. 第二版：洛菈米亚 × 里榭娜（2026-10-18，分支 `v2`）
 
 > **2026-10-19 存档：** 第二版（"重叙事"版）定稿为第七轮，成片 `ClaudeVer/world_execute_me_Ralmia_v2_round7.mp4`。标签 `v2-narrative` 指向这一版（不和分支同名，免得 git 报"名字有歧义"）；分支 `v2` 保留，可以随时切回去继续改；`main` 已快进合并到这一版。第一版只在标签 `v1`。第三版在分支 `v3` 上、从第二版开始做（见下方 V3 一节）。

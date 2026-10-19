@@ -53,7 +53,7 @@ def bottom_centre(al, thr=32):
     ys, xs = np.nonzero(al > thr); b = ys.max(); sel = ys > b - 8
     return float(xs[sel].mean()), float(b), int(ys.min())
 
-def frag(qa_dir='qa_v2', prefix='frag2'):
+def frag(qa_dir='qa_v3', prefix='frag2'):       # v3: tiles from qa_v3 (v2's frag2 is on the v2 branch)
     """the bridge's memory mosaic: 96 tiles from the contact sheets of the rendered 0-100 s (see prep5.py)"""
     tiles = {}
     for q in sorted(glob.glob(os.path.join(HERE, qa_dir, 'q*.jpg'))):

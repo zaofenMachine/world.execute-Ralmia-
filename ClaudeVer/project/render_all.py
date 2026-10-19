@@ -1,7 +1,7 @@
 """Parallel full-film render on one machine (the old sandbox could only do 2 chunks at a time).
 usage:
-  python render_all.py chunks I0 I1 [JOBS]   render chunks_v2/c{I0..I1-1}.mp4, 5 s each (c{i} = [5i, 5i+5) clipped to END)
-  python render_all.py dchunks [JOBS]        re-encode every chunks_v2/c*.mp4 -> d*.mp4 at 18 Mbps (mux.py dchunk), in parallel
+  python render_all.py chunks I0 I1 [JOBS]   render chunks_v3/c{I0..I1-1}.mp4, 5 s each (c{i} = [5i, 5i+5) clipped to END)
+  python render_all.py dchunks [JOBS]        re-encode every chunks_v3/c*.mp4 -> d*.mp4 at 18 Mbps (mux.py dchunk), in parallel
   python render_all.py n                     print the number of chunks for END
 needs ffmpeg on PATH."""
 import sys, os, math, subprocess, glob
@@ -10,7 +10,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from render import END
 SEG = 5.0
-CH = 'chunks_v2'                 # v2 renders go here; chunks/ keeps the v1 chunks
+CH = 'chunks_v3'                 # v3 renders go here; chunks_v2/ keeps v2's, chunks/ v1's
 N = math.ceil(END / SEG)
 
 def run(args):
