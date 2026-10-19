@@ -21,11 +21,20 @@
 **第一步（0–30 秒样片，`ClaudeVer/preview_v3_0-30s.mp4`）已做：**
 
 - **统一画风：** `project/prep8.py` 给每张 GPT 图生成两个变体 `<名>__r.png`（点阵）和 `<名>__m.png`（漫画），约 12 秒跑完。这两种文件不进 git（`.gitignore`），换机器或改了参数后重跑 `python prep8.py` 即可。`lib.surf()` 按 `lib.REG[0]`（`None` / `'r'` / `'m'`）换图，没有变体的图照原样用。
-- **面板：** `project/panel.py`（ŌMETEŌTL OS）。`render.py` 里 `V3 = True` 时，`t < panel.V3_UNTIL`（目前 `B(66)`）的帧走 `panel.render_v3()`：镜头先画进离屏缓冲，再按 `MODES` 缩进 VIEWPORT（360, 64, 1200×675）或铺满；`REGS` 决定每段用哪种画风；镜头自己的歌词（`scenes.LYRICS_OFF`）和角落 HUD（`scenes.HUD_OFF`）在面板模式下关掉，歌词搬进 VOICE。`V3_UNTIL` 之后仍是第二版的画面。
-- **开机：** 0.34 秒 POWER、VOICE 先亮，VIEWPORT 边框自己画出来；k3 顶栏；k4 SHIELD；k8.25 起其余模块和零件同拍落位，CORE 在 k11 和核心宝石一起到。里榭娜第 1–3 句在 16.8、22.75、24.1 秒（第 2、3 句比方案表晚了一点，避开破音障）。
+- **面板：** `project/panel.py`（ŌMETEŌTL OS）。`render.py` 里 `V3 = True` 时，`t < panel.V3_UNTIL`（第二步起是整片）的帧走 `panel.render_v3()`：镜头先画进离屏缓冲，再按 `MODES` 缩进 VIEWPORT（360, 64, 1200×675）或铺满；`REGS` 决定每段用哪种画风；镜头自己的歌词（`scenes.LYRICS_OFF`）和角落 HUD（`scenes.HUD_OFF`）在面板模式下关掉，歌词搬进 VOICE。`V3_UNTIL` 之后仍是第二版的画面。
+- **开机：** 0.34 秒 POWER、VOICE 先亮，VIEWPORT 边框自己画出来；k3 顶栏；k4 SHIELD；k8.25 起其余模块和零件同拍落位，CORE 在 k11 和核心宝石一起到。里榭娜 0–30 秒的台词在 16.8、22.75、25.55、26.5 秒（时间停止那段改过，见下一条）。
 - **样片之后的小改（2026-10-20）：** VIEWPORT 下半部分打开机自检日志（0–4 秒）；当前关键词以外的模块压暗；面板字号整体大一号；`prep8.py` 里里榭娜单人图（`NO_CYAN`）不再保留青色（她衣服上的青不算系统色）；两人同框的图里的青色还要在第二步逐张检查。`make_math_font.py` 补了 τ 等字形。
 - **22.5–28 秒：光速下时间停止**（用户选了 `plan_v3_chase.md` 的方案 A）。镜头在 `project/scenes_v3.py`（`s_timestop`，经 `OVERRIDE` 放在第二版时间线前面；`render.py` 的 `scene_at` 先查它）；面板冻结在 `panel.py` 的 `FREEZE` / `own_t()`：她的模块停在 `FREEZE_T`，`LIVE` 里的 LINK、TRANSMISSION、VOICE 照常走（VOICE 底部的代码行也停）。A2（两人近景）、A3（眨眼）、A4（回头挥手）现在用旧图代替，新图需求在 `gen/request_v3a.md`；新图到了以后照 prep7 的做法生成 `n_peek_frozen_hd`、`n_lish_wink_line`、`n_lish_wave_back_line`，`scenes_v3.py` 会自动换上。
 - **碎片链注意：** 桥段、逃脱用的是 0–100 秒成片的切片。0–30 秒改了以后，第二步铺完全片前要重跑 `frag_chain.sh`。
+
+**第二步（整片接进面板，2026-10-20）已做：**
+
+- `V3_UNTIL` 改成整片。`MODES` 按段落切换（小节线上）：主歌 1b、主歌 2、切换段、"you have left"、FRAGMENTS、间奏、试炼段是面板；副歌 1、VIBRATIONS、"Challenging your god"、k352 以后（第三步）是全屏。全屏时顶栏也滑走。
+- **画风自动：** `REGS` 现在是 `'auto'`：`lib.fill_bg` / `paper_bg` 记下这一帧的底色（`lib.BG`），`surf()` 和 `scenes4.thumb()` 经 `lib.variant()` 按纸底取漫画、墨底取点阵；k416（逃脱）以后先回彩色，结尾的四步上色留给第三步。
+- **唱词表：** `project/lyrics_v3.py`。OUT 是从第二版镜头实际画的歌词收集来的（`scenes.LYRIC_LOG` 开关，`words()`、`scenes4.words_ol()`、`slam_word()` 都会记），关键词用各镜头的 `K_*` 拍号；IN 是里榭娜的 14 句，`LOST` 是她信号断掉的两段（111.11–127.8 秒、间奏到 148 秒）。全屏时她的台词以小字出现在右上角（`panel.in_toast`）。
+- **模块状态（方案第四节）：** CLASS 随歌词换类型（PointSet → Circle → SineWave → Sequence → Eggplant → Tomato → TabbyCat → God，下一行是对应的代码），切换段加 gender / role；POWER 的 AC/DC；SENSORS 的 vision OFF（blind）、gyro 漂移和整个面板摇晃（dizzy，`panel.tilt`）、trance 时 audio in 是她的哼唱；CLOCK 倒拨 A.D. 2026 → 617 → B.C. 3691，切换段改 12 小时制、AM/PM 跟着歌词翻；LINK 的 touch 在 UNITE 变 true（红），"you have left" 时 signal lost，last packet 3 s → 1 year；CORE 在 so deeply 加 `tuned to: song`；MEMORY 在 FRAGMENTS 删不掉（denied ×n），间奏 `corrupted 12 → 88 %`；间奏里模块边框一个个变兰紫（`SEEP`）；TASKS 跟着加 / 改状态。
+- **v3 的碎片切片叫 `frag3`**（`prep7.py frag` 默认值；`scenes5.FRAG_PREFIX` 优先用它），不覆盖第二版的 `frag2`。
+- **还没做（第三步）：** 试炼段处决模块、第 13 声 OVERFLOW、ASTROWING 重启、副歌 3 倒带蒙太奇、尾奏关机和 protection OFF、结尾四步上色、间奏和试炼段的剪辑密度；两人同框图里里榭娜衣服的青色。
 
 - **版本隔离：** v3 的分段、拼图、成片写到 `chunks_v3/`、`qa_v3/`、`out_v3.mp4` / `out_v3_delivery.mp4`（`render_all.py`、`mux.py`、`qa.py`、`prep7.py frag` 默认值已改）。开分支时把 `chunks_v2/`、`qa_v2/` 复制了一份进去，所以 v3 一开始和第二版第七轮完全相同，可以只重渲改动的段落。
 - **碎片链：** `ClaudeVer/project/frag_chain.sh`（以前在临时脚本里）：拼 c0–c20 → `qa.py` → `prep7.py frag`，之后重渲 c23–c25、c38–c39。

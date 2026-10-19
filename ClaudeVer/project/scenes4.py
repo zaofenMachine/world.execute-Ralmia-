@@ -9,6 +9,7 @@ def thumb(name, w, bg=None):
     """Downscaled cairo surface of an asset (cached). Alpha assets are flattened onto bg (rgb tuple)."""
     for bw in (120, 240, 480, 960, 1920):
         if bw >= w: break
+    name = variant(name)                         # v3: the treated picture under the current register
     key = (name, bw, bg)
     if key not in _TH:
         im = cv2.imread(f'{WORK}/assets/{name}.png', cv2.IMREAD_UNCHANGED)
@@ -46,6 +47,8 @@ LINE_OF = {'n_pinky2_hd': 'n_pinky2_line', 'n_world_hd': 'n_world_line', 'n_eye_
 
 def words_ol(c, items, t, x, y, size, col=BONE, ol=INK, olw=9, key='serif'):
     """lyric words with an ink outline so they read over busy pictures"""
+    if LYRIC_LOG[0] is not None: LYRIC_LOG[0].add(('w', tuple(items)))
+    if LYRICS_OFF[0]: return
     f = fonts()[key]; cx = x; sp = text_w(key, ' ', size)
     for w_, ton in items:
         u = eo_cubic(prog(t, ton, ton + 0.12))
@@ -56,6 +59,7 @@ def words_ol(c, items, t, x, y, size, col=BONE, ol=INK, olw=9, key='serif'):
         cx += text_w(key, w_, size) + sp
 
 def slam_word(c, g, word, t, t0, x, y, size, key='heavy', col=BONE, align='center', ol=INK, until=None, glow=0.6):
+    if LYRIC_LOG[0] is not None: LYRIC_LOG[0].add(('s', word, t0))
     if t < t0 or (until and t >= until): return
     u = eo_expo(prog(t, t0, t0 + 0.14))
     c.save(); c.translate(x, y); s_ = 1.22 - 0.22 * u; c.scale(s_, s_)

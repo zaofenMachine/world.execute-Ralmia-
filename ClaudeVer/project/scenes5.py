@@ -339,7 +339,7 @@ def s_chorus2(c, g, t):
     return fx
 
 # ================================================================ S25 BRIDGE  [B256, B288)
-FRAG_PREFIX = 'frag2' if os.path.exists(f'{WORK}/assets/frag2.json') else 'frag'     # v2 tiles (prep7.py frag), else v1's
+FRAG_PREFIX = next((p for p in ('frag3', 'frag2') if os.path.exists(f'{WORK}/assets/{p}.json')), 'frag')   # v3 tiles (prep7.py frag), else v2's, else v1's
 FRAG = None
 def frag_layout():
     global FRAG

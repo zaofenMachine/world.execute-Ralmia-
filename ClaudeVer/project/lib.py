@@ -135,7 +135,9 @@ def fonts():
 def rgba(ctx, c, a=1.0):
     ctx.set_source_rgba(c[0], c[1], c[2], a)
 
+BG = ['ink']             # v3: the ground of the frame being drawn ('ink' / 'paper'), for REG 'auto'
 def fill_bg(ctx, c):
+    BG[0] = 'paper' if sum(c) > 1.5 else 'ink'
     rgba(ctx, c); ctx.paint()
 
 def partial_stroke(ctx, frac, start=0.0, parallel=True):
@@ -207,14 +209,20 @@ def scramble(s, t, t0, per, seed=0, settle=0.0):
 
 # ---------------------------------------------------------------- images
 _IMG = {}
-REG = [None]            # v3 (prep8.py): None = the picture as is; 'r' = raster (ink shots); 'm' = two-colour manga (paper shots)
+REG = [None]            # v3 (prep8.py): None = the picture as is; 'r' = raster (ink shots); 'm' = two-colour manga (paper shots);
+                        # 'auto' = by the ground the frame was last filled with (BG): paper -> 'm', ink -> 'r'
 _ALT = {}
+def variant(name):
+    """the asset name to load for <name> under the current register: <name>__<REG> if that variant exists"""
+    if not REG[0]: return name
+    reg = REG[0] if REG[0] != 'auto' else ('m' if BG[0] == 'paper' else 'r')
+    key = (name, reg)
+    if key not in _ALT: _ALT[key] = f'{name}__{reg}' if os.path.exists(f'{WORK}/assets/{name}__{reg}.png') else name
+    return _ALT[key]
+
 def surf(name):
     """cairo ImageSurface from assets/<name>.png (BGR or BGRA). With REG set, the treated variant <name>__<REG> if it exists."""
-    if REG[0]:
-        key = (name, REG[0])
-        if key not in _ALT: _ALT[key] = f'{name}__{REG[0]}' if os.path.exists(f'{WORK}/assets/{name}__{REG[0]}.png') else name
-        name = _ALT[key]
+    name = variant(name)
     if name not in _IMG:
         im = cv2.imread(f'{WORK}/assets/{name}.png', cv2.IMREAD_UNCHANGED)
         if im.ndim == 2: im = cv2.cvtColor(im, cv2.COLOR_GRAY2BGRA)
@@ -258,6 +266,7 @@ def paper_tex():
     return _IMG['paper'][0]
 
 def paper_bg(ctx):
+    BG[0] = 'paper'
     ctx.set_source_surface(paper_tex(), 0, 0); ctx.paint()
 
 def post(buf, fr, glow=0.35, ab=0.0, grain=0.035, flash=0.0, vignette=True, glow_thresh=170):

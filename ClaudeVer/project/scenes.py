@@ -3,9 +3,11 @@ from lib import *
 
 # ---------------------------------------------------------------- shared bits
 LYRICS_OFF = [False]    # v3: in panel mode the sung line goes to the VOICE module instead (panel.py)
+LYRIC_LOG = [None]      # v3: a set to collect every sung line drawn (harvest_lyrics.py)
 HUD_OFF = [False]       # v3: the panel's top bar replaces the corner HUD
 def words(c, key, items, t, x, y, size, col, a=1.0, rise=10, dur=0.12, gap=0.28):
     """items: [(word, t_on)]. Words laid out in a row; each fades/rises in at its time."""
+    if LYRIC_LOG[0] is not None: LYRIC_LOG[0].add(('w', tuple(items)))
     if LYRICS_OFF[0]: return x
     cx = x
     sp = text_w(key, ' ', size)
