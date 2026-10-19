@@ -1,0 +1,20 @@
+{
+  "status": "complete",
+  "request": "request_v2d.md",
+  "generator": "built-in image_gen",
+  "assets": [
+    "lishenna_stroll_a.png",
+    "lishenna_stroll_b.png"
+  ],
+  "prompt_records": [
+    "prompt_a.json",
+    "prompt_a_profile_fix.json",
+    "prompt_b.json",
+    "prompt_b_leg_phase.json",
+    "prompt_b_hair_repair.json",
+    "prompt_b_hair_patch.json"
+  ],
+  "pair_method": "B locally edited from A; second leg-only edit corrected near/far walking phase; restore A outside arm/leg mask.",
+  "postprocessing": "Authorized downscale/integer positioning, tiny ankle transition blend for groundline registration, alpha edge cleanup, pixel restore.",
+  "validation": "_qa/round7/validation.json"
+}

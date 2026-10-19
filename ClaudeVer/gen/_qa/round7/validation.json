@@ -1,0 +1,99 @@
+{
+  "status": "complete",
+  "files": [
+    {
+      "name": "lishenna_stroll_a.png",
+      "canvas": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bbox_alpha_gt128": [
+        539,
+        49,
+        1132,
+        848
+      ],
+      "height_fraction": 0.8491,
+      "foot_contacts_y": {
+        "rear": 847,
+        "front": 847
+      },
+      "sha256": "b975a1604fb41c81b93061697530df5e4fde134414b5cad275b1f6e9dd68ec38"
+    },
+    {
+      "name": "lishenna_stroll_b.png",
+      "canvas": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bbox_alpha_gt128": [
+        539,
+        49,
+        1135,
+        848
+      ],
+      "height_fraction": 0.8491,
+      "foot_contacts_y": {
+        "rear": 847,
+        "front": 847
+      },
+      "sha256": "734eb7152e07c3a1de8b66f29f0c820f455c4b830999e8380c8b5e34921d71e4"
+    }
+  ],
+  "outside_edit_pixels": 1386449,
+  "outside_changed_pixels": 0,
+  "head_and_upper_y_lt300_exact": true,
+  "microphone_arm_locked_pixels": 18045,
+  "microphone_arm_changed_pixels": 0,
+  "b_foot_registration": [
+    {
+      "side": "rear",
+      "source_contact_y": 852,
+      "integer_translation": [
+        0,
+        -5
+      ]
+    },
+    {
+      "side": "front",
+      "source_contact_y": 850,
+      "integer_translation": [
+        0,
+        -3
+      ]
+    }
+  ],
+  "preexisting_count": 65,
+  "preexisting_changed": [],
+  "a_registration": {
+    "source": "lishenna_stroll_a_profile_ai.png",
+    "source_canvas": [
+      1672,
+      941
+    ],
+    "source_visible_bbox": [
+      509,
+      34,
+      1162,
+      912
+    ],
+    "scale": 0.9111617312072893,
+    "crop_placement": [
+      538,
+      49
+    ],
+    "upscaled": false,
+    "ground_contact_y_alpha_gt128": 847,
+    "rear_foot_integer_translation": [
+      0,
+      8
+    ],
+    "target_canvas": [
+      1672,
+      941
+    ]
+  },
+  "mask": "stroll_edit_mask.png"
+}

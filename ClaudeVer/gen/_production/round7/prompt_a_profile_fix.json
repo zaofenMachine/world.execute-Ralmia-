@@ -1,0 +1,13 @@
+{
+  "status": "complete",
+  "generator": "built-in image_gen",
+  "prompt": "Revise draft IMAGE 1 into a clean 2D walking-animation sprite A with a STRICT 90-DEGREE RIGHT-FACING SIDE VIEW. The draft's torso is too front-facing and figure too large. Reference 2 is the canonical costume sheet: use the SIDE-VIEW FIGURE (second figure) for the narrow profile torso/hips, facing RIGHT. References 3/4 are style only.\nOrthographic lateral camera at eye level. Shoulders and hips stack front-to-back in profile; do not show a broad front-facing chest or the front plane of both hips. The chest projects forward to screen right in side silhouette; the waist buckle is only a slim edge glimpse. Face in right profile, one eye visible, singing a gentle smug smile into microphone.\nHer far RIGHT hand/arm holds the microphone at the lips and stays fixed. Her near LEFT free arm swings loosely down and backward toward screen left. Casual WALK with a shorter relaxed stride, not a long power stride. Near LEFT leg forward toward screen RIGHT, far RIGHT leg back toward screen LEFT. Both shoes point right; clear layered anatomy.\nKeep exact 1672x941 transparent canvas. Make the character about 800px tall: top ear at y=47, BOTH lowest shoe-ground contact points at y=847. Place body near canvas center, feet roughly at x=760 and x=945. Empty bottom margin about94px. Do not add a groundline or shadow.\nPreserve approved outfit: coral pink long hair swept gently back left, black-white checker headband, upright black ear ornaments/cyan marks, paired gold-rimmed speaker discs (far one partly occluded), cyan bow AND necktie, black collar, opaque white top, white off-shoulder puffy jacket with cyan trims, PURE BLACK shorts, silver scrolling waist buckle, black thigh-highs, white sneakers purple laces yellow details cyan sole trim. No letters/logos on shoes.\nClear inked outline, restrained flat cel shading, simplified readable main lines for fluorescent line-art conversion. Fully clothed, neutral profile. No scenic elements, no motion lines, no text/watermarks/red thread. Genuine transparency.",
+  "references": [
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\_production\\round7\\raw\\lishenna_stroll_a_ai.png",
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_ref_sheet.png",
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_stand.png",
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_sit.png"
+  ],
+  "raw_output": "raw/lishenna_stroll_a_profile_ai.png",
+  "output": "lishenna_stroll_a.png"
+}

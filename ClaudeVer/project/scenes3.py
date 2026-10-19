@@ -542,10 +542,11 @@ def lish_sit(c, x, y, sc, a=1.0, rot=0.0, t=0.0, swing=True):
 STROLL = os.path.exists(f'{WORK}/assets/n_trace_stroll_a.png')
 if STROLL:
     _A = json.load(open(os.path.join(WORK, '..', 'gen', '_qa', 'round4', 'anchors_v2.json')))['lish_stroll']
-    L_FEET, L_H, L_BACK = tuple(_A['feet']), _A['height'], _A['back_x']
+    L_FEET, L_H = tuple(_A['feet']), _A['height']
+    L_BACK = 640                                  # the back of her hair at Ralmia's fingertip height (canvas row ~385, A and B)
 else:                                             # her standing picture, mirrored (n_trace_stand_m): she just stands and sings
     L_FEET, L_H, L_BACK = (960, 1050), 1000, 668
-L_MIC = (L_BACK + 70, L_FEET[1] - 0.62 * L_H)    # roughly her hand / microphone side (canvas px)
+L_MIC = (859, 205) if STROLL else (L_BACK + 70, L_FEET[1] - 0.62 * L_H)   # the string leaves from her speaker disc (canvas px)
 A_LX, A_GY, A_LS = 1210, 860, 0.56                # where her back sits, the ground, her scale
 A_G = 700                                         # screen gap from Ralmia's hand to Lishenna's back at the start of each step
 A_RS, A_RY = 0.40, -330                           # Ralmia's scale; her fingertip's height above the ground

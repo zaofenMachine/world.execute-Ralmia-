@@ -91,5 +91,13 @@
   "n_pinky2_hd": 3316,
   "n_pinky2_alone_hd": 3502,
   "n_pinky2_alone_clean": 1319
+ },
+ "lish_stroll": {
+  "feet": [
+   994,
+   974
+  ],
+  "height": 918,
+  "back_x": 618
  }
 }

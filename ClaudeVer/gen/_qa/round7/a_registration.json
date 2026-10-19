@@ -1,0 +1,28 @@
+{
+  "source": "lishenna_stroll_a_profile_ai.png",
+  "source_canvas": [
+    1672,
+    941
+  ],
+  "source_visible_bbox": [
+    509,
+    34,
+    1162,
+    912
+  ],
+  "scale": 0.9111617312072893,
+  "crop_placement": [
+    538,
+    49
+  ],
+  "upscaled": false,
+  "ground_contact_y_alpha_gt128": 847,
+  "rear_foot_integer_translation": [
+    0,
+    8
+  ],
+  "target_canvas": [
+    1672,
+    941
+  ]
+}

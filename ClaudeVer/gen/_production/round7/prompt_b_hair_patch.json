@@ -1,0 +1,21 @@
+{
+  "status": "complete",
+  "raw_output": "raw/hair_patch_repaired_ai.png",
+  "output": "lishenna_stroll_b.png",
+  "postprocessing": "Downscale patch to the original 138x162 crop, restore base alpha, feather RGB at patch edges, paste at original coordinates, and retain the pair pixel lock.",
+  "generator": "built-in image_gen",
+  "prompt": "Edit IMAGE 1, a 138x162 pixel crop of coral pink HAIR. Output only this same crop composition. Images 2-4 are character and linework references; image 5 shows where the crop sits in the full sprite. Do NOT generate a full character.\nReplace the oval pocket-shaped and scalloped, sleeve-like closed loops inside this small patch with smooth CONTINUOUS LONG HAIR STRANDS flowing from UPPER RIGHT toward LOWER LEFT. Use 3 or 4 OPEN gently curving strand lines that enter at the top/right edge and leave at the bottom/left edge. No closed ellipses, no rounded bag bottom, no scale/scallop shapes, no ribbon loops, no separate short locks ending inside the patch. This area is the MIDDLE of long hair, not the tips.\nKeep the exact coral-pink palette, soft simple cel shading and clean dark salmon outline style. Remove the detached BLACK slashes on the lower-right: those are old sleeve artifacts, replace them with ordinary pink hair. Preserve the small true white/cyan jacket edge at the extreme upper-right, and preserve boundary colors so the patch blends into the surrounding hair. Do not add faces, limbs, clothing or new objects. Fully filled hair except original edge transparency; same crop aspect ratio.",
+  "references": [
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\_production\\round7\\raw\\hair_patch_edit_target.png",
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_ref_sheet.png",
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_stand.png",
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_sit.png",
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_stroll_b.png"
+  ],
+  "edit_crop": [
+    700,
+    305,
+    838,
+    467
+  ]
+}

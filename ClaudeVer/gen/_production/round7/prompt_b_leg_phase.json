@@ -1,0 +1,13 @@
+{
+  "status": "complete",
+  "generator": "built-in image_gen",
+  "prompt": "Precise local edit of IMAGE 1 (walking frame B draft). The FREE ARM has correctly swung forward already: freeze BOTH arms, both hands, microphone, whole head, hair, torso and shorts exactly. Fix ONLY the legs.\nThe draft wrongly kept the same leg phase as A. You MUST visibly change the thigh/knee overlap and leg paths. The near anatomical LEFT leg (attached to the viewer-right/front hip, under the large near short hem around x=900,y=480) must now travel DIAGONALLY DOWN-BACK toward screen LEFT, knee about (820,635), ankle about (715,755), and the rear shoe at screen left. The far anatomical RIGHT leg (attached to the farther hip around x=840,y=490) must travel DIAGONALLY DOWN-FORWARD toward screen RIGHT, knee about (935,635), ankle about (1020,750), ending in the front shoe on screen right.\nThis should make a SHALLOW X overlap in the upper thighs below the shorts, instead of the current unchanged V-shaped leg separation. The near left thigh runs from upper right to lower left IN FRONT, occluding the far right thigh around (870,550-580). The far right thigh is hidden at this crossing, then emerges toward the right and continues to its own knee, ankle and front sneaker. Neither leg is twisted; this is a natural rightward walking contact pose, next half-step. Not sitting cross-legged.\nEnsure the NEAR left black-stocking cuff and thigh now slant DOWN-LEFT, not down-right as they currently do. The farther right leg goes FORWARD and points right. Exactly two legs and two shoes. Both sneakers face screen RIGHT, BOTH shoe-ground contact points at y=847. Keep about the same relaxed stride width.\nPreserve full 1672x941 transparent canvas, character size and all pixels outside legs. Do not move or redesign shorts/hips, do not redraw the correctly forward-swung free arm. Preserve the approved costume in reference 2 and linework of references 3/4. No text, markings, floor, shadow or backdrop.",
+  "references": [
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\_production\\round7\\raw\\lishenna_stroll_b_ai.png",
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_ref_sheet.png",
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_stand.png",
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_sit.png"
+  ],
+  "raw_output": "raw/lishenna_stroll_b_leg_phase_ai.png",
+  "output": "lishenna_stroll_b.png"
+}

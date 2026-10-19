@@ -1,0 +1,12 @@
+{
+  "status": "intermediate_hair_repair_refined_by_crop_edit",
+  "raw_output": "raw/lishenna_stroll_b_hair_repair_ai.png",
+  "generator": "built-in image_gen",
+  "prompt": "Precise local cleanup of IMAGE 1, the finished walking frame B. References 2-4 are character/style only. Keep the exact full 1672x941 composition and all anatomy/pose.\nONLY repair the small HAIR PATCH BEHIND THE LEFT SHOULDER where the old backward-swinging sleeve was removed: approximately x=700..845, y=305..465. Currently that pink area contains a closed rounded bag/sleeve-shaped contour, which looks like a sleeve recolored pink. Erase that closed sleeve/bag outline and replace it with natural continuous coral-pink hair ribbons following the neighboring hair flow diagonally down-left. Clear long flowing hair strands, not an oval pocket or sack. Keep the surrounding hair outline and existing large curls unchanged.\nAlso remove the tiny stray WHITE TAB around (812,312) and disconnected DARK OLD-SLEEVE strokes around (824,410) in this same repair patch. They are leftovers from the old arm, not costume elements. Replace those tiny leftovers with matching hair.\nDO NOT change the correctly forward-swung white sleeve/hand on screen right, the other microphone arm, either leg, either shoe, shorts, waist, head, face, ear ornaments or discs. Do not shift any pixel positions or scale. No extra hair volume, no changes to the external silhouette.\nSame clean anime linework and gentle cel shading, clearly readable when converted to line art. True transparent background. No text/marks.",
+  "references": [
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_stroll_b.png",
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_ref_sheet.png",
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_stand.png",
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_sit.png"
+  ]
+}
