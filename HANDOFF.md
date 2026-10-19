@@ -23,6 +23,8 @@
 - **统一画风：** `project/prep8.py` 给每张 GPT 图生成两个变体 `<名>__r.png`（点阵）和 `<名>__m.png`（漫画），约 12 秒跑完。这两种文件不进 git（`.gitignore`），换机器或改了参数后重跑 `python prep8.py` 即可。`lib.surf()` 按 `lib.REG[0]`（`None` / `'r'` / `'m'`）换图，没有变体的图照原样用。
 - **面板：** `project/panel.py`（ŌMETEŌTL OS）。`render.py` 里 `V3 = True` 时，`t < panel.V3_UNTIL`（目前 `B(66)`）的帧走 `panel.render_v3()`：镜头先画进离屏缓冲，再按 `MODES` 缩进 VIEWPORT（360, 64, 1200×675）或铺满；`REGS` 决定每段用哪种画风；镜头自己的歌词（`scenes.LYRICS_OFF`）和角落 HUD（`scenes.HUD_OFF`）在面板模式下关掉，歌词搬进 VOICE。`V3_UNTIL` 之后仍是第二版的画面。
 - **开机：** 0.34 秒 POWER、VOICE 先亮，VIEWPORT 边框自己画出来；k3 顶栏；k4 SHIELD；k8.25 起其余模块和零件同拍落位，CORE 在 k11 和核心宝石一起到。里榭娜第 1–3 句在 16.8、22.75、24.1 秒（第 2、3 句比方案表晚了一点，避开破音障）。
+- **样片之后的小改（2026-10-20）：** VIEWPORT 下半部分打开机自检日志（0–4 秒）；当前关键词以外的模块压暗；面板字号整体大一号；`prep8.py` 里里榭娜单人图（`NO_CYAN`）不再保留青色（她衣服上的青不算系统色）；两人同框的图里的青色还要在第二步逐张检查。`make_math_font.py` 补了 τ 等字形。
+- **22.5–28 秒（原阿基里斯）待用户选方案：** `ClaudeVer/plan_v3_chase.md`（A 光速下时间停止〔推荐〕/ B 光速隧道 / C 特写蒙太奇），A 的生图需求在 `gen/request_v3a.md`。
 - **碎片链注意：** 桥段、逃脱用的是 0–100 秒成片的切片。0–30 秒改了以后，第二步铺完全片前要重跑 `frag_chain.sh`。
 
 - **版本隔离：** v3 的分段、拼图、成片写到 `chunks_v3/`、`qa_v3/`、`out_v3.mp4` / `out_v3_delivery.mp4`（`render_all.py`、`mux.py`、`qa.py`、`prep7.py frag` 默认值已改）。开分支时把 `chunks_v2/`、`qa_v2/` 复制了一份进去，所以 v3 一开始和第二版第七轮完全相同，可以只重渲改动的段落。

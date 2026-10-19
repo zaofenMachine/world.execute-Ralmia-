@@ -114,15 +114,15 @@ def _box(c, g, x, y, w, h, title, active, t):
     rgba(c, col, 1); c.rectangle(x, y, 4, 22); c.fill()
     if active and bl > 0.05:
         rgba(g, CYAN, 0.35 * bl); g.set_line_width(3); g.rectangle(x, y, w, h); g.stroke()
-    text(c, 'monom', title, x + 14, y + 17, 14, BONE if active else GREY, 0.95, track=0.18)
+    text(c, 'monom', title, x + 14, y + 17, 15, BONE if active else GREY, 0.95, track=0.18)
 
 def _light(c, x, y, on, col=CYAN):
     rgba(c, col if on else GREY, 1 if on else 0.35); c.arc(x, y, 4.5, 0, 6.283); c.fill()
 
 def _row(c, x, y, w, label, value, on=True, vcol=BONE, dot=CYAN):
     _light(c, x + 6, y - 5, on, dot)
-    text(c, 'mono', label, x + 18, y, 15, BONE if on else GREY, 0.85 if on else 0.6)
-    if value: text(c, 'monom', value, x + w - 4, y, 15, vcol if on else GREY, 0.95, align='right')
+    text(c, 'mono', label, x + 18, y, 16, BONE if on else GREY, 0.85 if on else 0.6)
+    if value: text(c, 'monom', value, x + w - 4, y, 16, vcol if on else GREY, 0.95, align='right')
 
 def _bar(c, x, y, w, u, col=CYAN):
     rgba(c, GREY, 0.35); c.rectangle(x, y, w, 5); c.fill()
@@ -169,7 +169,7 @@ def body(c, g, name, x, y, w, h, t, kk):
         _row(c, X, yy + 24, W_, 'mach', ('—' if kk >= 48 else f'{M:.2f}') if kk >= 32 else '0.00', kk >= 32)
         _bar(c, X, yy + 34, W_, min(1, M / 1.2) if kk < 48 else 1.0)
         bx = X + W_ / 1.2; rgba(c, RED, 0.9 if kk < 48 else 0.35); c.rectangle(bx - 1, yy + 28, 2, 17); c.fill()
-        text(c, 'mono', 'M 1', bx, yy + 60, 11, RED, 0.8 if kk < 48 else 0.3, align='center')
+        text(c, 'mono', 'M 1', bx, yy + 60, 12, RED, 0.8 if kk < 48 else 0.3, align='center')
         _row(c, X, yy + 88, W_, 'optics', 'ENGAGED' if light_ else 'standby', light_)
     elif name == 'SENSORS':
         vis = kk >= 23; aud = kk >= 35.7
@@ -213,7 +213,7 @@ def body(c, g, name, x, y, w, h, t, kk):
     elif name == 'TRANSMISSION':
         cur = [e for e in IN if e[0] <= t]
         if not cur:
-            text(c, 'mono', '— no signal —', X, yy + 4, 14, GREY, 0.7)
+            text(c, 'mono', '— no signal —', X, yy + 4, 15, GREY, 0.7)
         else:
             t0, s = cur[-1]
             typed = type_on(s, t, t0, 0.035)
@@ -237,8 +237,8 @@ def body(c, g, name, x, y, w, h, t, kk):
             ua = eo_cubic(prog(t, B(k_), B(k_) + 0.15))
             yr = yy - 4 + i * 24
             _check(c, X + 2, yr, kind)
-            text(c, 'mono', lab, X + 22, yr, 14, BONE if kind in ('run',) else GREY, ua)
-            if note and note[0]: text(c, 'mono', note[0], X + W_, yr, 12, GREY, 0.9 * ua, align='right')
+            text(c, 'mono', lab, X + 22, yr, 15, BONE if kind in ('run',) else GREY, ua)
+            if note and note[0]: text(c, 'mono', note[0], X + W_, yr, 13, GREY, 0.9 * ua, align='right')
             i += 1
     elif name == 'VOICE':
         lines_ = voice_lines(t)
@@ -248,8 +248,8 @@ def body(c, g, name, x, y, w, h, t, kk):
             a_ = 1.0 if age == 0 else 0.55 if age == 1 else 0.35
             if ch == 'IN':
                 rgba(c, LISH, a_); c.rectangle(x + 8, yr - 14, 3, 18); c.fill()
-            text(c, 'monom', ch, x + 18, yr, 14, CYAN if ch == 'OUT' else BONE, a_, track=0.15)
-            text(c, 'mono', f'{int(t0 // 60):02d}:{t0 % 60:05.2f}', x + 70, yr, 13, GREY, 0.9 * a_)
+            text(c, 'monom', ch, x + 18, yr, 15, CYAN if ch == 'OUT' else BONE, a_, track=0.15)
+            text(c, 'mono', f'{int(t0 // 60):02d}:{t0 % 60:05.2f}', x + 70, yr, 14, GREY, 0.9 * a_)
             if ch == 'OUT':
                 cx = x + 170
                 for wd, ton in data:
@@ -262,7 +262,7 @@ def body(c, g, name, x, y, w, h, t, kk):
         past = [(tt, s) for tt, s in CODE_LOG if tt <= t]
         if past:
             tt, s = past[-1]
-            text(c, 'mono', type_on('> ' + s, t, tt, 0.018), x + 18, y + h - 16, 14, CYAN, 0.8)
+            text(c, 'mono', type_on('> ' + s, t, tt, 0.018), x + 18, y + h - 16, 15, CYAN, 0.8)
 
 def top_bar(c, g, t):
     kk = (t - T0) / P
@@ -282,6 +282,26 @@ def top_bar(c, g, t):
         if on: c.fill()
         else: c.set_line_width(1.2); c.stroke()
 
+BOOT = [(0.5, 'ŌMETEŌTL BIOS 3.0'), (0.75, 'unit .............. 0x7E3'), (1.0, 'memory ............ 0 / 4096 KB'),
+        (1.5, 'core .............. found'), (2.0, 'power line ........ '), (2.5, 'parts ............. 0 / 12'),
+        (3.0, 'shield ............ standby'), (3.25, 'optics ............ standby'), (3.5, 'link .............. no signal')]
+def boot_log(c, t, pv):
+    if t >= B(4.5) or pv < 0.5: return
+    a = 1 - eo_cubic(prog(t, B(4), B(4.5)))
+    x, y = VP[0] + 28, VP[1] + 446          # under the power line, where the shot is empty
+    for i, (k, s_) in enumerate(BOOT):
+        if t < B(k): break
+        if s_.startswith('power line'): s_ += 'OK' if t >= B(3) else '...'
+        text(c, 'mono', type_on(s_, t, B(k), 0.012), x, y + i * 24, 15, BONE if i == 0 else GREY, 0.85 * a)
+    if int(t * 4) % 2 == 0 and t < B(4): rgba(c, BONE, 0.7 * a); c.rectangle(x, y + min(len(BOOT), sum(1 for k, _ in BOOT if t >= B(k))) * 24 - 13, 9, 15); c.fill()
+
+def dimmed(name, act, t, kk):
+    """the modules the current keyword is not about step back, so the eye goes to the lit one"""
+    if act is None or name == act or name == 'VOICE': return False
+    if name == 'TRANSMISSION' and any(t0 <= t < t0 + 4.0 for t0, _ in IN): return False
+    if name == 'LINK' and 35.7 <= kk < 38: return False
+    return True
+
 def modules(c, g, t, pv):
     kk = (t - T0) / P
     act = active_at(kk)
@@ -298,6 +318,7 @@ def modules(c, g, t, pv):
         c.save(); c.translate(ox, oy); g.save(); g.translate(ox, oy)
         _box(c, g, x, y, w, h, name if name != 'VOICE' else 'VOICE  ·  OUT / IN', act == name, t)
         body(c, g, name, x, y, w, h, t, kk)
+        if dimmed(name, act, t, kk): rgba(c, INK, 0.42); c.rectangle(x, y, w, h); c.fill()
         if t >= tl:
             fl = pulse(t, tl, 0.25)
             if fl > 0.03: rgba(g, CYAN, 0.6 * fl); g.set_line_width(4); g.rectangle(x, y, w, h); g.stroke()
@@ -305,8 +326,6 @@ def modules(c, g, t, pv):
 
 def render_v3(t, fr, scene, composite):
     pv = mode_at(t)
-    kk = (t - T0) / P
-    # a panel module appears before the first full panel switch only from its landing time on
     lib.REG[0] = reg_at(t)
     S.HUD_OFF[0] = True
     S.LYRICS_OFF[0] = pv > 0.5
@@ -337,7 +356,8 @@ def render_v3(t, fr, scene, composite):
             for (px_, py_, sx, sy) in ((vx, vy, 1, 1), (vx + vw, vy, -1, 1), (vx, vy + vh, 1, -1), (vx + vw, vy + vh, -1, -1)):
                 c.move_to(px_ + sx * vw / 2 * ub, py_); c.line_to(px_, py_); c.line_to(px_, py_ + sy * vh / 2 * ub)
             c.stroke()
-            text(c, 'mono', 'VIEWPORT', vx, vy + vh + 18, 13, GREY, 0.8 * pv * ub, track=0.12)
+            text(c, 'mono', 'VIEWPORT', vx, vy + vh + 18, 14, GREY, 0.8 * pv * ub, track=0.12)
+    boot_log(c, t, pv)
     modules(c, g, t, pv)
     top_bar(c, g, t)
     s.flush(); gs.flush()
