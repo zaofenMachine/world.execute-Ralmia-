@@ -72,7 +72,18 @@ OUT = [[('Switch', B(0)), ('on', 0.58), ('the', 1.04), ('power', B(2)), ('line',
        [('world.execute(me);', B(60))]]
 IN = [(16.80, 'Running? Cute. You can\'t outrun a song.'),
       (22.75, '…hey. Where\'d you go?'),
-      (24.10, 'Catch me~')]
+      (25.55, 'Caught you.'),
+      (26.50, 'Now catch me~')]
+
+# ---------------------------------------------------------------- 22.5-28 s (plan_v3_chase.md, A): at c her own clock
+# stops. Her modules hold the instant she reached it; only what is Lishenna's -- LINK, TRANSMISSION and her lines in
+# VOICE -- goes on in the world's time. The panel comes back live after the title (k64).
+FREEZE = (B(48), B(60))
+FREEZE_T = B(48) + 0.16
+LIVE = ('LINK', 'TRANSMISSION', 'VOICE')
+def frozen(t): return FREEZE[0] <= t < FREEZE[1]
+def own_t(t, name=None):
+    return FREEZE_T if frozen(t) and name not in LIVE else t
 def voice_lines(t):
     ev = [(ws[0][1], 'OUT', ws) for ws in OUT] + [(t0, 'IN', s) for t0, s in IN]
     return sorted([e for e in ev if e[0] <= t], key=lambda e: e[0])[-5:]
@@ -89,15 +100,6 @@ def drive_state(t, kk):
     if kk < 48:
         M = S2.mach_of(min(t, B(47.99))); return M * 340.29, M
     return 299792458.0, 881000.0
-
-def achilles_d(t):
-    kk = (t - T0) / P
-    if kk < 49: return 1.0
-    kr = kk - 49; frozen = 7.0 <= kr < 7.5
-    kf = 7.0 if frozen else (7.0 + (kr - 7.5) * 2 if 7.5 <= kr < 8.0 else kr)
-    n = math.floor(kf); ph = kf - n
-    if kk >= 58: return 0.5 ** 9
-    return 0.5 ** n * (1 - 0.5 * eo_cubic(clamp(ph / 0.45)))
 
 def mem_fill(t):
     lv = math.floor(prog(t, B(17), B(18)) * 8) / 8
@@ -198,18 +200,14 @@ def body(c, g, name, x, y, w, h, t, kk):
         if kk < 35.7:
             _row(c, X, yy, W_, 'source', '—', False); _row(c, X, yy + 24, W_, 'signal', 'none', False)
             line(c, X, yy + 52, X + W_, yy + 52, GREY, 0.5, 1.2)
-        elif kk < 48 or kk >= 60:
+        else:
             _row(c, X, yy, W_, 'source', 'LISHENNA', True, BONE, LISH)
             db = -32 + 6 * math.sin(t * 3.1) + 4 * pulse(t, B(math.floor(kk)), 0.3)
             _row(c, X, yy + 24, W_, 'signal', f'{db:.0f} dB', True, BONE, LISH)
             _wave(c, g, X, yy + 52, W_, 9 + 6 * pulse(t, B(math.floor(kk)), 0.3), t)
-        else:                                                   # 22.5-28 s: Achilles -- target lock, never achieved
-            d = achilles_d(t)
-            _row(c, X, yy, W_, 'target', 'LISHENNA', True, BONE, LISH)
-            _row(c, X, yy + 24, W_, 'd', f'{d:.6f}', True, CYAN)
-            blink = int(t * 4) % 2 == 0
-            _row(c, X, yy + 48, W_, 'lock', 'FAILED' if blink else '', True, BONE, GREY)
-        _row(c, X, yy + 96, W_, 'touch', 'null', False, RED, GREY)
+            if frozen(t):                                       # the one module still running
+                text(c, 'mono', 'live  ·', X + 18, yy + 86, 15, BONE, 0.7); text(c, 'math', 'Δt ≠ 0', X + 86, yy + 87, 17, BONE, 0.7)
+        _row(c, X, yy + 130, W_, 'touch', 'null', False, RED, GREY)
     elif name == 'TRANSMISSION':
         cur = [e for e in IN if e[0] <= t]
         if not cur:
@@ -230,7 +228,7 @@ def body(c, g, name, x, y, w, h, t, kk):
     elif name == 'TASKS':
         rows = [(3, 'power.on()', 'done'), (7, 'protect()', 'done'), (11, 'assemble()', 'done'), (15, 'me = new Lovable()', 'done'),
                 (23, 'init()', 'done'), (30, 'world.startSimulation()', 'done'), (32, 'run()', 'run', ''),
-                (35.7, 'worship(Lishenna)', 'no', 'unauthorized'), (48, 'touch(you)', 'run', 'd → 0')]
+                (35.7, 'worship(Lishenna)', 'no', 'unauthorized'), (48, 'touch(you)', 'no', 'Δτ = 0')]
         i = 0
         for k_, lab, kind, *note in rows:
             if kk < k_: continue
@@ -238,7 +236,7 @@ def body(c, g, name, x, y, w, h, t, kk):
             yr = yy - 4 + i * 24
             _check(c, X + 2, yr, kind)
             text(c, 'mono', lab, X + 22, yr, 15, BONE if kind in ('run',) else GREY, ua)
-            if note and note[0]: text(c, 'mono', note[0], X + W_, yr, 13, GREY, 0.9 * ua, align='right')
+            if note and note[0]: text(c, 'math' if 'τ' in note[0] else 'mono', note[0], X + W_, yr, 15 if 'τ' in note[0] else 13, GREY, 0.9 * ua, align='right')
             i += 1
     elif name == 'VOICE':
         lines_ = voice_lines(t)
@@ -259,12 +257,14 @@ def body(c, g, name, x, y, w, h, t, kk):
                     cx += text_w('serif', wd + ' ', 26)
             else:
                 text(c, 'serifr', '"' + type_on(data, t, t0, 0.035) + '"', x + 170, yr + 3, 25, BONE, a_)
-        past = [(tt, s) for tt, s in CODE_LOG if tt <= t]
+        tc_ = own_t(t)                                          # her code line holds with her
+        past = [(tt, s) for tt, s in CODE_LOG if tt <= tc_]
         if past:
             tt, s = past[-1]
-            text(c, 'mono', type_on('> ' + s, t, tt, 0.018), x + 18, y + h - 16, 15, CYAN, 0.8)
+            text(c, 'mono', type_on('> ' + s, tc_, tt, 0.018), x + 18, y + h - 16, 15, CYAN, 0.8)
 
 def top_bar(c, g, t):
+    hold = frozen(t); t = own_t(t)
     kk = (t - T0) / P
     if kk < 3: return
     u = eo_cubic(prog(t, B(3), B(3) + 0.3))
@@ -281,6 +281,10 @@ def top_bar(c, g, t):
         rgba(c, CYAN if (on and i == 0) else BONE, aa * u); c.rectangle(x0 + i * 16, 22, 10, 10)
         if on: c.fill()
         else: c.set_line_width(1.2); c.stroke()
+    if hold:
+        x1 = x0 - 24
+        text(c, 'math', 'Δτ = 0', x1, 37, 19, CYAN, 0.95, align='right')
+        text(c, 'monom', 'HOLD', x1 - text_w('math', 'Δτ = 0', 19) - 14, 36, 15, CYAN, 0.95, align='right', track=0.2)
 
 BOOT = [(0.5, 'ŌMETEŌTL BIOS 3.0'), (0.75, 'unit .............. 0x7E3'), (1.0, 'memory ............ 0 / 4096 KB'),
         (1.5, 'core .............. found'), (2.0, 'power line ........ '), (2.5, 'parts ............. 0 / 12'),
@@ -303,8 +307,7 @@ def dimmed(name, act, t, kk):
     return True
 
 def modules(c, g, t, pv):
-    kk = (t - T0) / P
-    act = active_at(kk)
+    act = active_at((own_t(t) - T0) / P)
     for name, (x, y, w, h) in RECTS.items():
         tl = LAND[name]
         if t < tl - 0.12: continue
@@ -316,8 +319,9 @@ def modules(c, g, t, pv):
         ox = side * 420 * (1 - pv); oy = (0 if side else 460 * (1 - pv)) + dy + sq
         if pv <= 0.001: continue
         c.save(); c.translate(ox, oy); g.save(); g.translate(ox, oy)
-        _box(c, g, x, y, w, h, name if name != 'VOICE' else 'VOICE  ·  OUT / IN', act == name, t)
-        body(c, g, name, x, y, w, h, t, kk)
+        tm = own_t(t, name); kk = (tm - T0) / P
+        _box(c, g, x, y, w, h, name if name != 'VOICE' else 'VOICE  ·  OUT / IN', act == name, tm)
+        body(c, g, name, x, y, w, h, tm, kk)
         if dimmed(name, act, t, kk): rgba(c, INK, 0.42); c.rectangle(x, y, w, h); c.fill()
         if t >= tl:
             fl = pulse(t, tl, 0.25)

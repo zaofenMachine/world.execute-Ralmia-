@@ -64,8 +64,9 @@ v2 讲的是"她比声音快，却被一首歌追上"。v3 换一个视角来讲
 | # | 时间 | IN（英文） | 中文 | 出处 |
 |---|---|---|---|---|
 | 1 | 16.8 | "Running? Cute. You can't outrun a song." | 跑起来了？真可爱。你跑不过歌的。 | 《音速の突破》里榭娜的台词 |
-| 2 | 20.5 | "…hey. Where'd you go?" | 喂，你跑哪去了？ | 原创（破音障，把歌甩在身后） |
-| 3 | 23.0 | "Catch me~" | 来抓我呀～ | 原创（阿基里斯与乌龟） |
+| 2 | 22.75 | "…hey. Where'd you go?" | 喂，你跑哪去了？ | 原创（她到了光速，停住了；见 `plan_v3_chase.md`） |
+| 3a | 25.55 | "Caught you." | 抓到你了。 | 原创（光速下时间停止：反过来被散步的人抓住） |
+| 3b | 26.5 | "Now catch me~" | 现在换你来抓我呀～ | 原创（她走开） |
 | 4 | 57.5 | "Promise." | 说好了。 | 原创（勾小指） |
 | 5 | 63.0 | "Eyes on me." | 看着我。 | 《破壊の絶傑》："你的眼睛离不开我" |
 | 6 | 66.4 | "Not bad — for a machine." | 对机器来说，还不错嘛。 | 原创（SATISFACTION） |
@@ -105,7 +106,7 @@ v2 讲的是"她比声音快，却被一首歌追上"。v3 换一个视角来讲
 | 9.7–11 | INITIALIZATION | SENSORS：vision 打开，VIEWPORT 里睁眼（v2 的睁眼镜头） |
 | 11–14.8 | WORLD / SIMULATION | VIEWPORT 显示纸世界，模拟计数 |
 | 15–22.5 | （伴奏）音速 | DRIVE：速度、马赫数，音障是红色；TRANSMISSION #1、#2 |
-| 22.5–28 | （伴奏）阿基里斯 | LINK 改为**目标锁定**：`target: LISHENNA  d = …  lock: failed` |
+| 22.5–28 | （伴奏）光速下时间停止 | 面板整个停住（顶栏 `HOLD Δτ = 0`），只有 LINK、TRANSMISSION 和 VOICE 里她的话还在动；TASKS `touch(you) × Δτ = 0`（2026-10-20 换掉阿基里斯，见 `plan_v3_chase.md`） |
 | 28 | world.execute(me); | 在 VOICE 里敲出这行命令 |
 | 30–48 | points / dimension / circle / sine / infinity | CLASS 依次切换：PointSet → Polyhedron → Circle → SineWave → Sequence |
 | 44–48 | switch my current to AC / DC | POWER：电流 AC ↔ DC（v3 的示波器镜头已经在 VIEWPORT 里） |

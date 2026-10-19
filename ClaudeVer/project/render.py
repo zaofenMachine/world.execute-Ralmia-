@@ -52,9 +52,10 @@ TIMELINE = [
 END = 211.9                                # the song is 211.97 s
 
 import panel as PNL                        # v3: Ralmia's system around the scenes (panel.py); V3 = False renders v2
+import scenes_v3 as V3S                    # v3-only shots, in front of the v2 timeline
 V3 = True
 def scene_at(t):
-    for a, b, fn in TIMELINE:
+    for a, b, fn in (V3S.OVERRIDE if V3 else []) + TIMELINE:
         if a <= t < b: return fn
     return lambda c, g, t: {}
 
