@@ -12,7 +12,7 @@ not out-run: she is caught, by someone strolling. Cuts land on the off-beat acce
   A5 k58.5   the cracks run over the frame, k59.5 it shatters, white -> k60 world.execute(me); time runs again
 Until the GPT pictures in [] arrive (gen/request_v3a.md) those shots use stand-ins from the pictures we have."""
 from lib import *
-import lib
+import lib, random
 import scenes3 as S3
 import panel as PNL
 
@@ -238,4 +238,114 @@ def lib_bayer_full():
         _BF.append(np.repeat(np.repeat(sm, 3, 0), 3, 1)[:H, :W])
     return _BF[0]
 
-OVERRIDE = [(B(48), B(60), s_timestop)]
+# ================================================================ chorus 3, k368-371.5: the rewind (plan_v3.md section 7)
+# "If I can have you back": the film itself runs backwards, 160 s -> the pinky promise at 57.8 s, first on 16ths then
+# on 32nds, and lands on "back" (k371.5), where v2's pinky frame takes over. Frames: prep9.py (assets/rewind3_NN.jpg).
+REWIND_CUTS = [368 + 0.25 * i for i in range(4)] + [369 + 0.125 * j for j in range(20)]   # 16ths, then 32nds
+REWIND_SRC = [round(160.0 - (160.0 - 57.8) * n / (len(REWIND_CUTS) - 1), 2) for n in range(len(REWIND_CUTS))]
+_RW = {}
+def rewind_frame(n):
+    if n not in _RW:
+        path = f'{WORK}/assets/rewind3_{n:02d}.jpg'
+        im = cv2.imread(path) if os.path.exists(path) else None
+        if im is None: _RW[n] = None
+        else:
+            im = np.ascontiguousarray(np.dstack([im, np.full(im.shape[:2], 255, np.uint8)]))
+            _RW[n] = (cairo.ImageSurface.create_for_data(im, cairo.FORMAT_ARGB32, im.shape[1], im.shape[0], im.strides[0]), im)
+    return _RW[n][0] if _RW[n] else None
+
+def s_rewind(c, g, t):
+    fill_bg(c, INK)
+    kk = (t - T0) / P
+    n = max(i for i, k in enumerate(REWIND_CUTS) if kk >= k)
+    sf = rewind_frame(n)
+    r = random.Random(n * 31)
+    jy = r.uniform(-6, 6)
+    if sf is not None:                                          # every other cut a little closer, a little off: each one reads as a cut
+        z = 1.0 if n % 2 == 0 else 1.14; jx = 0 if n % 2 == 0 else r.uniform(-90, 90)
+        c.save(); c.translate(W / 2 + jx, H / 2 + jy); c.scale(z, z); c.translate(-W / 2, -H / 2); c.scale(W / sf.get_width(), H / sf.get_height())
+        c.set_source_surface(sf, 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint(); c.restore()
+    else:
+        text(c, 'mono', f'[ rewind frame {n} : run prep9.py ]', 960, 540, 30, GREY, 0.8, align='center')
+    for y in range(0, H, 4): rgba(c, INK, 0.16); c.rectangle(0, y, W, 1.5); c.fill()        # the scanlines of a tape
+    by = (H - (t * 1900) % (H + 200)) + 100                                                   # the tracking band, rolling up
+    for k in range(10):
+        rgba(c, BONE, 0.05 + 0.03 * r.random()); c.rectangle(0, by + k * 6, W, 3 + 4 * r.random()); c.fill()
+    src = REWIND_SRC[n]
+    text(c, 'monom', 'REWIND', 96, 120, 30, BONE, 0.95, track=0.3)
+    for k in range(2):                                                                        # the two triangles, drawn
+        x0 = 300 + k * 30; rgba(c, BONE, 0.95); c.move_to(x0 + 26, 96); c.line_to(x0, 108); c.line_to(x0 + 26, 120); c.close_path(); c.fill()
+    text(c, 'heavy', f'{int(src // 60):02d}:{src % 60:05.2f}', W - 96, 1000, 120, BONE, 0.95, align='right')
+    text(c, 'mono', '→ 00:57.80   you & me', W - 96, 1040, 20, CYAN, 0.8, align='right', track=0.1)
+    return {'ab': 3 + 4 * pulse(t, B(REWIND_CUTS[n]), 0.06), 'glow': 0.5, 'vig': 0.6}
+
+# ================================================================ the end: four steps to colour (plan_v3.md section 8)
+# after the song stops (k448) the two of them come in as the film's whole look, one step a half beat on 208-209 s:
+# raster (the system sees her) -> line -> two-colour print (memory) -> full colour (touch = true). The only colour in v3.
+import scenes7 as S7
+STEPS = [(448.5, 'r'), (450.0, 'l'), (450.5, 'm'), (451.0, None)]
+T_TOUCH = B(451.5)
+def ending_picture(c, g, t):
+    name = S7.ENDING; ts = t - B(S7.K_SILENCE)
+    step = [v for k, v in STEPS if t >= B(k)]
+    if not step: return
+    st = step[-1]; t0 = B([k for k, v in STEPS if t >= B(k)][-1])
+    a = eo_cubic(prog(t, B(448.5), B(448.5) + 0.35)) if st == 'r' else 1.0
+    sc = 0.94 * (1 + 0.012 * ts)
+    c.save(); c.translate(960, 540); c.scale(sc, sc); c.translate(-960, -540)
+    if st == 'l':
+        rgba(c, SEPIA, 0.95); c.mask_surface(surf(name.replace('_hd', '_line')), 0, 0)
+    else:
+        nm = name if st is None else f'{name}__{st}'
+        reg, lib.REG[0] = lib.REG[0], None                       # the picture as it is: no register over it
+        c.set_source_surface(surf(nm), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint_with_alpha(a)
+        lib.REG[0] = reg
+    c.restore()
+    fl = pulse(t, t0, 0.12) if st != 'r' else 0
+    if fl > 0.02: rgba(c, (1, 1, 1), 0.35 * fl); c.paint()
+
+def escape_out_v3(c, g, t):
+    lib.BG[0] = 'paper'                                          # outside is warm light: the paper register, not the ink one
+    if t < B(S7.K_SILENCE): return S7.escape_out(c, g, t)
+    fx = {}
+    S7.outside_light(c, g)
+    fall = ei_cubic(prog(t, B(S7.FINAL_EX), B(S7.FINAL_EX) + 0.85))
+    if fall < 1:
+        ys, wy, f = S7.tear_open(t)
+        for side in (-1, 1): S7.paper_piece(c, side, ys, wy, f, side * 760 * fall, 1000 * fall * fall, side * 0.28 * fall)
+    for kb in np.arange(444.0, 448.5, 0.5):
+        u = prog(t, B(kb), B(kb) + 1.6)
+        if 0 < u < 1:
+            r = 40 + 1300 * eo_cubic(u); big = 1.0 if kb % 1 == 0 else 0.6
+            for cc, aa, lw in ((c, big * (1 - u) ** 0.7, big * (6.0 * (1 - u) + 1.5)), (g, 0.7 * big * (1 - u), 10)):
+                rgba(cc, LISH_P if cc is c else LISH, aa); cc.set_line_width(lw); cc.new_path(); cc.arc(S7.TEAR_X, 540, r, 0, 6.283); cc.stroke()
+    if t < B(S7.K_SILENCE) + 0.3:                                    # the last EXECUTION, going
+        u = 1 - prog(t, B(S7.K_SILENCE), B(S7.K_SILENCE) + 0.3)
+        c.save(); c.translate(960, 640)
+        c.new_path(); fonts()['heavy'].text_path(c, 'EXECUTION', 0, 0, 330, 'center')
+        rgba(c, (1, 0.985, 0.94), 0.9 * u); c.set_line_width(16); c.stroke_preserve(); rgba(c, INK, u); c.fill(); c.restore()
+    ending_picture(c, g, t)
+    # what is left of the system: one task, done
+    if t >= T_TOUCH:
+        u = eo_cubic(prog(t, T_TOUCH, T_TOUCH + 0.4))
+        x0, y0 = 130, 990
+        rgba(c, SEPIA, 0.9 * u); c.set_line_width(2.4); c.move_to(x0, y0 - 9); c.line_to(x0 + 7, y0 - 2); c.line_to(x0 + 20, y0 - 18); c.stroke()
+        text(c, 'mono', 'touch(you)', x0 + 36, y0, 26, SEPIA, 0.9 * u)
+        text(c, 'monom', 'true', x0 + 36 + text_w('mono', 'touch(you)   ', 26), y0, 26, RED, 0.95 * u)
+        uh = prog(t, T_TOUCH + 0.8, T_TOUCH + 1.2)
+        if uh > 0:
+            text(c, 'mono', type_on('me.hum();', t, T_TOUCH + 0.8, 0.05), x0 + 36, 1030, 20, SEPIA, 0.6)
+            reach = prog(t, T_TOUCH + 1.1, T_TOUCH + 2.2)
+            for cc, aa, lw in ((c, 0.8, 1.4), (g, 0.3, 3)):
+                rgba(cc, LISH_P if cc is c else LISH, aa); cc.set_line_width(lw); cc.new_path()
+                for n_ in range(0, 161):
+                    if n_ / 160 > reach: break
+                    x = 300 + 360 * n_ / 160
+                    e = math.sin(math.pi * n_ / 160) * (0.6 + 0.4 * math.sin(t * 1.3 + n_ * 0.05))
+                    (cc.move_to if n_ == 0 else cc.line_to)(x, 1023 - 5 * e * math.sin(n_ * 0.28 - t * 2.2))
+                cc.stroke()
+    fx['ab'] = 3 * sum(pulse(t, B(k), 0.15) for k, _ in STEPS[1:])
+    fx['vig'] = 0.3; fx['grain'] = 0.03; fx['glow'] = 0.6
+    return fx
+
+OVERRIDE = [(B(48), B(60), s_timestop), (B(368), B(371.5), s_rewind), (B(S7.K_LEAP), 999.0, escape_out_v3)]
