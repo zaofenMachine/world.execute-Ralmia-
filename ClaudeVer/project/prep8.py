@@ -17,8 +17,8 @@ INK, BONE, PAPER, SEPIA, CYAN = B('#080b10'), B('#efe8d8'), B('#efe6d2'), B('#2a
 OCHRE, CORAL = B('#d6a85c'), B('#de8078')
 PX = 3                                        # raster cell, px at 1920
 SIMPLIFY = ('n_stage', 'n_ledge2', 'n_world', 'n_wL', 'n_lab')   # busy scenes: flatten before the line pass
-NO_CYAN = ('n_lish', 'n_cr_hand_l', 'n_stage_hd')   # Lishenna alone: her costume's teal is not cyan (cyan = Ralmia's core / system only)
-CYAN_LEFT_OF = {'n_ending_hd': 905, 'n_cube_together_hd': 900}   # the two of them: cyan kept only on Ralmia's side (left)
+NO_CYAN = ('n_lish', 'n_cr_hand_l', 'n_stage_hd', 'n_peek_lish')   # Lishenna alone: her costume's teal is not cyan (cyan = Ralmia's core / system only)
+CYAN_LEFT_OF = {'n_ending_hd': 905, 'n_cube_together_hd': 900, 'n_peek_frozen_hd': 1000}   # the two of them: cyan kept only on Ralmia's side (left)
 
 def masks(base):
     hsv = cv2.cvtColor(base, cv2.COLOR_BGR2HSV); h, s, v = hsv[..., 0], hsv[..., 1], hsv[..., 2]

@@ -1,0 +1,19 @@
+{
+  "status": "complete",
+  "mode": "built-in image_gen",
+  "prompt": "Use case: precise-object-edit.\nImage 1 is the edit target: finalized 1672x941 transparent Lishenna walking away and glancing back over her own LEFT shoulder, raising her left hand. Image 2 is her canonical outfit sheet, Image 3 rear walking reference, Image 4 style board.\nLOCAL CORRECTION ONLY: remove the extra small CYAN BOW / ribbon decoration on the middle of her RAISED WHITE SLEEVE, approximately x=660–704, y=351–400 in Image 1. This little cyan bow is an invented sleeve ornament and must be completely gone. Restore that tiny region as plain white jacket fabric with natural cel-shaded WHITE sleeve folds matching the surrounding puffy sleeve.\nKeep the actual larger CYAN SHOULDER ARMOR PATCH just ABOVE it, around x=675–725,y=318–353, exactly unchanged. Keep the thin cyan long garment strip on her back unchanged. Keep her cyan neck tie if any visible unchanged.\nAll other pixels must remain unchanged: the entire character silhouette, head/face/eyes/smile/left-shoulder direction, waving hand, microphone hand, hair strands, both speaker discs, all clothing outside this tiny sleeve area, legs and shoes, original alpha background and canvas positions. No resize, zoom, shift, cropping, relighting or new ornaments. Genuinely transparent background preserved; output same 1672x941.",
+  "references": [
+    "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/lishenna_wave_back.png",
+    "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/lishenna_ref_sheet.png",
+    "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/lishenna_walk.png",
+    "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/_production/round8/style_references.png"
+  ],
+  "source": "C:\\Users\\zaofenMachine\\.codex\\generated_images\\01a14ed9-b751-7b42-a735-fac4e352edab\\exec-019ff361-c850-4ea2-b54e-3f1646779557.png",
+  "raw": "_production/round8/raw/wave_sleeve_fix_ai.png",
+  "backup": "_production/round8/raw/wave_before_sleeve_fix.png",
+  "invariants": "No scaling/translation. Only tiny extra cyan bow removed; real shoulder armor/back strip untouched; outside edit mask source pixels restored.",
+  "edit_mask": "_qa/round8/wave_sleeve_edit_mask.png",
+  "validation": "_qa/round8/wave_validation.json",
+  "script": "_production/round8/wave_sleeve_apply.py",
+  "visual_qa": "Viewed final full slate preview and enlarged before/after sleeve crop. Extra bow removed; actual shoulder patch remains identical."
+}

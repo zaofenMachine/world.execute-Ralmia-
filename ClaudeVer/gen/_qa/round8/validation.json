@@ -1,0 +1,304 @@
+{
+  "status": "complete",
+  "asset_count": 4,
+  "required_count": 3,
+  "optional_count": 1,
+  "files": [
+    {
+      "name": "peek_frozen.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 1673225,
+      "sha256": "d11cc4b7e8a3e8db67db3fae01a969dee268b622933ae0b45421b59fa6eed891",
+      "bbox_alpha_gt32": [
+        0,
+        68,
+        1672,
+        870
+      ],
+      "visible_height_fraction": 0.852285,
+      "visible_width_fraction": 1.0,
+      "transparent_pixels": 649944,
+      "alpha_quantiles_nonzero": [
+        232.0,
+        253.0,
+        253.0
+      ]
+    },
+    {
+      "name": "lishenna_wink.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 1145671,
+      "sha256": "b81bffa6f4a7f81ca88a4308a3be099d8c6677f77cc7c6d75d188668c4998310",
+      "bbox_alpha_gt32": [
+        264,
+        47,
+        1408,
+        894
+      ],
+      "visible_height_fraction": 0.900106,
+      "visible_width_fraction": 0.684211,
+      "transparent_pixels": 1012415,
+      "alpha_quantiles_nonzero": [
+        245.0,
+        253.0,
+        254.0
+      ]
+    },
+    {
+      "name": "lishenna_wave_back.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 445094,
+      "sha256": "df6d2c1b1c5125d4771b5d36fbf22a08c1148935d7e45e8b31592fd715224039",
+      "bbox_alpha_gt32": [
+        607,
+        66,
+        1065,
+        866
+      ],
+      "visible_height_fraction": 0.850159,
+      "visible_width_fraction": 0.273923,
+      "transparent_pixels": 1397963,
+      "alpha_quantiles_nonzero": [
+        11.0,
+        252.0,
+        253.0
+      ]
+    },
+    {
+      "name": "ralmia_frozen_34.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "bytes": 1005438,
+      "sha256": "9df188ba3acd68d6444065834bec99288d64460043f139944254e90bc1245026",
+      "bbox_alpha_gt32": [
+        125,
+        131,
+        1546,
+        809
+      ],
+      "visible_height_fraction": 0.72051,
+      "visible_width_fraction": 0.84988,
+      "transparent_pixels": 1082595,
+      "alpha_quantiles_nonzero": [
+        184.0,
+        253.0,
+        254.0
+      ]
+    }
+  ],
+  "preexisting_count": 67,
+  "preexisting_changed": [],
+  "details": {
+    "peek": {
+      "filename": "peek_frozen.png",
+      "canvas": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "source": "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\_production\\round8\\raw\\peek_frozen_detail_ai.png",
+      "source_bbox": [
+        0,
+        8,
+        1671,
+        941
+      ],
+      "scale": 0.857449088960343,
+      "upscaled": false,
+      "placement": [
+        119,
+        70
+      ],
+      "native_edge_completion_source": "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\_production\\round8\\raw\\peek_left_edge_ai.png",
+      "final_bottom_crop_y": 870,
+      "final_bbox_alpha_gt32": [
+        0,
+        68,
+        1672,
+        870
+      ],
+      "height_fraction": 0.852285,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "separate_character_components_alpha_gt128": true,
+      "component_check_seeds": {
+        "ralmia": [
+          788,
+          432
+        ],
+        "lishenna": [
+          1088,
+          445
+        ]
+      },
+      "visual_check": "Ralmia at left faces right with visible right-temple gem, fixed gaze, hair and red bow streaming left; Lishenna at right leans forward, arms behind, hair down. Visible face and lower arm-to-hair gaps. No contact/effects."
+    },
+    "wink": {
+      "asset": "lishenna_wink.png",
+      "canvas": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 1012415,
+      "visible_bbox_alpha_gt32": [
+        264,
+        47,
+        1408,
+        894
+      ],
+      "visible_height_fraction": 0.900106269925611,
+      "registration": {
+        "source_bbox": [
+          235,
+          19,
+          1458,
+          924
+        ],
+        "scale": 0.9358011049723757,
+        "target_bbox": [
+          264,
+          47,
+          1408,
+          894
+        ]
+      },
+      "native_no_upscale": true,
+      "visual_checks": {
+        "single_subject_lishenna": true,
+        "frontal_eye_level": true,
+        "upper_body_forward_lean": true,
+        "one_eye_wink_other_at_camera": true,
+        "head_tilt_playful_smile": true,
+        "hands_hidden_behind_back": true,
+        "two_speakers": true,
+        "cyan_bow_and_tie": true,
+        "checkered_headband_and_two_full_loops": true,
+        "chest_up_modest_framing": true,
+        "no_background_ground_text_effects": true,
+        "outline_clear_on_light_and_dark": true
+      }
+    },
+    "wave": {
+      "file": "lishenna_wave_back.png",
+      "raw_size": [
+        1672,
+        941
+      ],
+      "final_size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "transparent_pixels": 1397963,
+      "nonzero_alpha_pixels": 175389,
+      "visible_bbox_alpha_gt_32": [
+        607,
+        66,
+        1065,
+        866
+      ],
+      "visible_height_fraction": 0.8501594048884166,
+      "visible_foot_bottom_fraction": 0.9202975557917109,
+      "source_bbox": [
+        633,
+        8,
+        1157,
+        923
+      ],
+      "scale": 0.8743169398907104,
+      "translation": [
+        607,
+        66
+      ],
+      "no_enlargement": true,
+      "sha256": "df6d2c1b1c5125d4771b5d36fbf22a08c1148935d7e45e8b31592fd715224039",
+      "visual_checks": {
+        "left_shoulder": "Back visible; head turns over anatomical LEFT shoulder on image LEFT; face left of back hair.",
+        "wave": "Image-left free hand raised to shoulder height, open-palm casual wave.",
+        "microphone": "Image-right other hand holds microphone down beside body.",
+        "speaker_discs": 2,
+        "outfit": "White puffy jacket, pure black shorts, black thigh-highs, white sneakers with purple laces; checkered band and black loops.",
+        "background": "Transparent; no floor, shadow, text or effects."
+      },
+      "sleeve_correction": {
+        "mask": "_qa/round8/wave_sleeve_edit_mask.png",
+        "outside_edit_pixels": 1570285,
+        "outside_changed_pixels": 0,
+        "changed_pixels": 2644,
+        "alpha_changed_pixels": 0,
+        "canvas_position_and_bbox_unchanged": true,
+        "actual_shoulder_patch_roi": [
+          675,
+          318,
+          725,
+          353
+        ],
+        "shoulder_patch_changed_pixels": 0,
+        "back_strip_roi": [
+          784,
+          349,
+          811,
+          426
+        ],
+        "back_strip_changed_pixels": 0,
+        "notes": "Removed invented cyan bow only; no resize, shift or registration applied.",
+        "cyan_pixels_remaining_in_bow_roi": 0
+      }
+    },
+    "frozen": {
+      "filename": "ralmia_frozen_34.png",
+      "canvas": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "source_bbox_alpha_gt32": [
+        37,
+        73,
+        1665,
+        850
+      ],
+      "scale": 0.872972972972973,
+      "upscaled": false,
+      "position": [
+        125,
+        131
+      ],
+      "final_bbox_alpha_gt32": [
+        125,
+        131,
+        1546,
+        809
+      ],
+      "subject_width_fraction": 0.8498803827751196,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_zero_pixels": 1082595,
+      "alpha_opaque_pixels": 2264,
+      "edge_cleanup": "nearest opaque local RGB carried into alpha edges; alpha<=2 removed; no enlargement",
+      "visual_check": "PASS: three-quarter front shows both cyan eyes and nearer right-temple gem; five black articulated fingers with cyan palm core on forward hand; long hair, skirt fins and both red bow tails trail left; full body and boots visible; no ground or speed/jet effects. Inspected on both dark and light backgrounds."
+    }
+  }
+}

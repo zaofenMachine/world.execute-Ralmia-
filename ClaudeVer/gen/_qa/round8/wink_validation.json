@@ -1,0 +1,48 @@
+{
+  "asset": "lishenna_wink.png",
+  "canvas": [
+    1672,
+    941
+  ],
+  "mode": "RGBA",
+  "alpha_min": 0,
+  "alpha_max": 255,
+  "transparent_pixels": 1012415,
+  "visible_bbox_alpha_gt32": [
+    264,
+    47,
+    1408,
+    894
+  ],
+  "visible_height_fraction": 0.900106269925611,
+  "registration": {
+    "source_bbox": [
+      235,
+      19,
+      1458,
+      924
+    ],
+    "scale": 0.9358011049723757,
+    "target_bbox": [
+      264,
+      47,
+      1408,
+      894
+    ]
+  },
+  "native_no_upscale": true,
+  "visual_checks": {
+    "single_subject_lishenna": true,
+    "frontal_eye_level": true,
+    "upper_body_forward_lean": true,
+    "one_eye_wink_other_at_camera": true,
+    "head_tilt_playful_smile": true,
+    "hands_hidden_behind_back": true,
+    "two_speakers": true,
+    "cyan_bow_and_tie": true,
+    "checkered_headband_and_two_full_loops": true,
+    "chest_up_modest_framing": true,
+    "no_background_ground_text_effects": true,
+    "outline_clear_on_light_and_dark": true
+  }
+}

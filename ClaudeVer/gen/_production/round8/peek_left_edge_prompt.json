@@ -1,0 +1,14 @@
+{
+  "status": "complete",
+  "generator": "built-in image_gen",
+  "prompt": "LOCAL OUTPAINT/EDGE REPAIR of IMAGE 1. Keep its exact 1672x941 canvas and current positions/scale. Image 2 and 3 are the two canonical character sheets; image 4 combines the three MV style frames.\nOnly repair the LEFTMOST strip, approximately x=0..210. Currently many blonde hair locks and the left torso are cut off at an artificial vertical line x=119, floating inside the transparent canvas. This straight interior cut is the error.\nFor y≈110..520: extend and FINISH the blonde hair strands into the available empty left margin, making natural individually tapered flowing tips and curls around x=15..120. The long hair still streams straight backward to screen left. No several locks ending on one vertical line, no rectangular cutoff; retain transparent gaps between finished tips.\nFor y≈520..870: continue the cropped mechanical arm/white armor/torso leftward to the actual CANVAS LEFT EDGE x=0, so this intentional chest-up camera crop falls on the true outer canvas edge rather than the inner x=119 line. Preserve ordinary chest-up bottom crop at y=870. Do not invent extra hands/heads/legs, do not make this a full-body scene.\nAbsolutely preserve both faces, eyes, right-temple gem, both characters' body poses, all Lishenna content, red bow direction, the face air gap and the lower arm-to-pink-hair air gap. Do not shift/zoom either character or expand the canvas. No effects/background/text; real transparent PNG.",
+  "references": [
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\peek_frozen.png",
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\ref_sheet.png",
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_ref_sheet.png",
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\_production\\round8\\style_references.png"
+  ],
+  "raw_output": "raw/peek_left_edge_ai.png",
+  "output": "peek_frozen.png",
+  "postprocessing": "Native canvas output; alpha cleanup and retain intended chest-up bottom crop at y=870. Visual invariants rechecked; no pairwise pixel-lock claim."
+}

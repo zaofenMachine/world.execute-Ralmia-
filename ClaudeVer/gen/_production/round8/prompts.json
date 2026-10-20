@@ -1,0 +1,24 @@
+{
+  "status": "complete",
+  "request": "request_v3a.md",
+  "generator": "built-in image_gen",
+  "execution": "Four independent assets generated concurrently by root and three subagents; local repairs remained sequential per asset.",
+  "assets": [
+    "peek_frozen.png",
+    "lishenna_wink.png",
+    "lishenna_wave_back.png",
+    "ralmia_frozen_34.png"
+  ],
+  "prompt_records": [
+    "peek_prompt.json",
+    "peek_detail_edit_prompt.json",
+    "peek_left_edge_prompt.json",
+    "wink_prompt.json",
+    "wave_prompt.json",
+    "frozen_prompt.json",
+    "wave_sleeve_fix_prompt.json"
+  ],
+  "style_board": "style_references.png",
+  "postprocessing": "Authorized alpha-edge cleanup, only downscale/translation for framing, local-edit pixel locking; no upscale.",
+  "validation": "_qa/round8/validation.json"
+}

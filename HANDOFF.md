@@ -24,7 +24,7 @@
 - **面板：** `project/panel.py`（ŌMETEŌTL OS）。`render.py` 里 `V3 = True` 时，`t < panel.V3_UNTIL`（第二步起是整片）的帧走 `panel.render_v3()`：镜头先画进离屏缓冲，再按 `MODES` 缩进 VIEWPORT（360, 64, 1200×675）或铺满；`REGS` 决定每段用哪种画风；镜头自己的歌词（`scenes.LYRICS_OFF`）和角落 HUD（`scenes.HUD_OFF`）在面板模式下关掉，歌词搬进 VOICE。`V3_UNTIL` 之后仍是第二版的画面。
 - **开机：** 0.34 秒 POWER、VOICE 先亮，VIEWPORT 边框自己画出来；k3 顶栏；k4 SHIELD；k8.25 起其余模块和零件同拍落位，CORE 在 k11 和核心宝石一起到。里榭娜 0–30 秒的台词在 16.8、22.75、25.55、26.5 秒（时间停止那段改过，见下一条）。
 - **样片之后的小改（2026-10-20）：** VIEWPORT 下半部分打开机自检日志（0–4 秒）；当前关键词以外的模块压暗；面板字号整体大一号；`prep8.py` 里里榭娜单人图（`NO_CYAN`）不再保留青色（她衣服上的青不算系统色）；两人同框的图里的青色还要在第二步逐张检查。`make_math_font.py` 补了 τ 等字形。
-- **22.5–28 秒：光速下时间停止**（用户选了 `plan_v3_chase.md` 的方案 A）。镜头在 `project/scenes_v3.py`（`s_timestop`，经 `OVERRIDE` 放在第二版时间线前面；`render.py` 的 `scene_at` 先查它）；面板冻结在 `panel.py` 的 `FREEZE` / `own_t()`：她的模块停在 `FREEZE_T`，`LIVE` 里的 LINK、TRANSMISSION、VOICE 照常走（VOICE 底部的代码行也停）。A2（两人近景）、A3（眨眼）、A4（回头挥手）现在用旧图代替，新图需求在 `gen/request_v3a.md`；新图到了以后照 prep7 的做法生成 `n_peek_frozen_hd`、`n_lish_wink_line`、`n_lish_wave_back_line`，`scenes_v3.py` 会自动换上。
+- **22.5–28 秒：光速下时间停止**（用户选了 `plan_v3_chase.md` 的方案 A）。镜头在 `project/scenes_v3.py`（`s_timestop`，经 `OVERRIDE` 放在第二版时间线前面；`render.py` 的 `scene_at` 先查它）；面板冻结在 `panel.py` 的 `FREEZE` / `own_t()`：她的模块停在 `FREEZE_T`，`LIVE` 里的 LINK、TRANSMISSION、VOICE 照常走（VOICE 底部的代码行也停）。第八批图（`gen/README_round8.md`）已接上：`project/prep10.py` 处理成 `n_peek_frozen`（另按人物拆成 `n_peek_ralmia` 点阵 + `n_peek_lish` 线稿，两人不共用一张图层）、`n_lish_wink`、`n_lish_wave_back`、`n_ralmia_frozen`（A1、A4 的定格冲刺，3/4 正面），锚点在 `gen/_qa/round8/anchors_v3.json`；成片 `ClaudeVer/world_execute_me_Ralmia_v3_round3.mp4`。没有这些图时 `scenes_v3.py` 会退回第二版的图。
 - **碎片链注意：** 桥段、逃脱用的是 0–100 秒成片的切片。0–30 秒改了以后，第二步铺完全片前要重跑 `frag_chain.sh`。
 
 **第二步（整片接进面板，2026-10-20）已做：**
@@ -44,13 +44,13 @@
 - **尾奏关机（k416–443）：** 一小节关一批（`SHUT`）：SENSORS + DRIVE → CLASS + CLOCK + MEMORY → VOICE + TRANSMISSION → POWER + CORE，TASKS 只剩 `touch(you)` 并缩短；k436 VIEWPORT 碎裂（第二版的 frame 剥层），镜头直接铺开；k440（203.4 秒）protection OFF，全屏六边形护盾最后一次闪现后散开；k442 剩下的滑走，她冲出去。
 - **结尾四步上色（k448.5–451.5，约 208–209 秒）：** `scenes_v3.escape_out_v3`：点阵 → 线稿 → 双色印刷 → 全彩，然后 `✓ touch(you)  true` 和 `me.hum()`。全片只有这里是彩色（`REGS` 不再在 k416 回彩色）。
 - **剪辑密度：** 间奏和试炼段在 `render_v3` 里压低闪白和色散。按 qa.py 的口径（`scratchpad` 里的 cuts.py 分段统计）：间奏 63 → 2、试炼段 58 → 30、副歌 3 29 → 43（全片最密）。
-- **两人同框图的青色：** `prep8.CYAN_LEFT_OF`（`n_ending_hd`、`n_cube_together_hd` 只留左边洛菈米亚那一侧的青），`n_stage_hd` 加进 `NO_CYAN`。
+- **两人同框图的青色：** `prep8.CYAN_LEFT_OF`（`n_ending_hd`、`n_cube_together_hd`、`n_peek_frozen_hd` 只留左边洛菈米亚那一侧的青），`n_stage_hd`、`n_peek_lish` 加进 `NO_CYAN`。
 - **全片重渲的顺序：** `render_all.py chunks 0 43` → `sh frag_chain.sh` → 重渲 c23–c25、c38–c39 → `python prep9.py` → 重渲 c33–c34 → `render_all.py dchunks` → `mux.py 211.9 deliver`。
 
 - **版本隔离：** v3 的分段、拼图、成片写到 `chunks_v3/`、`qa_v3/`、`out_v3.mp4` / `out_v3_delivery.mp4`（`render_all.py`、`mux.py`、`qa.py`、`prep7.py frag` 默认值已改）。开分支时把 `chunks_v2/`、`qa_v2/` 复制了一份进去，所以 v3 一开始和第二版第七轮完全相同，可以只重渲改动的段落。
 - **碎片链：** `ClaudeVer/project/frag_chain.sh`（以前在临时脚本里）：拼 c0–c20 → `qa.py` → `prep7.py frag`，之后重渲 c23–c25、c38–c39。
 - **切回第二版：** `git checkout v2` 即可，它用的仍是 `chunks_v2/`、`qa_v2/`，互不干扰。素材文件（`assets/`）跟着分支切换。
-- 成片命名建议 `ClaudeVer/world_execute_me_Ralmia_v3_roundN.mp4`。
+- 成片命名 `ClaudeVer/world_execute_me_Ralmia_v3_roundN.mp4`：round1 = 第二步，round2 = 第三步，round3 = 接上第八批图（当前最新）。
 
 ## V2. 第二版：洛菈米亚 × 里榭娜（2026-10-18，分支 `v2`）
 

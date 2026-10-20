@@ -1,0 +1,71 @@
+{
+  "file": "lishenna_wave_back.png",
+  "raw_size": [
+    1672,
+    941
+  ],
+  "final_size": [
+    1672,
+    941
+  ],
+  "mode": "RGBA",
+  "alpha_range": [
+    0,
+    255
+  ],
+  "transparent_pixels": 1397963,
+  "nonzero_alpha_pixels": 175389,
+  "visible_bbox_alpha_gt_32": [
+    607,
+    66,
+    1065,
+    866
+  ],
+  "visible_height_fraction": 0.8501594048884166,
+  "visible_foot_bottom_fraction": 0.9202975557917109,
+  "source_bbox": [
+    633,
+    8,
+    1157,
+    923
+  ],
+  "scale": 0.8743169398907104,
+  "translation": [
+    607,
+    66
+  ],
+  "no_enlargement": true,
+  "sha256": "df6d2c1b1c5125d4771b5d36fbf22a08c1148935d7e45e8b31592fd715224039",
+  "visual_checks": {
+    "left_shoulder": "Back visible; head turns over anatomical LEFT shoulder on image LEFT; face left of back hair.",
+    "wave": "Image-left free hand raised to shoulder height, open-palm casual wave.",
+    "microphone": "Image-right other hand holds microphone down beside body.",
+    "speaker_discs": 2,
+    "outfit": "White puffy jacket, pure black shorts, black thigh-highs, white sneakers with purple laces; checkered band and black loops.",
+    "background": "Transparent; no floor, shadow, text or effects."
+  },
+  "sleeve_correction": {
+    "mask": "_qa/round8/wave_sleeve_edit_mask.png",
+    "outside_edit_pixels": 1570285,
+    "outside_changed_pixels": 0,
+    "changed_pixels": 2644,
+    "alpha_changed_pixels": 0,
+    "canvas_position_and_bbox_unchanged": true,
+    "actual_shoulder_patch_roi": [
+      675,
+      318,
+      725,
+      353
+    ],
+    "shoulder_patch_changed_pixels": 0,
+    "back_strip_roi": [
+      784,
+      349,
+      811,
+      426
+    ],
+    "back_strip_changed_pixels": 0,
+    "notes": "Removed invented cyan bow only; no resize, shift or registration applied.",
+    "cyan_pixels_remaining_in_bow_roi": 0
+  }
+}

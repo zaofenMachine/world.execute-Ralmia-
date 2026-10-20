@@ -1,0 +1,13 @@
+{
+  "status": "complete",
+  "generator": "built-in image_gen",
+  "prompt": "LOCAL EDIT of image 1, keep its faces, poses, costume, composition and transparent background.\nImage 2 is Ralmia's canonical character sheet. Image 3 is Lishenna's canonical sheet. Image 4 is a three-panel board of all three requested MV style references.\nFix ONLY these two local details:\n1. Ralmia's RED NECK BOW at the lower left-center must be frozen streaming entirely toward SCREEN LEFT. Keep the central knot at the neck, but remove the downward-hanging red strip/tail near (600,780) and the extra lower bow lobe near (460,740). Redraw a coherent red bow with TWO swept-back tails and folded loops, ALL trailing left/back along the existing horizontal flying hair. No red fabric hanging down or pointing toward the bottom of the frame, no duplicate tails. Restore the white chest armor revealed where the old downward red cloth was.\n2. Keep Ralmia's forward arm reaching diagonally down-right, but bring the lower forearm slightly inward so it exits the BOTTOM edge around x=960–1000 rather than x=1100. It must be separated from Lishenna's hanging pink hair by a clear band of empty transparent space, at least about 50px even near the bottom. Natural continuous mechanical elbow/forearm anatomy, no extra hand. The two characters must NOT touch anywhere, including arm-to-hair. Keep Lishenna's body and hair exactly where they are.\nPreserve all other pixels/visual content as closely as possible: same frozen right-facing Ralmia expression and RIGHT-temple gem, same Lishenna teasing tilted face and downward hanging hair, hands clasped behind her back, same face gap. Do not zoom, change either face, or add effects. 1672x941, genuine transparent PNG.",
+  "references": [
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\_production\\round8\\raw\\peek_frozen_ai.png",
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\ref_sheet.png",
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_ref_sheet.png",
+    "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\_production\\round8\\style_references.png"
+  ],
+  "raw_output": "raw/peek_frozen_detail_ai.png",
+  "output": "peek_frozen.png"
+}

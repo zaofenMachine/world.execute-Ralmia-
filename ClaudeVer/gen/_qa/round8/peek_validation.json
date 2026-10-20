@@ -1,0 +1,44 @@
+{
+  "filename": "peek_frozen.png",
+  "canvas": [
+    1672,
+    941
+  ],
+  "mode": "RGBA",
+  "source": "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\_production\\round8\\raw\\peek_frozen_detail_ai.png",
+  "source_bbox": [
+    0,
+    8,
+    1671,
+    941
+  ],
+  "scale": 0.857449088960343,
+  "upscaled": false,
+  "placement": [
+    119,
+    70
+  ],
+  "native_edge_completion_source": "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\_production\\round8\\raw\\peek_left_edge_ai.png",
+  "final_bottom_crop_y": 870,
+  "final_bbox_alpha_gt32": [
+    0,
+    68,
+    1672,
+    870
+  ],
+  "height_fraction": 0.852285,
+  "alpha_min": 0,
+  "alpha_max": 255,
+  "separate_character_components_alpha_gt128": true,
+  "component_check_seeds": {
+    "ralmia": [
+      788,
+      432
+    ],
+    "lishenna": [
+      1088,
+      445
+    ]
+  },
+  "visual_check": "Ralmia at left faces right with visible right-temple gem, fixed gaze, hair and red bow streaming left; Lishenna at right leans forward, arms behind, hair down. Visible face and lower arm-to-hair gaps. No contact/effects."
+}

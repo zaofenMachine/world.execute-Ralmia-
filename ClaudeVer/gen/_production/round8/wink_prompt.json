@@ -1,0 +1,53 @@
+{
+  "asset": "lishenna_wink.png",
+  "mode": "built-in image_gen",
+  "status": "complete",
+  "generations": [
+    {
+      "prompt": "Use case: illustration-story.\nAsset: lishenna_wink.png for an anime MV. A single transparent PNG, landscape 16:9 native 1672×941 canvas.\nReference roles: Image 1 is the approved LISHENNA Diva character and clothing sheet; use it exactly. Images 2, 3 and 4 are the existing MV drawing style references only. Image 4 is another character; do NOT copy her identity or mechanical details.\nPrimary request: LISHENNA alone, a chest-up frontal portrait. The eye-level camera is directly in front of her face. She leans her upper body a little toward the lens as if playfully peering closely into it, gently tilts her head, winks ONE eye, and looks directly into the lens with the other blue-violet eye. Small playful teasing grin. Her shoulders remain relaxed. BOTH arms are drawn back and BOTH hands are clasped behind her lower back, completely hidden from the camera. No hands, fingers or microphone in front of her chest or face.\nComposition: centred face, symmetrical frontal camera with a light head tilt. Head-top through chest fills about 90% of the frame height. Include the complete black hair loops above her head with a small transparent margin; cropped naturally at chest below the necktie. Include TWO floating speaker discs, one beside each side of her head, with clear outlines. Long coral-pink hair falls naturally over and behind the shoulders. Not waist-up or full-body.\nExact identity/clothing: long coral-pink hair with straight bangs, blue-violet eyes, black-and-white checkered hairband, two black rabbit-ear-like loops with cyan symbols. Two floating black speaker discs with gold rims and cyan sigils. Exact white sleeveless top covering the chest; black high collar, cyan neck bow AND a visible long cyan tie; white off-the-shoulder jacket with puffy sleeves and cyan shoulder details. Match the approved sheet. Fully clothed, modest everyday character pose. The forward lean is shown by the head and shoulders, not by exposing or emphasizing the chest.\nRendering: clean fine anime outlines, flat cel shading and soft secondary shadows, restrained slightly warm colors. Clear silhouette and main linework because this image will be converted to line art and halftone. Match the attached MV frames, no glossy neon card-art painting.\nBackground: actual clean transparent alpha. No ground, scene, cast shadow, effects, speedlines, text, logo, watermark, border, other character or touching. Eye-level only, no low angle, no exaggerated perspective, no sexualized pose.",
+      "references": [
+        "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_ref_sheet.png",
+        "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_stand.png",
+        "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_stroll_a.png",
+        "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\dash_full.png"
+      ],
+      "source": "C:\\Users\\zaofenMachine\\.codex\\generated_images\\01a14edc-d889-76f0-a16f-b3babec6382a\\exec-c4bc5d06-86e1-48a3-b0f0-b3f17d9d2561.png",
+      "raw": "raw/lishenna_wink_initial_ai.png"
+    },
+    {
+      "prompt": "Use case: precise-object-edit.\nImage 1 is the edit target. Images 2–5 are the canonical Lishenna character sheet and the three MV style references.\nONLY fix the framing in Image 1: uniformly zoom out enough to restore BOTH complete black/cyan rabbit-ear-like hair loops with their full rounded tips clearly below the top edge. Keep this exact face, wink, other eye directed into camera, tilted head, teasing smile, forward lean, costume and two speaker discs. Both hands remain behind her lower back, invisible; no hands in front.\nWide native 1672×941 transparent canvas. Place the COMPLETE hair-loop tips at y≈48 and the chest-up portrait's bottom boundary at y≈893, giving about 90% frame height total and a little transparent margin above and below. Include the whole shoulders and the cyan tie down to a natural chest-level crop, not waist or legs. No part of the black loops, speakers, side hair or jacket touches any canvas edge. Face centered horizontally. Do not enlarge the bust or change the expression or clothing. Same clean anime linework and flat cel shading as the references, clear silhouette for line-art conversion. Fully clothed white sleeveless high-neck top, cyan bow and tie, white puffy jacket as before. Real transparent alpha, clean edges, no background, ground, text, watermark or effects.",
+      "references": [
+        "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\_production\\round8\\raw\\lishenna_wink_initial_ai.png",
+        "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_ref_sheet.png",
+        "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_stand.png",
+        "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\lishenna_stroll_a.png",
+        "F:\\Project\\world.execute-Ralmia-\\ClaudeVer\\gen\\dash_full.png"
+      ],
+      "source": "C:\\Users\\zaofenMachine\\.codex\\generated_images\\01a14edc-d889-76f0-a16f-b3babec6382a\\exec-3f80e2a2-c23f-48b3-b48b-0b5e9b8c988b.png",
+      "raw": "raw/lishenna_wink_ai.png"
+    }
+  ],
+  "final": "lishenna_wink.png",
+  "postprocessing": {
+    "authorization": "User authorized alpha edge cleanup and uniform downscale/translation only.",
+    "script": "_production/round8/wink_finalize.py",
+    "alpha_function": "_production/round6/alpha_utils.py clean() unchanged",
+    "no_upscale": true,
+    "registration": {
+      "source_bbox": [
+        235,
+        19,
+        1458,
+        924
+      ],
+      "scale": 0.9358011049723757,
+      "target_bbox": [
+        264,
+        47,
+        1408,
+        894
+      ]
+    }
+  },
+  "validation": "_qa/round8/wink_validation.json"
+}

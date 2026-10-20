@@ -10,7 +10,7 @@ not out-run: she is caught, by someone strolling. Cuts land on the off-beat acce
   A3 k54.5   through Ralmia's held optics: Lishenna leans into the lens, winks             [V3-2 lishenna_wink]
   A4 k56.5   she strolls off, glancing back; the held frame cracks from Ralmia's fingertip [V3-3 lishenna_wave_back]
   A5 k58.5   the cracks run over the frame, k59.5 it shatters, white -> k60 world.execute(me); time runs again
-Until the GPT pictures in [] arrive (gen/request_v3a.md) those shots use stand-ins from the pictures we have."""
+The pictures in [] are round 8 (gen/request_v3a.md, prep10.py); without them the shots fall back to v2 stand-ins."""
 from lib import *
 import lib, random
 import scenes3 as S3
@@ -41,8 +41,12 @@ def img_at(c, name, x, y, sc, anchor, a=1.0):
     c.save(); c.translate(x, y); c.scale(sc, sc); c.translate(-anchor[0], -anchor[1])
     c.set_source_surface(surf(name), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint_with_alpha(a); c.restore()
 
-# her dash picture (n_dash_full_hd): face and fingertip, canvas px
-R_FACE, R_TIP = (1468, 345), (1760, 535)
+# her held dash: the round-8 three-quarter picture if it is there (prep10.py), else v2's side-on dash. fingertip, canvas px
+HELD, R_TIP = ('n_ralmia_frozen_hd', (1774, 586)) if _has('n_ralmia_frozen_hd') else ('n_dash_full_hd', (1760, 535))
+R_FACE = (1468, 345)                              # (n_dash_full_hd) for the A2 stand-in
+WAVE_FEET = (875, 994)                            # n_lish_wave_back: bottom centre (gen/_qa/round8/anchors_v3.json)
+WINK_DISC = (549, 471)                            # n_lish_wink: her right speaker disc
+PEEK_DISC = (1653, 344)                           # n_peek_frozen: Lishenna's far speaker disc
 
 def stroll(c, g, x, feet_y, sc, t, walking, a=1.0):
     """Lishenna strolling to the LEFT (the v2 stroll pair, mirrored): A/B by beat while walking. Returns her mic."""
@@ -93,7 +97,7 @@ def pop(c, g):
 def a1(c, g, t):
     kk = (t - T0) / P
     held_streaks(c, t)
-    img_at(c, 'n_dash_full_hd', 560, 560, 0.62, (960, 540))
+    img_at(c, HELD, 560, 560, 0.62, (960, 540))
     tau_label(c, 250, 820)
     walk = prog(t, B(48.75), B(51.5))
     lx = lerp(2150, 1450, walk)
@@ -106,11 +110,14 @@ def a1(c, g, t):
         text(c, 'math', 'Δτ = 0', 0, 0, 150, BONE, 0.95 * ub); c.restore()
 
 def a2(c, g, t):
-    if _has('n_peek_frozen_hd'):
+    if _has('n_peek_ralmia_hd'):                      # V3-1: held Ralmia in raster, Lishenna alive in line, a hand's width apart
+        u = prog(t, B(52.5), B(54.5))
         held_streaks(c, t, 0.4, 1.6)
-        img_at(c, 'n_peek_frozen_hd', 960, 540, 1.0, (960, 540))
+        img_at(c, 'n_peek_ralmia_hd', 960, 540, 1.0, (960, 540))
+        lean = 10 * eo_cubic(u)                           # she leans in a little closer: the only thing moving
+        lines_at(c, g, 'n_peek_lish_line', 960 - lean, 540 + 0.4 * lean, 1.0, (960, 540), BONE, 1.0, 0.5)
+        song_rings(c, g, PEEK_DISC[0] - lean, PEEK_DISC[1], t, 800, 0.45)
         tau_label(c, 120, 1000)
-        song_rings(c, g, 1500, 300, t, 800, 0.4)
         return
     # stand-in: her held face, big, left; Lishenna (the stroll, held) close in front of it
     held_streaks(c, t, 0.4, 1.6)
@@ -126,7 +133,8 @@ def a3(c, g, t):
     face = 'n_lish_wink_line' if _has('n_lish_wink_line') else 'n_lish_face_line'
     sc = lerp(0.78, 0.84, eo_cubic(u))                      # she leans in, the only thing that moves
     lines_at(c, g, face, 980, 600, sc, (960, 540))
-    song_rings(c, g, 980 - sc * 560, 600 - sc * 120, t, 760, 0.45)
+    dx, dy = (WINK_DISC if face == 'n_lish_wink_line' else (400, 420))
+    song_rings(c, g, 980 + (dx - 960) * sc, 600 + (dy - 540) * sc, t, 760, 0.45)
     for (sx, sy) in ((-1, -1), (1, -1), (-1, 1), (1, 1)):    # her optics' frame, held
         x0, y0 = 960 + sx * 820, 540 + sy * 430
         for cc, aa in ((c, 0.9), (g, 0.4)):
@@ -160,13 +168,14 @@ A4_R = (640, 620, 1.05)
 def a4(c, g, t):
     u = prog(t, B(56.5), B(59.5))
     held_streaks(c, t)
-    back = 'n_lish_wave_back_line' if _has('n_lish_wave_back_line') else 'n_lish_walk_line'
-    sc = lerp(0.56, 0.34, eo_cubic(u)); fy = lerp(820, 690, eo_cubic(u))   # strolling off into the distance
-    lines_at(c, g, back, 1690, fy, sc, (960, 1050), BONE, 1.0, 0.6)
-    lines_at(c, g, back, 1690, fy, sc, (960, 1050), BONE, 0.6, 0.0)      # twice: the thin XDoG line reads at this size
-    song_rings(c, g, 1690, fy - sc * 880, t, 600, 0.4)
+    wave = _has('n_lish_wave_back_line')
+    back, feet = ('n_lish_wave_back_line', WAVE_FEET) if wave else ('n_lish_walk_line', (960, 1050))
+    sc = lerp(0.70, 0.46, eo_cubic(u)); fy = lerp(880, 760, eo_cubic(u))   # strolling off into the distance
+    lines_at(c, g, back, 1690, fy, sc, feet, BONE, 1.0, 0.6)
+    lines_at(c, g, back, 1690, fy, sc, feet, BONE, 0.6, 0.0)             # twice: the thin XDoG line reads at this size
+    song_rings(c, g, 1690, fy - sc * 820, t, 600, 0.4)
     x, y, s_ = A4_R
-    img_at(c, 'n_dash_full_hd', x, y, s_, (960, 540))
+    img_at(c, HELD, x, y, s_, (960, 540))
     tip = (x + (R_TIP[0] - 960) * s_, y + (R_TIP[1] - 540) * s_)
     cracks(c, g, tip[0], tip[1], t)
     tau_label(c, 120, 980)

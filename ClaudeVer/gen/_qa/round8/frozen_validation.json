@@ -1,0 +1,33 @@
+{
+  "filename": "ralmia_frozen_34.png",
+  "canvas": [
+    1672,
+    941
+  ],
+  "mode": "RGBA",
+  "source_bbox_alpha_gt32": [
+    37,
+    73,
+    1665,
+    850
+  ],
+  "scale": 0.872972972972973,
+  "upscaled": false,
+  "position": [
+    125,
+    131
+  ],
+  "final_bbox_alpha_gt32": [
+    125,
+    131,
+    1546,
+    809
+  ],
+  "subject_width_fraction": 0.8498803827751196,
+  "alpha_min": 0,
+  "alpha_max": 255,
+  "alpha_zero_pixels": 1082595,
+  "alpha_opaque_pixels": 2264,
+  "edge_cleanup": "nearest opaque local RGB carried into alpha edges; alpha<=2 removed; no enlargement",
+  "visual_check": "PASS: three-quarter front shows both cyan eyes and nearer right-temple gem; five black articulated fingers with cyan palm core on forward hand; long hair, skirt fins and both red bow tails trail left; full body and boots visible; no ground or speed/jet effects. Inspected on both dark and light backgrounds."
+}

@@ -1,0 +1,16 @@
+{
+  "status": "passed",
+  "reviewer": "root and independent foot_pose_review subagent",
+  "checks": {
+    "peek_frozen.png": "Visible face/body gap; right-temple gem and backward blonde hair/red bow correct; pink hair hangs down. Left internal rectangular clipping corrected; chest-up bottom crop retained.",
+    "lishenna_wink.png": "Front eye-level view, one eye winking and other at camera; leaning forward with upper arms back; full head ornaments and two discs.",
+    "lishenna_wave_back.png": "Anatomical left-shoulder glance, left-hand wave, right hand holding lowered microphone; incorrect cyan sleeve bow removed and white folds restored; original shoulder patch intact.",
+    "ralmia_frozen_34.png": "Right-front three-quarter face, right-temple gem, articulated black hands/cyan palm cores, hair and two red bow tails streaming back; no exhaust or scene effects."
+  },
+  "sha256": {
+    "peek_frozen.png": "d11cc4b7e8a3e8db67db3fae01a969dee268b622933ae0b45421b59fa6eed891",
+    "lishenna_wink.png": "b81bffa6f4a7f81ca88a4308a3be099d8c6677f77cc7c6d75d188668c4998310",
+    "lishenna_wave_back.png": "df6d2c1b1c5125d4771b5d36fbf22a08c1148935d7e45e8b31592fd715224039",
+    "ralmia_frozen_34.png": "9df188ba3acd68d6444065834bec99288d64460043f139944254e90bc1245026"
+  }
+}

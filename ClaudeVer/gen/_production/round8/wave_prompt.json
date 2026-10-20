@@ -1,0 +1,30 @@
+{
+  "status": "complete",
+  "mode": "built-in image_gen",
+  "asset": "lishenna_wave_back.png",
+  "use_case": "illustration-story",
+  "prompt": "Use case: illustration-story.\nAsset: V3-3 lishenna_wave_back.png, one full-body anime character on a genuinely transparent background, 1672x941 landscape canvas.\nInputs: Image 1 is LISHENNA's exact character/outfit sheet. Image 2 lishenna_walk is the REAR walking angle and body pose reference. Images 3, 4 and 5 are STYLE references only (the blonde mechanical girl in image 5 must NOT appear).\nDraw LISHENNA alone, seen from behind walking AWAY from the camera into the depth, matching the rear camera angle of Image 2. Keep her back, long hair down her back and backs of her legs visible. While continuing to walk away, she turns only her head back OVER HER OWN LEFT SHOULDER to look at the viewer with blue-violet eyes and a playful smug little smile. IMPORTANT orientation: since this is a rear view, her LEFT shoulder is on the LEFT side of the image. Her looking-back face must be visible just above the LEFT shoulder on the image LEFT, not over her right shoulder. Do not turn her entire torso frontward. She raises her free LEFT hand on image LEFT to shoulder height in a small casual open-palm wave, with relaxed anatomically correct fingers; her RIGHT hand on image RIGHT loosely holds a small black microphone DOWN at her side. Walking step, one sneaker slightly lifted, natural upright posture, eye-level camera.\nExact Diva outfit and identity from Image 1: long coral-pink hair, straight bangs, black-and-white checkered hairband with two black rabbit-ear-like loops, exactly TWO floating black speaker discs with gold rims and cyan sigils beside her head. Oversized WHITE off-the-shoulder jacket with puffy sleeves and cyan shoulder accents; sleeveless white top, cyan neck bow and cyan tie (only a small appropriate glimpse if visible from this rear angle), pure BLACK high-waisted shorts, black thigh-high socks, chunky white sneakers with PURPLE laces. Fully clothed and modest.\nComposition: centre the whole character including discs, hair and waving hand. Tall figure from hair loops around y=66 to lowest shoe around y=866, about 85% of 941-pixel canvas height, generous empty transparent side margins. Entire silhouette fits inside frame without clipping.\nSTYLE: clean anime line art, crisp distinct contours and clothing lines for later conversion to line art, flat cel shading with soft secondary shadows, slightly warm palette matching Images 3/4/5. No glossy neon thick painting.\nNo other character, text, logo, watermark, floor, ground shadow, effects, glows, panel or props except her microphone and the two speaker discs. Transparent background.",
+  "references": [
+    "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/lishenna_ref_sheet.png",
+    "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/lishenna_walk.png",
+    "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/lishenna_stand.png",
+    "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/lishenna_stroll_a.png",
+    "F:/Project/world.execute-Ralmia-/ClaudeVer/gen/dash_full.png"
+  ],
+  "source": "C:\\Users\\zaofenMachine\\.codex\\generated_images\\01a14ed9-b751-7b42-a735-fac4e352edab\\exec-d525bdbb-a324-4f23-9d87-874fff05cd5e.png",
+  "raw": "_production/round8/raw/lishenna_wave_back_ai.png",
+  "postprocess_authorization": "Only downscale, translate registration, and alpha edge cleanup. No enlargement.",
+  "output": "lishenna_wave_back.png",
+  "registration_script": "_production/round8/wave_register.py",
+  "validation": "_qa/round8/wave_validation.json",
+  "previews": [
+    "_qa/round8/wave_preview_slate.jpg",
+    "_qa/round8/wave_preview_cream.jpg"
+  ],
+  "visual_qa": "Passed actual view_image inspection of final PNG and dark slate composite: head turns over anatomical left shoulder, left hand wave, right hand microphone, two discs. No clipped silhouette or ground/effects. Subsequent local correction removes an invented cyan sleeve bow; only 2644 RGBA pixels changed and alpha was unchanged.",
+  "local_correction": "_production/round8/wave_sleeve_fix_prompt.json",
+  "postprocess_order": [
+    "_production/round8/wave_register.py",
+    "_production/round8/wave_sleeve_apply.py"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "mode": "built-in image_gen",
+  "status": "complete",
+  "final": "ralmia_frozen_34.png",
+  "raw": "_production/round8/raw/ralmia_frozen_34_ai.png",
+  "assets": [
+    {
+      "step": "generate V3-4",
+      "prompt": "Use case: illustration-story. Asset V3-4 for a clean anime music-video character cutout, 16:9 horizontal canvas 1672x941, transparent background.\nInput 1 is RALMIA's canonical identity and entire outfit, mandatory. Inputs 2 and 3 are STYLE ONLY, do not draw that pink-haired character. Input 4 dash_full is STYLE and flight direction reference, but NEW CAMERA ANGLE is required and REMOVE its rocket flames.\nDraw exactly one full-body RALMIA flying HORIZONTALLY at tremendous speed towards the RIGHT of the canvas, with no environment or effects. Camera sees her from HER RIGHT FRONT in a three-quarter FRONT angle: head turns along the rightward flight direction, her FACE is CLEARLY VISIBLE including both cyan eyes (far eye narrower) and the cyan oval GEM on her anatomical RIGHT TEMPLE, the nearer temple at viewer-left side of her face. Her eyes are wide and fiercely focused ahead, mouth closed. Not a strict profile.\nThe torso and both legs form a long horizontal flight silhouette. Feet and long trailing hair on the LEFT, head in right half, one arm reaches FORWARD to the RIGHT, its black mechanical hand OPEN with five clearly separated articulated fingers and the cyan PALM CORE facing sufficiently towards camera to see it. Other arm angles behind, naturally. Long blonde hair and ahoge, white-and-black mechanical armor dress with white bell skirt armor, cyan lights and black joint sections exactly as input 1. Red neck bow is clearly present. Her LONG blonde hair, skirt panel/coat tails, and the loose red bow tails STREAM STRAIGHT BACK toward the LEFT as if frozen at maximum speed; avoid drooping hair and dangling bow tails.\nComposition: whole body and hand fully in frame, centrally balanced silhouette, total subject width about 85% of the canvas with clear breathing room around. Eye-level camera, NOT low angle; fully clothed original mechanical suit, no emphasis on hips or chest, no underwear showing. Crisp clean anime lineart and flat cel colors with soft secondary shadows, slightly warm palette, match the MV references. Clear interior armor and face lines for later conversion to line art/dots. No glossy neon rendering.\nTrue transparent alpha background, clean natural edges without colored fringe. NO ground, NO speed lines, NO motion blur, NO jet flames, NO trails, NO glow effects outside armor, NO extra objects or characters, NO letters/logo/signature/watermark.",
+      "references": [
+        "ref_sheet.png",
+        "lishenna_stand.png",
+        "lishenna_stroll_a.png",
+        "dash_full.png"
+      ],
+      "source": "C:\\Users\\zaofenMachine\\.codex\\generated_images\\01a14edb-d956-7ae2-b8c5-5d4d3f241d21\\exec-c73a0543-cdeb-48cc-994c-39f9d19217c6.png"
+    },
+    {
+      "step": "local bow tail correction",
+      "prompt": "Use case: precise-object-edit. Input 1 is the finished transparent Ralmia flying pose EDIT TARGET. Input 2 is the canonical character reference. Inputs 3-5 are MV STYLE references only.\nCorrect ONLY the red neck bow's dangling lower ribbon tail: the loose red ribbon currently falls downward from the knot near the chest. Make BOTH loose red ribbon tails stretch straight back horizontally toward the LEFT, behind the knot, strongly blown backward by extreme rightward flight speed. Keep the knot in exactly its current position, preserve red color and broad ribbon shape. Remove the old downward dangling tail and reveal the correct white/black chest armor and transparent background behind its old location. The bow is a tied red neck bow, two tails stream left.\nKeep all other content identical: full body horizontal flight, both feet, long blonde hair streaming left, head orientation, visible cyan right-temple gem, focused cyan eyes, open forward black mechanical hand with cyan palm core, other arm, armor dress and face. No new effects or objects. Same 1672x941 canvas and real transparent background. No text or watermark.",
+      "references": [
+        "_production/round8/raw/ralmia_frozen_34_initial_ai.png",
+        "ref_sheet.png",
+        "lishenna_stand.png",
+        "lishenna_stroll_a.png",
+        "dash_full.png"
+      ],
+      "source": "C:\\Users\\zaofenMachine\\.codex\\generated_images\\01a14edb-d956-7ae2-b8c5-5d4d3f241d21\\exec-8bf6cb80-334f-4b60-8dee-6a8c5ff6e3c5.png"
+    }
+  ],
+  "postprocessing": "Allowed alpha edge cleanup and only shrink/translation to 85% width; no enlargement."
+}
