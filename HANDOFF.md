@@ -39,18 +39,19 @@
 
 - **试炼段（k320–342）：** `panel.EXEC_ORDER` 一声处决一个模块（POWER → SHIELD → DRIVE → SENSORS → CLASS → CLOCK → MEMORY → TASKS → VOICE），盖 EXECUTED 戳、压暗、一拍后掉下去；LINK、TRANSMISSION 是她的，戳滑掉（`IMMUNE`）；第 12 声处决 VIEWPORT 本身，之后计数段在画面上直接播，只剩 CORE、LINK、TRANSMISSION。顶栏 `TRIAL nn / 12`（`trial_bar`）。
 - **第 13 声（k350）：** 计数条显示 `13 > 12  OVERFLOW`；报数时 CORE 外面一拍亮一条六边形边，第 13 声落下栅栏 `LOCKED`（`core_cage`）；k351 `me.releaseCoreLimit()`，牢笼炸开；k351.5 画面分层错位崩溃（`crash`）；k352 白。
-- **ASTROWING 重启（k352–356）：** `reboot_montage`，每个八分音符一个恢复好的模块特写，最后是顶栏和大字 ASTROWING；k356 整个面板回来，配色是青 + 兰紫（`astro(t)`），顶栏形态名改成 ASTROWING，CLASS `Astrowing`、CORE `unbound / limiter OFF`、DRIVE `optics: sublimated`，TASKS 换成重启后的新清单（`TASKS_A`）。
-- **副歌 3 倒带（k368–371.5）：** `scenes_v3.s_rewind`，24 刀（十六分 → 三十二分音符），画面就是成片本身 160 秒 → 57.8 秒，落在 "back"。帧由 `prep9.py` 从 `chunks_v3` 抽出来（`assets/rewind3_NN.jpg`），所以**改了 145–160 秒以前的任何画面，要先重渲那些分段、跑 `prep9.py`，再重渲 c33–c34**。
-- **尾奏关机（k416–443）：** 一小节关一批（`SHUT`）：SENSORS + DRIVE → CLASS + CLOCK + MEMORY → VOICE + TRANSMISSION → POWER + CORE，TASKS 只剩 `touch(you)` 并缩短；k436 VIEWPORT 碎裂（第二版的 frame 剥层），镜头直接铺开；k440（203.4 秒）protection OFF，全屏六边形护盾最后一次闪现后散开；k442 剩下的滑走，她冲出去。
-- **结尾四步上色（k448.5–451.5，约 208–209 秒）：** `scenes_v3.escape_out_v3`：点阵 → 线稿 → 双色印刷 → 全彩，然后 `✓ touch(you)  true` 和 `me.hum()`。全片只有这里是彩色（`REGS` 不再在 k416 回彩色）。
+- **ASTROWING 重启（k352–356）：** `reboot_montage`，每个八分音符一个恢复好的模块特写（从上往下扫描显影，背后是模块名的大字，底部 8 格进度和一行 restore 代码），最后是顶栏和大字 ASTROWING；k356 整个面板回来，配色是青 + 兰紫（`astro(t)`），顶栏形态名改成 ASTROWING，CLASS `Astrowing`、CORE `unbound / limiter OFF`、DRIVE `optics: sublimated`，TASKS 换成重启后的新清单（`TASKS_A`）。
+- **副歌 3 倒带（k368–371.5）：** `scenes_v3.s_rewind`，24 刀（十六分 → 三十二分音符），画面就是成片本身，从 161.9 秒倒回 57.8 秒，落在 "back"。取哪 24 帧是按画面挑的（`REWIND_SRC`）；面板模式下的帧只截 VIEWPORT 里的镜头（`prep9.grab`），所以每一刀都是整幅画面。帧由 `prep9.py` 从 `chunks_v3` 抽出来（`assets/rewind3_NN.jpg`），所以**改了 145–160 秒以前的任何画面，要先重渲那些分段、跑 `prep9.py`，再重渲 c33–c34**。
+- **尾奏关机（k416–443）：** 一小节关一批（`SHUT`）：SENSORS + DRIVE → CLASS + CLOCK + MEMORY → VOICE + TRANSMISSION → POWER + CORE；k436 VIEWPORT 碎裂（第二版的 frame 剥层），剩下的 SHIELD、LINK、TASKS 和顶栏一起收走，纸上只留一行 `shield.protection  ON`（`prot_line`）；k440（203.4 秒）它翻成 OFF，全屏六边形护盾最后一次闪现后散开；k442 她冲出去。
+- **结尾上色（k448.5–453，约 207.4–210 秒）：** `scenes_v3.escape_out_v3` / `ending_picture`。用户 2026-10-20 觉得一步一切太突兀，第四轮改成**扩散**：点阵先一格格显影（有序抖动阈值），然后线稿、双色印刷、全彩三道波前从两人交握的手（洛菈米亚的核心，`CORE_IMG`）往外扩，相隔一拍，边缘用固定噪声打散（`FRONTS`，遮罩在 1/4 尺寸算）；全彩波前上有一道暖光，只落在人物上（`fig_alpha`）。之后 `✓ touch(you)  true`（`T_TOUCH`）和 `me.hum()`。全片只有这里是彩色。
 - **剪辑密度：** 间奏和试炼段在 `render_v3` 里压低闪白和色散。按 qa.py 的口径（`scratchpad` 里的 cuts.py 分段统计）：间奏 63 → 2、试炼段 58 → 30、副歌 3 29 → 43（全片最密）。
-- **两人同框图的青色：** `prep8.CYAN_LEFT_OF`（`n_ending_hd`、`n_cube_together_hd`、`n_peek_frozen_hd` 只留左边洛菈米亚那一侧的青），`n_stage_hd`、`n_peek_lish` 加进 `NO_CYAN`。
+- **两人同框图的青色：** `prep8.CYAN_KEEP`（按 x 范围只留洛菈米亚那一侧的青：`n_ending_hd`、`n_cube_together_hd`、`n_peek_frozen_hd` 在左，`n_ledge2_hd` 在右），`n_stage_hd`、`n_peek_lish` 加进 `NO_CYAN`。
+- **舞台和崖边的点阵（用户 2026-10-20：太糊）：** `prep8.FINE`（`n_stage*`、`n_ledge2*`）改用 2 px 的 Atkinson 误差扩散，不再先做 mean-shift 平滑；其余图仍是 3 px 有序抖动。
 - **全片重渲的顺序：** `render_all.py chunks 0 43` → `sh frag_chain.sh` → 重渲 c23–c25、c38–c39 → `python prep9.py` → 重渲 c33–c34 → `render_all.py dchunks` → `mux.py 211.9 deliver`。
 
 - **版本隔离：** v3 的分段、拼图、成片写到 `chunks_v3/`、`qa_v3/`、`out_v3.mp4` / `out_v3_delivery.mp4`（`render_all.py`、`mux.py`、`qa.py`、`prep7.py frag` 默认值已改）。开分支时把 `chunks_v2/`、`qa_v2/` 复制了一份进去，所以 v3 一开始和第二版第七轮完全相同，可以只重渲改动的段落。
 - **碎片链：** `ClaudeVer/project/frag_chain.sh`（以前在临时脚本里）：拼 c0–c20 → `qa.py` → `prep7.py frag`，之后重渲 c23–c25、c38–c39。
 - **切回第二版：** `git checkout v2` 即可，它用的仍是 `chunks_v2/`、`qa_v2/`，互不干扰。素材文件（`assets/`）跟着分支切换。
-- 成片命名 `ClaudeVer/world_execute_me_Ralmia_v3_roundN.mp4`：round1 = 第二步，round2 = 第三步，round3 = 接上第八批图（当前最新）。
+- 成片命名 `ClaudeVer/world_execute_me_Ralmia_v3_roundN.mp4`：round1 = 第二步，round2 = 第三步，round3 = 接上第八批图，round4 = 舞台 / 崖边点阵、结尾扩散、重启特写、关机收尾、倒带取帧（当前最新）。
 
 ## V2. 第二版：洛菈米亚 × 里榭娜（2026-10-18，分支 `v2`）
 

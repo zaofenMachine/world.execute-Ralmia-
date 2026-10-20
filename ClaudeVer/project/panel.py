@@ -127,10 +127,10 @@ def astro(t): return t >= T_REBOOT
 MONTAGE = ['CORE  ŌMETEŌTL', 'POWER', 'SHIELD', 'DRIVE', 'SENSORS', 'CLASS', 'LINK', 'TOPBAR']
 
 # ---- the shutdown (k416-443), the boot backwards: one bar at a time the system folds away; protection OFF last
-SHUT = {'SENSORS': B(420), 'DRIVE': B(420), 'CLASS': B(424), 'CLOCK': B(424), 'MEMORY': B(424),
-        'VOICE': B(428), 'TRANSMISSION': B(428), 'POWER': B(432), 'CORE  ŌMETEŌTL': B(432), 'SHIELD': B(440.75),
-        'LINK': B(441.5), 'TASKS': B(441.5)}
-T_FRAME = B(436)                               # the frame cracks (v2's PEEL[4]): the shot goes bare
+T_FRAME = B(436)                               # the frame cracks (v2's PEEL[4]): the shot goes bare, and what was left of
+SHUT = {'SENSORS': B(420), 'DRIVE': B(420), 'CLASS': B(424), 'CLOCK': B(424), 'MEMORY': B(424),     # the panel goes with it;
+        'VOICE': B(428), 'TRANSMISSION': B(428), 'POWER': B(432), 'CORE  ŌMETEŌTL': B(432),           # protection stays as one
+        'SHIELD': T_FRAME, 'LINK': T_FRAME + 0.06, 'TASKS': T_FRAME + 0.12}                           # line (prot_line)
 T_PROT_OFF = B(440)                            # 203.4 s: "Remember to put on PROTECTION" -- she turns it off herself
 def folded(name, t):
     ts = SHUT.get(name)
@@ -463,7 +463,7 @@ def top_bar(c, g, t, pv):
     kk = kt(t)
     if kk < 3 or pv <= 0.001: return
     u = eo_cubic(prog(t, B(3), B(3) + 0.3))
-    c.save(); c.translate(0, -(TOP_H + 4) * (1 - pv))
+    c.save(); c.translate(0, -(TOP_H + 4) * max(1 - pv, eo_cubic(prog(t, T_FRAME + 0.15, T_FRAME + 0.5))))
     rgba(c, INK, 0.92 * u); c.rectangle(0, 0, W, TOP_H); c.fill()
     line(c, 0, TOP_H, W, TOP_H, GREY, 0.35 * u, 1)
     text(c, 'monom', type_on('ŌMETEŌTL OS', t, B(3), 0.03), LX, 36, 18, BONE, 0.95 * u, track=0.2)
@@ -634,9 +634,22 @@ def reboot_montage(c, g, t):
     for j in range(0, H, 48): line(c, 0, j, W, j, BONE, 0.03, 1)
     kk = kt(t); k = min(7, int((kk - 352) * 2)); name = MONTAGE[k]; t0 = B(352 + k / 2)
     zoom = 1 + 0.04 * prog(t, t0, t0 + P / 2)
+    ghost = 'ASTROWING' if name == 'TOPBAR' else name.split()[0]           # the module's name, huge, behind it
+    c.save(); c.translate(W / 2 + 60 * (1 - eo_cubic(prog(t, t0, t0 + P / 2))), 640)
+    c.new_path(); fonts()['heavy'].text_path(c, ghost, 0, 0, 380, 'center')
+    rgba(c, LISH if k % 2 else CYAN, 0.10); c.fill(); c.restore()
     text(c, 'monom', 'ŌMETEŌTL OS  ·  REBOOT', 96, 110, 22, BONE, 0.85, track=0.3)
     rgba(c, LISH, 0.9); c.rectangle(96, 124, 260, 3); c.fill(); rgba(c, CYAN, 0.9); c.rectangle(356, 124, 80, 3); c.fill()
     text(c, 'mono', f'{k + 1} / 8   restored', W - 96, 110, 20, BONE, 0.7, align='right', track=0.15)
+    for i in range(8):                                                     # eight cells, one per 8th
+        x = 96 + i * 34; on = i <= k
+        rgba(c, (LISH if i % 2 else CYAN) if on else GREY, 0.95 if on else 0.4)
+        if on: c.rectangle(x, 990, 26, 12); c.fill()
+        else: c.set_line_width(1.2); c.rectangle(x + 0.5, 990.5, 25, 11); c.stroke()
+    text(c, 'mono', type_on(['core.restore()', 'power.restore()', 'shield.restore()', 'drive.restore()', 'sensors.restore()',
+                             'me = new Astrowing()', 'link.restore()  // hers', 'boot("ASTROWING")'][k], t, t0, 0.012),
+         96 + 8 * 34 + 24, 1001, 20, CYAN, 0.85)
+    scan = eo_cubic(prog(t, t0, t0 + 0.13))                                # the module is scanned back in from the top
     if name == 'TOPBAR':
         c.save(); c.translate(W / 2, H / 2); c.scale(2.2 * zoom, 2.2 * zoom); c.translate(-W / 2, -36)
         top_bar(c, g, t, 1.0); c.restore()
@@ -646,13 +659,33 @@ def reboot_montage(c, g, t):
     S_ = min(2.6, 640 / h) * zoom
     for cc in (c, g):
         cc.save(); cc.translate(W / 2, H / 2 + 20); cc.scale(S_, S_); cc.translate(-(x + w / 2), -(y + h / 2))
+        cc.rectangle(x - 20, y - 20, w + 40, (h + 40) * scan); cc.clip()
     _box(c, g, x, y, w, h, name, True, t, name)
     body(c, g, name, x, y, w, h, t, kk)
     for cc in (c, g): cc.restore()
+    if scan < 1:                                                           # the scan line itself
+        yl = H / 2 + 20 + (-(h / 2) - 20 + (h + 40) * scan) * S_
+        for cc, aa, lw in ((c, 0.9, 2), (g, 0.7, 6)):
+            line(cc, W / 2 - (w / 2 + 40) * S_, yl, W / 2 + (w / 2 + 40) * S_, yl, LISH if k % 2 else CYAN, aa, lw)
     u = eo_expo(prog(t, t0 + 0.05, t0 + 0.15))
     c.save(); c.translate(W / 2 + w * S_ / 2 - 40, H / 2 - h * S_ / 2 + 20); c.rotate(-0.08)
     c.new_path(); fonts()['heavy'].text_path(c, 'RESTORED', 0, 0, 54, 'right')
     rgba(c, CYAN, 0.95 * u); c.set_line_width(2); c.stroke(); c.restore()
+
+def prot_line(c, g, t):
+    """k436-443: on the bare paper, the one setting left -- the first thing she turned on. k440: she turns it off"""
+    if not (T_FRAME + 0.3 <= t < B(443)): return
+    a = eo_cubic(prog(t, T_FRAME + 0.3, T_FRAME + 0.7)) * (1 - prog(t, B(442.4), B(443)))
+    off = t >= T_PROT_OFF; fl = pulse(t, T_PROT_OFF, 0.6) if off else 0.0
+    lab = 'shield.protection'; val = 'OFF' if off else 'ON'
+    size = 34; wl = text_w('mono', lab + '    ', size); wv = text_w('monom', 'OFF', size)
+    x0 = 960 - (wl + wv) / 2; y = 930
+    text(c, 'mono', lab, x0, y, size, SEPIA, 0.85 * a)
+    if off and t < T_PROT_OFF + 0.12:                            # the switch flips
+        text(c, 'monom', scramble('OFF', t, T_PROT_OFF, 0.03), x0 + wl, y, size, CYAN, a)
+    else:
+        text(c, 'monom', val, x0 + wl, y, size, CYAN if fl > 0.15 else SEPIA, a)
+    if fl > 0.02: text(g, 'monom', val, x0 + wl, y, size, CYAN, 0.8 * fl)
 
 def hex_shield_off(c, g, t):
     """k440: protection OFF -- the hexagon shield of 2.5 s over the whole frame, one last time, coming apart"""
@@ -737,6 +770,7 @@ def render_v3(t, fr, scene, composite):
     modules(c, g, t, pv)
     top_bar(c, g, t, pv)
     in_toast(c, g, t, pv)
+    prot_line(c, g, t)
     hex_shield_off(c, g, t)
     s.flush(); gs.flush()
     buf = np.ndarray((H, W, 4), np.uint8, s.get_data())

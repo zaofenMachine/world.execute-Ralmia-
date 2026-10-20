@@ -251,7 +251,10 @@ def lib_bayer_full():
 # "If I can have you back": the film itself runs backwards, 160 s -> the pinky promise at 57.8 s, first on 16ths then
 # on 32nds, and lands on "back" (k371.5), where v2's pinky frame takes over. Frames: prep9.py (assets/rewind3_NN.jpg).
 REWIND_CUTS = [368 + 0.25 * i for i in range(4)] + [369 + 0.125 * j for j in range(20)]   # 16ths, then 32nds
-REWIND_SRC = [round(160.0 - (160.0 - 57.8) * n / (len(REWIND_CUTS) - 1), 2) for n in range(len(REWIND_CUTS))]
+# one strong picture per cut, back through the film (picked by eye from the round-3 QA sheets), ending on the promise
+REWIND_SRC = [161.9, 158.3, 150.0, 146.0, 135.0, 128.3, 125.7, 121.8, 116.0, 109.0, 106.4, 105.0, 101.0, 98.3, 94.6,
+              91.0, 87.0, 83.0, 76.0, 72.0, 69.6, 66.6, 63.0, 57.8]
+assert len(REWIND_SRC) == len(REWIND_CUTS)
 _RW = {}
 def rewind_frame(n):
     if n not in _RW:
@@ -288,30 +291,80 @@ def s_rewind(c, g, t):
     text(c, 'mono', '→ 00:57.80   you & me', W - 96, 1040, 20, CYAN, 0.8, align='right', track=0.1)
     return {'ab': 3 + 4 * pulse(t, B(REWIND_CUTS[n]), 0.06), 'glow': 0.5, 'vig': 0.6}
 
-# ================================================================ the end: four steps to colour (plan_v3.md section 8)
-# after the song stops (k448) the two of them come in as the film's whole look, one step a half beat on 208-209 s:
-# raster (the system sees her) -> line -> two-colour print (memory) -> full colour (touch = true). The only colour in v3.
+# ================================================================ the end: four media to colour (plan_v3.md section 8)
+# after the song stops (k448) the two of them come in through the film's whole look. User (2026-10-20): stepping from one
+# look to the next was abrupt -- so it spreads instead. The raster develops cell by cell (the system sees her); then three
+# fronts run out from their joined hands, where her core is -- line, two-colour print, full colour -- each a little behind
+# the last, with an uneven edge like ink taking to paper. At any moment the picture is rings of all four; colour last,
+# from the hands outward: touch = true. The only colour in v3.
 import scenes7 as S7
-STEPS = [(448.5, 'r'), (450.0, 'l'), (450.5, 'm'), (451.0, None)]
+T_DEV = (B(448.5), B(449.0))                     # the raster, developing
+FRONTS = [(B(449.0), 1.8, 'l'), (B(450.0), 1.8, 'm'), (B(451.0), 2.0, None)]   # a beat apart, so each ring reads
 T_TOUCH = B(451.5)
-def ending_picture(c, g, t):
-    name = S7.ENDING; ts = t - B(S7.K_SILENCE)
-    step = [v for k, v in STEPS if t >= B(k)]
-    if not step: return
-    st = step[-1]; t0 = B([k for k, v in STEPS if t >= B(k)][-1])
-    a = eo_cubic(prog(t, B(448.5), B(448.5) + 0.35)) if st == 'r' else 1.0
-    sc = 0.94 * (1 + 0.012 * ts)
+CORE_IMG = (879, 795)                            # Ralmia's palm core on their joined hands, in n_ending_hd
+MQ = 4                                           # the masks are computed at 1/4 size and drawn smoothed
+_NZ = []
+def _noise():
+    if not _NZ:
+        r = np.random.default_rng(31); w, h = W // MQ, H // MQ
+        n = sum(cv2.resize(r.normal(0, 1, (h // k + 2, w // k + 2)).astype(np.float32), (w, h), interpolation=cv2.INTER_CUBIC) / k ** 0.6
+                for k in (6, 14, 30))
+        _NZ.append(n / np.abs(n).max())
+    return _NZ[0]
+def _a8(m):
+    h, w = m.shape; st = cairo.ImageSurface.format_stride_for_width(cairo.FORMAT_A8, w)
+    buf = np.zeros((h, st), np.uint8); buf[:, :w] = np.clip(m * 255, 0, 255).astype(np.uint8)
+    return cairo.ImageSurface.create_for_data(buf, cairo.FORMAT_A8, w, h, st), buf
+
+_FA = {}
+def fig_alpha(sc):
+    """the picture's alpha at mask size, where it is drawn (the slow push in is small: one size will do)"""
+    if not _FA:
+        a = cv2.imread(f'{WORK}/assets/{S7.ENDING}.png', cv2.IMREAD_UNCHANGED)[..., 3].astype(np.float32) / 255
+        M = np.float32([[sc / MQ, 0, (960 - 960 * sc) / MQ], [0, sc / MQ, (540 - 540 * sc) / MQ]])
+        _FA[0] = cv2.warpAffine(a, M, (W // MQ, H // MQ))
+    return _FA[0]
+
+def ending_layer(c, name, st, sc):
     c.save(); c.translate(960, 540); c.scale(sc, sc); c.translate(-960, -540)
     if st == 'l':
         rgba(c, SEPIA, 0.95); c.mask_surface(surf(name.replace('_hd', '_line')), 0, 0)
     else:
         nm = name if st is None else f'{name}__{st}'
-        reg, lib.REG[0] = lib.REG[0], None                       # the picture as it is: no register over it
-        c.set_source_surface(surf(nm), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint_with_alpha(a)
+        reg, lib.REG[0] = lib.REG[0], None                   # the picture as it is: no register over it
+        c.set_source_surface(surf(nm), 0, 0); c.get_source().set_filter(cairo.FILTER_GOOD); c.paint()
         lib.REG[0] = reg
     c.restore()
-    fl = pulse(t, t0, 0.12) if st != 'r' else 0
-    if fl > 0.02: rgba(c, (1, 1, 1), 0.35 * fl); c.paint()
+
+def ending_picture(c, g, t):
+    if t < T_DEV[0]: return
+    name = S7.ENDING; ts = t - B(S7.K_SILENCE)
+    sc = 0.94 * (1 + 0.012 * ts)
+    ox, oy = 960 + (CORE_IMG[0] - 960) * sc, 540 + (CORE_IMG[1] - 540) * sc
+    if t < FRONTS[0][0]:                                      # the raster develops, cell by cell
+        u = eo_cubic(prog(t, *T_DEV))
+        c.push_group(); ending_layer(c, name, 'r', sc); pat = c.pop_group()
+        ms, _ = _a8((lib_bayer_full() < u).astype(np.float32)); c.set_source(pat); c.mask_surface(ms, 0, 0)
+        return
+    w, h = W // MQ, H // MQ
+    yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
+    d = np.hypot(xx * MQ - ox, (yy * MQ - oy) * 1.15) + 95 * _noise()
+    ms = []
+    for t0, dur, _ in FRONTS:                                # how far each front has run (soft edge ~70 px)
+        r = -120 + 1350 * eio_cubic(prog(t, t0, t0 + dur)) if t >= t0 else -9999
+        ms.append(np.clip((r - d) / 70 + 0.5, 0, 1))
+    wts = [1 - ms[0], ms[0] - ms[1], ms[1] - ms[2], ms[2]]   # each medium in its own ring
+    for wt, st in zip(wts, ['r', 'l', 'm', None]):
+        if wt.max() < 0.004: continue
+        c.push_group(); ending_layer(c, name, st, sc); pat = c.pop_group()
+        sf, _ = _a8(wt); spat = cairo.SurfacePattern(sf); spat.set_filter(cairo.FILTER_BILINEAR)
+        mtx = cairo.Matrix(); mtx.scale(1 / MQ, 1 / MQ); spat.set_matrix(mtx)
+        c.set_source(pat); c.mask(spat)
+    edge = ms[2] * (1 - ms[2]) * 4 * fig_alpha(sc)            # a warm light along the colour front, on the two of them only
+    if edge.max() > 0.01:
+        sf, _ = _a8(edge); spat = cairo.SurfacePattern(sf); spat.set_filter(cairo.FILTER_BILINEAR)
+        mtx = cairo.Matrix(); mtx.scale(1 / MQ, 1 / MQ); spat.set_matrix(mtx)
+        rgba(g, (1.0, 0.95, 0.86), 0.3); g.mask(spat)
 
 def escape_out_v3(c, g, t):
     lib.BG[0] = 'paper'                                          # outside is warm light: the paper register, not the ink one
@@ -353,7 +406,7 @@ def escape_out_v3(c, g, t):
                     e = math.sin(math.pi * n_ / 160) * (0.6 + 0.4 * math.sin(t * 1.3 + n_ * 0.05))
                     (cc.move_to if n_ == 0 else cc.line_to)(x, 1023 - 5 * e * math.sin(n_ * 0.28 - t * 2.2))
                 cc.stroke()
-    fx['ab'] = 3 * sum(pulse(t, B(k), 0.15) for k, _ in STEPS[1:])
+    fx['ab'] = 0.0
     fx['vig'] = 0.3; fx['grain'] = 0.03; fx['glow'] = 0.6
     return fx
 

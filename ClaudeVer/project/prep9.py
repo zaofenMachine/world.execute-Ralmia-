@@ -4,11 +4,15 @@ Run after chunks 11-32 are rendered, then re-render chunks 33-34.   usage: pytho
 import os, cv2
 HERE = os.path.dirname(os.path.abspath(__file__))
 from scenes_v3 import REWIND_SRC
+import panel as PNL
 
 def grab(t):
+    """the frame at t; when the shot was in the panel's viewport, just the shot (so every cut is a full picture)"""
     i = int(t // 5); cap = cv2.VideoCapture(os.path.join(HERE, 'chunks_v3', f'c{i}.mp4'))
     cap.set(cv2.CAP_PROP_POS_FRAMES, round((t - 5 * i) * 60)); ok, f = cap.read(); cap.release()
     if not ok: raise SystemExit(f'no frame at {t}')
+    if PNL.scene_pv(t, PNL.mode_at(t)) > 0.5:
+        x, y, w, h = PNL.VP; f = f[y:y + h, x:x + w]
     return cv2.resize(f, (960, 540), interpolation=cv2.INTER_AREA)
 
 if __name__ == '__main__':

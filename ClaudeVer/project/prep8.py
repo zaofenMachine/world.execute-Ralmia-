@@ -18,7 +18,13 @@ OCHRE, CORAL = B('#d6a85c'), B('#de8078')
 PX = 3                                        # raster cell, px at 1920
 SIMPLIFY = ('n_stage', 'n_ledge2', 'n_world', 'n_wL', 'n_lab')   # busy scenes: flatten before the line pass
 NO_CYAN = ('n_lish', 'n_cr_hand_l', 'n_stage_hd', 'n_peek_lish')   # Lishenna alone: her costume's teal is not cyan (cyan = Ralmia's core / system only)
-CYAN_LEFT_OF = {'n_ending_hd': 905, 'n_cube_together_hd': 900, 'n_peek_frozen_hd': 1000}   # the two of them: cyan kept only on Ralmia's side (left)
+# the two of them in one picture: cyan kept only in the x range of Ralmia's side (canvas px)
+CYAN_KEEP = {'n_ending_hd': (0, 905), 'n_cube_together_hd': (0, 900), 'n_peek_frozen_hd': (0, 1000),
+             'n_ledge2_hd': (995, 1920)}
+# the stage and the ledge (user, 2026-10-20: too soft): raster in 2 px cells, error diffusion (Atkinson) instead of the
+# ordered 3 px dither, from the picture itself rather than the flattened one
+FINE = ('n_stage', 'n_ledge2')
+FINE_PX = 2
 
 def masks(base):
     hsv = cv2.cvtColor(base, cv2.COLOR_BGR2HSV); h, s, v = hsv[..., 0], hsv[..., 1], hsv[..., 2]
@@ -29,6 +35,7 @@ def masks(base):
     return cyan, blonde, pink
 
 def parts(im, simplify, keep_cyan=True, cyan_x=None):
+    """cyan_x: (x0, x1) canvas range where cyan is kept"""
     rgb = im[..., :3]; a = im[..., 3].astype(np.float32) / 255 if im.shape[2] == 4 else np.ones(im.shape[:2], np.float32)
     base = cv2.pyrMeanShiftFiltering(rgb, 10, 28) if simplify else cv2.bilateralFilter(rgb, 9, 40, 9)
     al = im[..., 3] if im.shape[2] == 4 and im[..., 3].min() < 255 else None
@@ -36,7 +43,8 @@ def parts(im, simplify, keep_cyan=True, cyan_x=None):
     lum = cv2.cvtColor(base, cv2.COLOR_BGR2GRAY).astype(np.float32) / 255
     cyan, blonde, pink = masks(base)
     if not keep_cyan: cyan = np.zeros_like(cyan)
-    if cyan_x is not None: cyan[:, int(cyan_x * cyan.shape[1] / 1920):] = False
+    if cyan_x is not None:
+        k = cyan.shape[1] / 1920; cyan[:, :int(cyan_x[0] * k)] = False; cyan[:, int(cyan_x[1] * k):] = False
     return rgb, a, ln, lum, cyan, blonde, pink
 
 def dots(shape, period, angle):
@@ -63,14 +71,28 @@ def manga(im, simplify, keep_cyan=True, cyan_x=None):
 BAYER = np.array([[0, 32, 8, 40, 2, 34, 10, 42], [48, 16, 56, 24, 50, 18, 58, 26], [12, 44, 4, 36, 14, 46, 6, 38],
                   [60, 28, 52, 20, 62, 30, 54, 22], [3, 35, 11, 43, 1, 33, 9, 41], [51, 19, 59, 27, 49, 17, 57, 25],
                   [15, 47, 7, 39, 13, 45, 5, 37], [63, 31, 55, 23, 61, 29, 53, 21]], np.float32) / 64
-def raster(im, simplify, keep_cyan=True, cyan_x=None):
+def atkinson(small):
+    """1-bit error diffusion (Atkinson: 3/4 of the error passed on, so lights and darks stay clean)"""
+    sh, sw = small.shape
+    e = np.pad(small.astype(np.float32), ((0, 2), (2, 2))); out = np.zeros((sh, sw), np.float32)
+    for y in range(sh):
+        row, nxt, nn = e[y], e[y + 1], e[y + 2]
+        for x in range(sw):
+            xx = x + 2; old = row[xx]; new = 1.0 if old > 0.5 else 0.0
+            out[y, x] = new; er = (old - new) / 8
+            row[xx + 1] += er; row[xx + 2] += er; nxt[xx - 1] += er; nxt[xx] += er; nxt[xx + 1] += er; nn[xx] += er
+    return out
+
+def raster(im, simplify, keep_cyan=True, cyan_x=None, px=PX, diffuse=False):
     rgb, a, ln, lum, cyan, blonde, pink = parts(im, simplify, keep_cyan, cyan_x)
-    h, w = lum.shape; sw, sh = max(1, w // PX), max(1, h // PX)
+    h, w = lum.shape; sw, sh = max(1, int(w / px)), max(1, int(h / px))
     small = cv2.resize(lum * ln, (sw, sh), interpolation=cv2.INTER_AREA)
     small = np.clip((small - 0.06) / 0.86, 0, 1) ** 1.1
-    th = np.tile(BAYER, (sh // 8 + 1, sw // 8 + 1))[:sh, :sw]
     up = lambda x: cv2.resize(x, (w, h), interpolation=cv2.INTER_NEAREST)
-    bit = up((small > th).astype(np.float32))
+    if diffuse: bit = up(atkinson(small))
+    else:
+        th = np.tile(BAYER, (sh // 8 + 1, sw // 8 + 1))[:sh, :sw]
+        bit = up((small > th).astype(np.float32))
     out = INK + (BONE - INK) * bit[..., None]
     cy = up(cv2.resize(cyan.astype(np.float32), (sw, sh), interpolation=cv2.INTER_AREA)) > 0.4
     out[cy] = CYAN
@@ -83,8 +105,9 @@ def one(path):
     if im is None or im.ndim < 3: return name, 'skip'
     simp = any(name.startswith(p) for p in SIMPLIFY)
     kc = not any(name.startswith(p) for p in NO_CYAN)
-    cx = CYAN_LEFT_OF.get(name)
-    cv2.imwrite(os.path.join(A, f'{name}__r.png'), raster(im, simp, kc, cx))
+    cx = CYAN_KEEP.get(name)
+    fine = any(name.startswith(p) for p in FINE)
+    cv2.imwrite(os.path.join(A, f'{name}__r.png'), raster(im, simp and not fine, kc, cx, FINE_PX if fine else PX, fine))
     cv2.imwrite(os.path.join(A, f'{name}__m.png'), manga(im, simp, kc, cx))
     return name, 'ok'
 
